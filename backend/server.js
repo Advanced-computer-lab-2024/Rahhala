@@ -19,7 +19,7 @@ async function connectDB() {
 connectDB();
 
 // import required routes
-const {getHome, createUser} = require("./routes")
+const {createUser, createActivity, getActivity} = require("./routes")
 
 
 // new express app
@@ -35,4 +35,6 @@ app.listen(port,() => {
 
 // sample endpoint
 app.post("/createUser", (req, res) => createUser(req, res, conn))
+app.post("/createActivity", (req, res) => createActivity(req, res, conn))
+app.post("/getActivity", (req, res) => getActivity(req, res, conn))
 
