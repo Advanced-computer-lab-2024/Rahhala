@@ -129,5 +129,16 @@ const getItinerary2 = async (req, res, conn) =>{
 
 }
 
+const updateItinerary = async (req, res, conn) =>{
+    const {budget, date, tags, language,activities} = req.body;
+    try{
+        const itinerary = await blogModel.updateOne({budget, date, tags, language,activities});
+        res.status(200).json({itinerary});
+       }
+    catch(error){
+        console.error("Error updating itinerary:", error);
+        return res.status(500).json({ message: "Internal server error" });
+       }
+}
 
-module.exports = {createUser, createActivity, getActivity, getItinerary1, createItinerary,getItinerary2 }
+module.exports = {createUser, createActivity, getActivity, getItinerary1, createItinerary,getItinerary2,updateItinerary }
