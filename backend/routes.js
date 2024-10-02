@@ -119,8 +119,6 @@ const addHistoricalTag = async (req, res, conn) => {
 }
 
 
-
-module.exports = {createUser, createActivity, getActivity, updateActivity, deleteActivity, addHistoricalTag}
 const createItinerary = async (req, res, conn) =>{
     console.log("create Activity request received");
     const {budget, date, tags, language,activities,price,ratings} = req.body;
@@ -192,4 +190,4 @@ const getItinerary2 = async (req, res, conn) =>{
 }
 
 
-module.exports = {createUser, createActivity, getActivity, getItinerary1, createItinerary,getItinerary2 }
+module.exports = {createUser, createActivity, getActivity, updateActivity, deleteActivity, addHistoricalTag, getItinerary1, createItinerary,getItinerary2 }
