@@ -44,7 +44,7 @@ const getActivity = async (req, res, conn) =>{
         if (bookingOpen !== undefined) query.bookingOpen = bookingOpen;
 
         // Fetch the activity from the database
-        const activity = await conn.model('Activity').findOne(query);
+        const activity = await activityModel.find(query);
 
         if (!activity) {
             return res.status(404).json({ message: "Activity not found" });
@@ -59,6 +59,65 @@ const getActivity = async (req, res, conn) =>{
 
 }
 
+const updateActivity = async (req, res, conn) =>{
+    console.log("Update activity request received")
+    const {date, time, location, price, category, tags, specialDiscounts, bookingOpen, updates} = req.body;
+    try{
+        const query = {};
+        if (date) query.date = date;
+        if (time) query.time = time;
+        if (location) query.location = location;
+        if (price) query.price = price;
+        if (category) query.category = category;
+        if (tags) query.tags = { $in: tags };
+        if (specialDiscounts) query.specialDiscounts = specialDiscounts;
+        if (bookingOpen !== undefined) query.bookingOpen = bookingOpen;
+
+        const options = { new: true }; // Return the updated document
+        
+        const activity = await activityModel.findOneAndUpdate(query, updates, options)
+        return res.status(200).json(activity);
+
+    } catch (error) {
+        console.error("Error fetching activity:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+const deleteActivity = async (req, res, conn) => {
+    console.log("Delete activity request received");
+    const { date, time, location, price, category, tags, specialDiscounts, bookingOpen } = req.body;
+    try {
+        const query = {};
+        if (date) query.date = date;
+        if (time) query.time = time;
+        if (location) query.location = location;
+        if (price) query.price = price;
+        if (category) query.category = category;
+        if (tags) query.tags = { $in: tags };
+        if (specialDiscounts) query.specialDiscounts = specialDiscounts;
+        if (bookingOpen !== undefined) query.bookingOpen = bookingOpen;
+
+        // Use findOneAndDelete to find and delete the document
+        const activity = await activityModel.findOneAndDelete(query);
+        
+        if (!activity) {
+            return res.status(404).json({ message: "Activity not found" });
+        }
+
+        return res.status(200).json({ message: "Activity deleted successfully", activity });
+
+    } catch (error) {
+        console.error("Error deleting activity:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
 
 
-module.exports = {createUser, createActivity, getActivity}
+const addHistoricalTag = async (req, res, conn) => {
+
+}
+
+
+
+module.exports = {createUser, createActivity, getActivity, updateActivity, deleteActivity, addHistoricalTag}
