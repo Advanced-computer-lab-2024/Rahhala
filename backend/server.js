@@ -19,7 +19,7 @@ async function connectDB() {
 connectDB();
 
 // import required routes
-const {createUser, createActivity, getActivity} = require("./routes")
+const {createUser, createActivity, getActivity, updateItinerary, getItinerary1, getItinerary2, createItinerary} = require("./routes")
 
 
 // new express app
@@ -37,4 +37,7 @@ app.listen(port,() => {
 app.post("/createUser", (req, res) => createUser(req, res, conn))
 app.post("/createActivity", (req, res) => createActivity(req, res, conn))
 app.post("/getActivity", (req, res) => getActivity(req, res, conn))
-
+app.get("/createItinerary", (req, res) => createItinerary(req, res, conn))
+app.get("/filterItinerary1", (req, res) => getItinerary1(req, res, conn))
+app.get("/filterItinerary2", (req, res) => getItinerary2(req, res, conn))
+app.patch("/updateItinerary", (req, res) => updateItinerary(req, res, conn))
