@@ -23,9 +23,6 @@ const itinerarySchema = new mongoose.Schema({
     type: String, 
     required: true,
   },
-  tags: {
-    type: [String], // Array of tags (e.g., "outdoor", "family-friendly")
-  },
   activities: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Activity', 
