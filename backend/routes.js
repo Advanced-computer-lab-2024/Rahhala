@@ -70,7 +70,7 @@ const createItinerary = async (req, res, conn) =>{
     }
 }
 
-const getItinerary1 = async (req, res, conn) =>{
+const getItinerary = async (req, res, conn) =>{
     console.log("Get itinerary request received");
     const {budget, date, tags, language,activities} = req.body;
 
@@ -100,33 +100,56 @@ const getItinerary1 = async (req, res, conn) =>{
 
 }
 
-const getItinerary2 = async (req, res, conn) =>{
-    console.log("Get itinerary request received");
-    const { price, ratings} = req.body;
+const sortItinerary = async (req, res, conn) => {
+    console.log("Sort itinerary request received");
+    const { price, ratings } = req.body;
 
     try {
-        // Build the query object based on provided parameters
-        const query = {};
+        // Build the sort object based on provided parameters
+        const sortOptions = {};
 
-      
-        if (price) query.category = price;
-        if (ratings) query.ratings = ratings;
-       
+        if (price) sortOptions.price = price;  // Assuming price can be 'asc' or 'desc'
+        if (ratings) sortOptions.ratings = ratings; // Assuming ratings can be 'asc' or 'desc'
 
-        
-        const itinerary = await conn.model('Itinerary').findOne(query);
+        // Retrieve and sort itineraries
+        const itineraries = await conn.model('Itinerary').find().sort(sortOptions);
 
-        if (!itinerary) {
-            return res.status(404).json({ message: "Itinerary not found" });
+        if (itineraries.length === 0) {
+            return res.status(404).json({ message: "No itineraries found" });
         }
 
-  
-        return res.status(200).json(itinerary);
-    } catch (error) {
-        console.error("Error fetching itinerary:", error);
+        return res.status(200).json(itineraries);
+    } 
+    catch (error) {
+        console.error("Error fetching itineraries:", error);
         return res.status(500).json({ message: "Internal server error" });
     }
+}
 
+const sortActivity = async (req, res, conn) => {
+    console.log("Sort acitivity request received");
+    const { price, ratings } = req.body;
+
+    try {
+        // Build the sort object based on provided parameters
+        const sortOptions = {};
+
+        if (price) sortOptions.price = price;  // Assuming price can be 'asc' or 'desc'
+        if (ratings) sortOptions.ratings = ratings; // Assuming ratings can be 'asc' or 'desc'
+
+        // Retrieve and sort itineraries
+        const activities = await conn.model('Activity').find().sort(sortOptions);
+
+        if (itineraries.length === 0) {
+            return res.status(404).json({ message: "No activities found" });
+        }
+
+        return res.status(200).json(itineraries);
+    } 
+    catch (error) {
+        console.error("Error fetching activities:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
 }
 
 const updateItinerary = async (req, res, conn) =>{
@@ -141,4 +164,6 @@ const updateItinerary = async (req, res, conn) =>{
        }
 }
 
-module.exports = {createUser, createActivity, getActivity, getItinerary1, createItinerary,getItinerary2,updateItinerary }
+
+
+module.exports = {createUser, createActivity, getActivity, getItinerary, createItinerary,sortItinerary, sortActivity, updateItinerary }
