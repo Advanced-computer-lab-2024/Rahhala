@@ -19,7 +19,7 @@ async function connectDB() {
 connectDB();
 
 // import required routes
-const {createUser, createActivity, getActivity, updateItinerary, getItinerary1, getItinerary2, createItinerary, sortItinerary, sortActivity} = require("./routes")
+const  {createUser, createActivity, getActivity, updateActivity, deleteActivity, addHistoricalTag, getItinerary, createItinerary,sortItinerary, sortActivity, updateItinerary  } = require("./routes")
 
 
 // new express app
