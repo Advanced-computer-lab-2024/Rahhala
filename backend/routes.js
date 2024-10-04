@@ -143,7 +143,7 @@ const sortActivity = async (req, res, conn) => {
         if (price) sortOptions.price = price;  // Assuming price can be 'asc' or 'desc'
         if (ratings) sortOptions.ratings = ratings; // Assuming ratings can be 'asc' or 'desc'
 
-        // Retrieve and sort itineraries
+        // Retrieve and sort Activities
         const activities = await conn.model('Activity').find().sort(sortOptions);
 
         if (itineraries.length === 0) {
