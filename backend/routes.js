@@ -85,7 +85,7 @@ const getItinerary = async (req, res, conn) =>{
         if (activities) query.activities = { $in: activities};
 
         
-        const itinerary = await conn.model('Itinerary').findOne(query);
+        const itinerary = await conn.model('Itinerary').find(query);
 
         if (!itinerary) {
             return res.status(404).json({ message: "Itinerary not found" });
