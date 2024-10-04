@@ -172,4 +172,4 @@ const updateItinerary = async (req, res, conn) =>{
 
 
 
-module.exports = {createUser, createActivity, getActivity, getItinerary, createItinerary,sortItinerary, sortActivity, updateItinerary }
+module.exports = {createUser, createActivity, getActivity, updateActivity, deleteActivity, addHistoricalTag, getItinerary, createItinerary,sortItinerary, sortActivity, updateItinerary  }
