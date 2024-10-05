@@ -5,6 +5,7 @@ const preferenceTagSchema = new Schema(
     {
         name: {
             type: String, required: true,
+            required: [true, 'Tag required'],
             unique: true
         }
     }, { timestamps: true });
