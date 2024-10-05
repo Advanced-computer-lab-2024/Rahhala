@@ -33,3 +33,9 @@ app.listen(port,() => {
 
 // endpoints
 app.delete("/deleteEntity/:entityType/:id", routes.deleteEntity);
+app.post("/addGovernor", routes.addGovernor);
+app.post("/addAdmin", routes.addAdmin);
+app.get("/Categories", routes.getCategories);
+app.post("/createCategory", routes.createCategory);
+app.put("/updateCategory/:id", routes.updateCategory);
+app.delete("/deleteCategory/:id", routes.deleteCategory);

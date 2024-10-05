@@ -12,5 +12,5 @@ const governorSchema = new mongoose.Schema({
     },
 }, { timestamps: true });
 
-const Governor = mongoose.model("Governor", governorSchema);
-export default Governor;
+const governorModel = mongoose.model("Governor", governorSchema);
+export default governorModel;

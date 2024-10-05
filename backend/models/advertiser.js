@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-
+import mongoose from 'mongoose';
 const advertiserSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -31,4 +30,4 @@ const advertiserSchema = new mongoose.Schema({
 
 const advertiserModel = mongoose.model('Advertiser', advertiserSchema);
 
-module.exports = advertiserModel;
+export default advertiserModel;

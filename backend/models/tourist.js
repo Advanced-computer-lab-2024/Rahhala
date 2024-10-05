@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-
+import mongoose from 'mongoose';
 // Define the Tourist schema
 const touristSchema = new mongoose.Schema({
     email: {
@@ -48,4 +47,4 @@ const touristSchema = new mongoose.Schema({
 const touristModel = mongoose.model('Tourist', touristSchema);
 
 // Export the Tourist model
-module.exports = touristModel;
+export default touristModel;

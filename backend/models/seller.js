@@ -1,8 +1,7 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const Schema = mongoose.Schema;
 
-const sellerSchema = new Schema({
+const sellerSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
@@ -31,4 +30,4 @@ const sellerSchema = new Schema({
 
 const sellerModel = mongoose.model('Seller', sellerSchema);
 
-module.exports = sellerModel;
+export default sellerModel;

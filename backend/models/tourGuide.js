@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-
+import mongoose from 'mongoose';
 // Define the subdocument schema for previous work experience
 const previousWorkSchema = new mongoose.Schema({
     work: {
@@ -53,4 +52,4 @@ const tourGuideSchema = new mongoose.Schema({
 const tourGuideModel = mongoose.model('TourGuide', tourGuideSchema);
 
 // Export the TourGuide model
-module.exports = tourGuideModel;
+export default tourGuideModel;
