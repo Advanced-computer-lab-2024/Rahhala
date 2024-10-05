@@ -20,22 +20,12 @@ const categorySchema = new Schema(
   },
   { timestamps: true }
 );
-
-// Error handling middleware for `save`
+// handling for duplicate name
 categorySchema.post('save', function(error, doc, next) {
   if (error.code === 11000) {
     next(new Error('Category name already exists. Please choose a different name.'));
   } else {
     next(error);  // Pass other errors
-  }
-});
-
-// Error handling middleware for `insertMany`
-categorySchema.post('insertMany', function(error, docs, next) {
-  if (error.code === 11000) {
-    next(new Error('One or more categories already exist. Duplicate entry.'));
-  } else {
-    next(error);
   }
 });
 

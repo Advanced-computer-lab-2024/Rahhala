@@ -20,22 +20,12 @@ const preferenceTagSchema = new Schema(
     }, 
     { timestamps: true }
 );
-
-// Error handling middleware to catch duplicate key error for `save`
+// handling for duplicate name
 preferenceTagSchema.post('save', function(error, doc, next) {
     if (error.code === 11000) {
         next(new Error('Tag name already exists. Please choose a different name.'));
     } else {
-        next(error);  // Pass other errors
-    }
-});
-
-// Error handling middleware for `insertMany`
-preferenceTagSchema.post('insertMany', function(error, docs, next) {
-    if (error.code === 11000) {
-        next(new Error('One or more tags already exist. Duplicate entry.'));
-    } else {
-        next(error);
+        next(error);  
     }
 });
 
