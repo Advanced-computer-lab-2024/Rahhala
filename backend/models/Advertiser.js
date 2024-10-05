@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
-const RoleSchema = new mongoose.Schema({
+const AdvertiserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: [true, "Email is required"],
@@ -21,33 +21,8 @@ const RoleSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["tour_guide", "advertiser", "seller"],
-    required: true,
+    default: "advertiser",
   },
-
-  // Fields for all roles
-  mobileNumber: {
-    type: String,
-    match: [/^\d{10,15}$/, "Invalid mobile number"],
-  },
-  profileCreated: {
-    type: Boolean,
-    default: false,
-  },
-
-  // Fields specific to tour guides
-  yearsOfExperience: {
-    type: Number,
-    min: 0,
-    default: 0,
-  },
-  previousWork: [
-    {
-      type: String,
-    },
-  ],
-
-  // Fields specific to advertisers
   companyName: {
     type: String,
     trim: true,
@@ -63,25 +38,20 @@ const RoleSchema = new mongoose.Schema({
   companyProfile: {
     type: String,
   },
-
-  // Fields specific to sellers
-  name: {
-    type: String,
-    trim: true,
-  },
-  description: {
-    type: String,
-  },
+  profileCreated: {
+    type: Boolean,
+    default: false,
+  }
 }, {
   timestamps: true,
 });
 
 // Hash the password before saving it
-RoleSchema.pre("save", async function (next) {
+AdvertiserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
-const Role = mongoose.model("Role", RoleSchema);
-module.exports = Role;
+const Advertiser = mongoose.model("Advertiser", AdvertiserSchema);
+module.exports = Advertiser;
