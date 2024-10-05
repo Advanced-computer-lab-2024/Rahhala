@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import mongoose from 'mongoose';
 
-const categorySchema = new Schema(
+const categorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -30,4 +29,4 @@ categorySchema.post('save', function(error, doc, next) {
 });
 
 const categoryModel = mongoose.model('Category', categorySchema);
-module.exports = categoryModel;
+export default categoryModel;

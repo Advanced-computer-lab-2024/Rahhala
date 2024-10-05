@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import mongoose from 'mongoose';
 
-const preferenceTagSchema = new Schema(
+const preferenceTagSchema = new mongoose.Schema(
     {
         name: {
             type: String,
@@ -29,5 +28,5 @@ preferenceTagSchema.post('save', function(error, doc, next) {
     }
 });
 
-const preferenceTagModel = mongoose.model('PreferenceTag', preferenceTagSchema);
-module.exports = preferenceTagModel;
+const tagModel = mongoose.model('PreferenceTag', preferenceTagSchema);
+export default tagModel;
