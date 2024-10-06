@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 // Define the schema for "Activity"
 const activitySchema = new mongoose.Schema({
+
 name: {
     type: String, // Name of the activity
     required: true,
@@ -19,7 +20,7 @@ name: {
     required: true,
   },
   price: {
-    type: String, // Price or a price range (example: "$50" or "$50 - $100")
+    type: Number, // Price or a price range (example: "$50" or "$50 - $100")
     required: true,
   },
   category: {
@@ -40,7 +41,13 @@ name: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'advertiser',
     required: true,
-  }
+  },
+  rating: {
+    type: Number, // Rating of the activity (e.g., 4.5)
+    required: true,
+    min: 0, // Minimum value for rating
+    max: 5 // Maximum value for rating
+  },
 }, { timestamps: true }); // Adds createdAt and updatedAt timestamps
 
 // Create the model based on the schema

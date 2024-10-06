@@ -2,8 +2,12 @@ import mongoose from 'mongoose';
 import activityModel from './activity.js'; // Assuming activityModel is the Activity model
 
 const itinerarySchema = new mongoose.Schema({
-    //TODO: id after implementing JWT
     
+    userId: { // New field to track the creator
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
     name: {
         type: String,
         required: true,
@@ -13,9 +17,7 @@ const itinerarySchema = new mongoose.Schema({
         ref: 'Activity',
         required: true,
     }],
-    locations: [{
-        type: String, // Derived from activity locations
-    }],
+    location: { type: [[Number]], default: [] }, // Ensure this field is defined as an array of arrays of numbers
     activityDetails: [{
         activityId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -44,18 +46,15 @@ const itinerarySchema = new mongoose.Schema({
         type: Date,
         required: true,
     }],
-    accessibility: {
-        type: Boolean,
-        default: false,
-    },
+    accessibility: { type: [String], default: [] }, // Ensure this field is defined
+
     pickupLocation: {
         type: String,
         required: true,
     },
-    tags: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Tag', // Referencing the Tag model
-    }],
+    tags: {
+    type: [String], // Array of tags (e.g., "outdoor", "family-friendly")
+     },
     dropoffLocation: {
         type: String,
         required: true,
@@ -74,7 +73,7 @@ itinerarySchema.pre('save', async function (next) {
         }).select('name location duration');
         
         // Derive locations
-        itinerary.locations = activityDetails.map(activity => activity.location);
+        itinerary.location = activityDetails.map(activity => activity.location);
 
         // Populate activity details with name and duration
         itinerary.activityDetails = activityDetails.map(activity => ({

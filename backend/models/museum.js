@@ -25,6 +25,11 @@ const museumSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    userID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Governor',
+        required: true,
+    },
 }, {
     timestamps: true 
 });
