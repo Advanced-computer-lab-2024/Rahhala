@@ -10,16 +10,16 @@ const TouristAccount = () => {
     useEffect(() => {
         // Only fetch profile if the user is authenticated
         if (auth.isAuthenticated && auth.user) {
-            const fetchProfile = async () => {
+            const fetchTourist = async () => {
                 try {
                     const response = await axiosInstance.get(`/touristAccount/${auth.user.id}`);
-                    setProfile(response.data.profile); // Assuming 'profile' is the field returned by the backend
+                    console.log("response:", response.data.profile);
                 } catch (err) {
                     setError('Failed to load tourist profile.');
                 }
             };
 
-            fetchProfile();
+            fetchTourist();
         }
     }, [auth]);
 
@@ -36,18 +36,15 @@ const TouristAccount = () => {
     return (
         <div>
             <h2>Tourist Account</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error if there's one */}
-
-            {/* If profile data is available, display it */}
-            {profile ? (
-                <div>
-                    <p><strong>Name:</strong> {profile.name}</p>
-                    <p><strong>Email:</strong> {profile.email}</p>
-                    <p><strong>Phone:</strong> {profile.phone}</p>
-                    {/* Add more fields based on your tourist model */}
-                </div>
+            {error && <p>{error}</p>}
+            {itineraries ? (
+                <ul>
+                    {itineraries.map((itinerary) => (
+                        <li key={itinerary._id}>{itinerary.name}</li>
+                    ))}
+                </ul>
             ) : (
-                <p>No profile data available.</p> // In case profile is not found
+                <p>No itineraries found.</p>
             )}
         </div>
     );

@@ -18,17 +18,20 @@ const getTourist = async (req, res) => {
 };
 
 const getTouristById = async (req, res) => {
-    const { id } = req.user.id;
+    console.log("entered getTouristById");
+    const { id } = req.params;
+    console.log(id);
 
     try {
-      const tourist = await touristModel.findById(id);
-  
+        const tourist = await touristModel.findById(id);
+        console.log(tourist);
       if (!tourist) {
         return res.status(404).json({ error: "Tourist profile not found" });
       }
   
       res.status(200).json({ profile: tourist });
     } catch (error) {
+        console.log(error);
       res.status(500).json({ error: "Error fetching tourist profile." });
     }
 };
