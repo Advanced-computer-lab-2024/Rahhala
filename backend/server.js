@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import controllers from './controllers/controllerIndex.js';
+import { verifyToken } from './middleware/auth.js';
 dotenv.config({path: "../.env"});
 const port = process.env.PORT //getting port from .env
 
@@ -32,3 +33,16 @@ app.listen(port,() => {
 })
 
 // endpoints
+
+
+app.post("/createMuseum", controllers.museumController.createMuseum);
+app.get("/getMuseum/:id", controllers.museumController.getMuseum);
+app.patch("/updateMuseum/:id", controllers.museumController.updateMuseum);
+app.delete("/deleteMuseum/:id", controllers.museumController.deleteMuseum);
+app.post("/createItinerary", verifyToken,  controllers.itineraryController.createItinerary);
+app.get('/getItineraries', controllers.itineraryController.getAllItineraries);
+app.get('/getItineraries/:id', controllers.itineraryController.getItineraryById);
+app.patch('/updateItineraries/:id', controllers.itineraryController.updateItinerary);
+app.delete('/deleteItineraries/:id', controllers.itineraryController.deleteItinerary);
+app.post('/register', controllers.authController.register);
+app.post('/login', controllers.authController.login);
