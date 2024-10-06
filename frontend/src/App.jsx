@@ -4,6 +4,8 @@ import Register from './components/Auth/Register';
 import Login from './components/Auth/Login';
 import CreateItinerary from './pages/CreateItinerary';
 import ProtectedRoute from './components/ProtectedRoute';
+import TouristDashboard from './pages/TouristDashboard';
+
 
 function App() {
     return (
@@ -16,6 +18,14 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <CreateItinerary />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/tourist-dashboard"
+                    element={
+                        <ProtectedRoute >
+                            <TouristDashboard />
                         </ProtectedRoute>
                     }
                 />

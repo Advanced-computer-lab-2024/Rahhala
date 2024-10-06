@@ -113,8 +113,8 @@ const Register = () => {
             setMessage('Registration successful!');
 
             // Optionally, store the token and redirect
-            // const { token } = response.data;
-            // localStorage.setItem('token', token);
+            const { token } = response.data;
+            localStorage.setItem('token', token);
             // Redirect to dashboard or login page
         } catch (error) {
             setMessage(error.response?.data?.message || 'Registration failed.');
