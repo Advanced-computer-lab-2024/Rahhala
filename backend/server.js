@@ -39,7 +39,7 @@ app.listen(port,() => {
 
 // endpoints
 
-
+app.get("/touristAccount", controllers.touristController.getTouristById);
 app.post("/createMuseum", controllers.museumController.createMuseum);
 app.get("/getMuseum/:id", controllers.museumController.getMuseum);
 app.patch("/updateMuseum/:id", controllers.museumController.updateMuseum);

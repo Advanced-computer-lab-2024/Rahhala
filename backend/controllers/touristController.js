@@ -17,6 +17,22 @@ const getTourist = async (req, res) => {
     }
 };
 
+const getTouristById = async (req, res) => {
+    const { id } = req.user.id;
+
+    try {
+      const tourist = await touristModel.findById(id);
+  
+      if (!tourist) {
+        return res.status(404).json({ error: "Tourist profile not found" });
+      }
+  
+      res.status(200).json({ profile: tourist });
+    } catch (error) {
+      res.status(500).json({ error: "Error fetching tourist profile." });
+    }
+};
+
 const updateTourist = async (req, res) => {
     const { email, mobileNumber, nationality, dob, occupation, wallet } = req.body;
 
@@ -47,7 +63,8 @@ const updateTourist = async (req, res) => {
 
 const touristController = {
     updateTourist,
-    getTourist
+    getTourist,
+    getTouristById
 };
 
 export default touristController;

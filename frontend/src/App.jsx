@@ -5,12 +5,13 @@ import Login from './components/Auth/Login';
 import CreateItinerary from './pages/CreateItinerary';
 import ProtectedRoute from './components/ProtectedRoute';
 import TouristDashboard from './pages/TouristDashboard';
-
+import TouristAccount from './pages/TouristAccount';
 
 function App() {
     return (
         <Router>
             <Routes>
+                <Route path="/touristAccount" element={<TouristAccount />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route
