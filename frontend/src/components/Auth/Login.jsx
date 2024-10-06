@@ -4,7 +4,6 @@ import axiosInstance from '../../utils/axiosConfig'; // Ensure correct path
 import { AuthContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import { set } from 'mongoose';
 
 const Login = () => {
     const { setAuth } = useContext(AuthContext);

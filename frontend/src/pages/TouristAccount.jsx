@@ -1,27 +1,52 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import axiosInstance from '../utils/axiosConfig'; // Axios instance for API calls
-import axios from 'axios';
-import { useContext } from 'react';
-import { get } from 'mongoose';
+import axiosInstance from '../utils/axiosConfig';
 
 const TouristAccount = () => {
-    const getTourist = async() => {
-        try {
-            const response = await axiosInstance.get('/touristAccount/${auth.user.id}');
-            console.log(response);
-        } catch (error) {
-            console.error('Error fetching tourist profile:', error);
-        }
-    }
-    getTourist();
-    const { auth } = useContext(AuthContext);
+    const { auth } = useContext(AuthContext); // Get auth context
     console.log(auth);
-    const response = axiosInstance.get('/touristAccount/${auth.user.id}');
-    console.log(response);
-  return (
-    <div>TouristAccount</div>
-  )
-}
+    const [itineraries, setItineraries] = useState(null);
+    const [error, setError] = useState(null);
 
-export default TouristAccount
+    useEffect(() => {
+        // Only make API call if user is authenticated
+        if (auth.isAuthenticated && auth.user) {
+            const fetchItineraries = async () => {
+                try {
+                    const response = await axiosInstance.get(`/touristAccount/${auth.user.id}`);
+                    setItineraries(response.data);
+                } catch (err) {
+                    setError('Failed to load itineraries.');
+                }
+            };
+
+            fetchItineraries();
+        }
+    }, [auth]);
+
+    if (auth.loading) {
+        return <div>Loading user data...</div>;
+    }
+
+    if (!auth.isAuthenticated) {
+        return <div>You are not authenticated.</div>;
+    }
+
+    return (
+        <div>
+            <h2>Tourist Account</h2>
+            {error && <p>{error}</p>}
+            {itineraries ? (
+                <ul>
+                    {itineraries.map((itinerary) => (
+                        <li key={itinerary._id}>{itinerary.name}</li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No itineraries found.</p>
+            )}
+        </div>
+    );
+};
+
+export default TouristAccount;
