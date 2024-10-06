@@ -6,7 +6,8 @@ import CreateItinerary from './pages/CreateItinerary';
 import ProtectedRoute from './components/ProtectedRoute';
 import TouristDashboard from './pages/TouristDashboard';
 import TouristAccount from './pages/TouristAccount';
-
+import CreateActivityCategory from './pages/CreateActivityCategory';
+import CreateTag from './pages/CreateTag';
 function App() {
     return (
         <Router>
@@ -14,6 +15,8 @@ function App() {
                 <Route path="/touristAccount" element={<TouristAccount />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/createActivityCategory" element={<CreateActivityCategory />} />
+                <Route path="/createTag" element={<CreateTag />} />
                 <Route
                     path="/createItinerary"
                     element={
