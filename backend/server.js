@@ -1,6 +1,7 @@
 // configure reading from .env
 import dotenv from "dotenv";
 import express from "express";
+import cors from 'cors';
 import mongoose from "mongoose";
 import controllers from './controllers/controllerIndex.js';
 import { verifyToken } from './middleware/auth.js';
@@ -25,6 +26,10 @@ connectDB();
 // new express app
 const app = express() // express app init
 app.use(express.json());
+app.use(cors({
+  origin: 'http://localhost:5173', // Frontend URL
+  credentials: true, // If you are using cookies
+}));
 
 
 // listen for requests

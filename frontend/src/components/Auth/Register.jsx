@@ -1,11 +1,11 @@
 // src/components/Auth/Register.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosConfig'; // Adjust the path as necessary
 
 const Register = () => {
     const [userType, setUserType] = useState('tourist'); // Default userType
     const [formData, setFormData] = useState({
-        userType: 'tourist',
+        userType: '',
         username: '',
         password: '',
         email: '',
@@ -109,7 +109,7 @@ const Register = () => {
         }
 
         try {
-            const response = await axios.post('/register', dataToSend);
+            const response = await axiosInstance.post('/register', dataToSend);
             setMessage('Registration successful!');
 
             // Optionally, store the token and redirect
