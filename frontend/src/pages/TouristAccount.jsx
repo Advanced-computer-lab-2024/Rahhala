@@ -4,30 +4,31 @@ import axiosInstance from '../utils/axiosConfig';
 
 const TouristAccount = () => {
     const { auth } = useContext(AuthContext); // Get auth context
-    console.log(auth);
-    const [itineraries, setItineraries] = useState(null);
-    const [error, setError] = useState(null);
+    const [profile, setProfile] = useState(null); // State to hold the tourist profile
+    const [error, setError] = useState(null); // State to handle errors
 
     useEffect(() => {
-        // Only make API call if user is authenticated
+        // Only fetch profile if the user is authenticated
         if (auth.isAuthenticated && auth.user) {
-            const fetchItineraries = async () => {
+            const fetchProfile = async () => {
                 try {
                     const response = await axiosInstance.get(`/touristAccount/${auth.user.id}`);
-                    setItineraries(response.data);
+                    setProfile(response.data.profile); // Assuming 'profile' is the field returned by the backend
                 } catch (err) {
-                    setError('Failed to load itineraries.');
+                    setError('Failed to load tourist profile.');
                 }
             };
 
-            fetchItineraries();
+            fetchProfile();
         }
     }, [auth]);
 
+    // Loading state while fetching the user data
     if (auth.loading) {
         return <div>Loading user data...</div>;
     }
 
+    // Check if the user is authenticated
     if (!auth.isAuthenticated) {
         return <div>You are not authenticated.</div>;
     }
@@ -35,15 +36,18 @@ const TouristAccount = () => {
     return (
         <div>
             <h2>Tourist Account</h2>
-            {error && <p>{error}</p>}
-            {itineraries ? (
-                <ul>
-                    {itineraries.map((itinerary) => (
-                        <li key={itinerary._id}>{itinerary.name}</li>
-                    ))}
-                </ul>
+            {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error if there's one */}
+
+            {/* If profile data is available, display it */}
+            {profile ? (
+                <div>
+                    <p><strong>Name:</strong> {profile.name}</p>
+                    <p><strong>Email:</strong> {profile.email}</p>
+                    <p><strong>Phone:</strong> {profile.phone}</p>
+                    {/* Add more fields based on your tourist model */}
+                </div>
             ) : (
-                <p>No itineraries found.</p>
+                <p>No profile data available.</p> // In case profile is not found
             )}
         </div>
     );
