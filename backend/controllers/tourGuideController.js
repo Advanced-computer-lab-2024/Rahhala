@@ -1,10 +1,10 @@
 import tourGuideModel from "../models/tourGuide.js";
 // Tour Guide profile routes
-router.put("/profile/tour_guide", async (req, res) => {
+const updateTourGuide = async (req, res) =>{
     const { email, mobileNumber, yearsOfExperience, previousWork } = req.body;
   
     try {
-      const user = await TourGuide.findOne({ email });
+      const user = await tourGuideModel.findOne({ email });
   
       if (!user) {
         return res.status(404).json({ error: "Tour guide not found" });
@@ -25,11 +25,11 @@ router.put("/profile/tour_guide", async (req, res) => {
     }
   });
   
-  router.get("/profile/tour_guide/:email", async (req, res) => {
+  const getTourGuideById = async (req, res) =>{
     const { email } = req.params;
   
     try {
-      const user = await TourGuide.findOne({ email });
+      const user = await tourGuideModel.findOne({ email });
   
       if (!user || !user.profileCreated) {
         return res.status(404).json({ error: "Tour guide profile not found or not created yet" });
@@ -41,6 +41,9 @@ router.put("/profile/tour_guide", async (req, res) => {
     }
   });
 
-export const getTourGuide = async (req, res) => {
+const tourGuideController = {
+    updateTourGuide,
+    getTourGuideById
+};
 
-}
+export default tourGuideController;
