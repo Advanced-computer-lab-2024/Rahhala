@@ -86,7 +86,7 @@ const Login = () => {
             {message && <p>{message}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label>Email:</label>
+                    <label>Email/Username:</label>
                     <input
                         type="String"
                         name="email"
