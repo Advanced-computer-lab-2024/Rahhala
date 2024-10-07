@@ -15,13 +15,9 @@ import ViewAll from './pages/ViewAll';
 import Activities from './pages/Activities';
 import Museums from './pages/Museums';
 import TouristItineraries from './pages/TouristItineraries';
-import NavBar from './components/NavBar';
 function App() {
     return (
         <Router>
-            <NavBar />
-            <br />
-            <br />
             <Routes>
                 <Route path="/touristItineraries" element={<TouristItineraries />} />
                 <Route path="/getMuseums" element={<Museums />} />
