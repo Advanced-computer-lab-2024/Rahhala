@@ -52,6 +52,7 @@ const TouristAccount = () => {
     return (
         <div>
             <NavigateButton path={"/viewAll"} text={"View All"}/>{'\u00A0'}
+            <NavigateButton path={"/products"} text={"View Products"}/>{'\u00A0'}
             <Logout />
             <h2>Tourist Profile</h2>
             {profile ? (
