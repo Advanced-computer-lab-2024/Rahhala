@@ -28,10 +28,12 @@ import CreateActivity from './pages/CreateActivity';
 import UpdateActivity from './pages/UpdateActivity';
 import DeleteActivity from './pages/DeleteActivity';
 import MyActivities from './pages/MyActivities';
+import Products from './pages/Products';
 function App() {
     return (
         <Router>
             <Routes>
+                <Route path="/products" element={<Products />} />
                 <Route path="/getMyActivities" element={<MyActivities />} />
                 <Route path="/deleteActivity" element={<DeleteActivity />} />
                 <Route path="/updateActivity" element={<UpdateActivity />} />
