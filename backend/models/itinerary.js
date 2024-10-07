@@ -57,6 +57,11 @@ const itinerarySchema = new mongoose.Schema({
     dropoffLocation: {
         type: String,
         required: true,
+    },
+    rating:{
+        type: Number,
+        min: 0,
+        max: 5
     }
 }, {
     timestamps: true

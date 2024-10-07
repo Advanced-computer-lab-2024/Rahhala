@@ -44,7 +44,6 @@ name: {
   },
   rating: {
     type: Number, // Rating of the activity (e.g., 4.5)
-    required: true,
     min: 0, // Minimum value for rating
     max: 5 // Maximum value for rating
   },

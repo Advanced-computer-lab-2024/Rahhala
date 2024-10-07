@@ -38,10 +38,14 @@ app.listen(port,() => {
 })
 
 // endpoints
-
+app.post("/createActivity", controllers.activityController.createActivity);
+app.get("/museums", controllers.museumController.getAllMuseums);
+app.get("/activities", controllers.activityController.getActivities);
+app.get("/viewAll", controllers.touristController.getAll)
+app.patch("/updateTourist", verifyToken, controllers.touristController.updateTourist);
 app.get("/touristAccount",verifyToken , controllers.touristController.getTouristById);
 app.post("/createMuseum", controllers.museumController.createMuseum);
-app.get("/getMuseum/:id", controllers.museumController.getMuseum);
+app.get("/getMuseum/:id", controllers.museumController.getMuseumsByUserID);
 app.patch("/updateMuseum/:id", controllers.museumController.updateMuseum);
 app.delete("/deleteMuseum/:id", controllers.museumController.deleteMuseum);
 app.post('/createItinerary', verifyToken, controllers.itineraryController.createItinerary);  
