@@ -59,6 +59,16 @@ export const AuthProvider = ({ children }) => {
         verifyToken();
     }, [auth.token]);
 
+    const logout = () => {
+        localStorage.removeItem('token'); 
+        setAuth({
+            token: null,
+            isAuthenticated: false,
+            loading: false,
+            user: null,
+        });
+    };
+
     return (
         <AuthContext.Provider value={{ auth, setAuth }}>
             {children}

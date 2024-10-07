@@ -23,7 +23,7 @@ const updateTourGuide = async (req, res) =>{
     } catch (error) {
       res.status(500).json({ error: "Error updating tour guide profile" });
     }
-  });
+  };
   
   const getTourGuideById = async (req, res) =>{
     const { email } = req.params;
@@ -39,7 +39,7 @@ const updateTourGuide = async (req, res) =>{
     } catch (error) {
       res.status(500).json({ error: "Error fetching tour guide profile" });
     }
-  });
+  };
 
 const tourGuideController = {
     updateTourGuide,
