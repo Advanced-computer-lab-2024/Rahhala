@@ -6,13 +6,14 @@ import { generateToken, comparePasswords } from '../utils/jwt.js';
 const handleLogin = async (username, model , email, password, userType) => {
     
 
-    console.log(model);
+    console.log("the user name is  " , username);
     // If admin, search by username; otherwise, search by email
     let user;
     
     
     if (model === models.adminModel) {
-        user = await model.findOne({ username }); 
+        console.log("here is the admin with name: ", username);
+        user = await model.findOne({ username });
         console.log("here")
     }
     else if (model === models.governorModel) {
@@ -62,9 +63,9 @@ const login = async (req, res) => {
         case 'tourism_governor':
             model = models.governorModel; // Ensure you have this model defined
             break;
-            case 'admin':
+        case 'admin':
             model = models.adminModel; // Ensure you have this model defined
-            break;
+            break;    
         default:
             return res.status(400).json({ message: 'Invalid userType.' });
     }
