@@ -36,9 +36,11 @@ const ViewAll = () => {
 
     return (
         <div>
+            <NavigateButton path='/touristAccount' text='Home'/>{'\u00A0'} <br/><br/>
             <NavigateButton path='/getActivities' text='Activities'/>{'\u00A0'}
             <NavigateButton path='/touristItineraries' text='Itineraries'/>{'\u00A0'}
             <NavigateButton path='/getMuseums' text='Museums'/>
+
             <br/><br/>
 
             <input

@@ -4,7 +4,6 @@ import axiosInstance from '../utils/axiosConfig';
 import NavigateButton from '../components/UpdateProfileButton';
 import { useNavigate } from 'react-router-dom';
 
-
 const TouristAccount = () => {
     const navigate = useNavigate();
     const { auth } = useContext(AuthContext); // Get auth context
@@ -52,6 +51,7 @@ const TouristAccount = () => {
 
     return (
         <div>
+            <NavigateButton path={"/viewAll"} text={"View All"}/>
             <h2>Tourist Profile</h2>
             {profile ? (
                 <pre>{JSON.stringify(profile, null, 2)}</pre>
