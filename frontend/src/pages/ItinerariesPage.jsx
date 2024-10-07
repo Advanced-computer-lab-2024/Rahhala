@@ -45,6 +45,8 @@ const ItinerariesPage = () => {
                         <li key={itinerary._id}>
                             <h4>{itinerary.name}</h4>
                             <p><strong>Timeline:</strong> {itinerary.timeline}</p>
+                            <p><strong>Locations:</strong> {itinerary.location.map(loc => `(${loc[0]}, ${loc[1]})`).join(', ')}</p> {/* Displaying derived locations */}
+                            <p><strong>Language:</strong> {itinerary.language}</p>
                             <p><strong>Price:</strong> ${itinerary.price}</p>
                             <p><strong>Pickup Location:</strong> {itinerary.pickupLocation}</p>
                             <p><strong>Dropoff Location:</strong> {itinerary.dropoffLocation}</p>

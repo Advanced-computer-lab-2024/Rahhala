@@ -169,7 +169,8 @@ const itineraryController = {
     getItineraryByUserID,
     updateItinerary,
     deleteItinerary,
-    deleteItineraryByName
+    deleteItineraryByName,
+    updateItineraryByName
 };
 
 export default itineraryController;

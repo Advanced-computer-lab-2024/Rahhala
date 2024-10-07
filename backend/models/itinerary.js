@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 import activityModel from './activity.js'; // Assuming activityModel is the Activity model
 
 const itinerarySchema = new mongoose.Schema({
-    
     userId: { // New field to track the creator
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -17,7 +16,7 @@ const itinerarySchema = new mongoose.Schema({
         ref: 'Activity',
         required: true,
     }],
-    location: { type: [[Number]], default: [] }, // Ensure this field is defined as an array of arrays of numbers
+    location: { type: [[Number]], default: [] }, // Array of arrays of numbers
     activityDetails: [{
         activityId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -53,8 +52,8 @@ const itinerarySchema = new mongoose.Schema({
         required: true,
     },
     tags: {
-    type: [String], // Array of tags (e.g., "outdoor", "family-friendly")
-     },
+        type: [String], // Array of tags (e.g., "outdoor", "family-friendly")
+    },
     dropoffLocation: {
         type: String,
         required: true,
@@ -71,16 +70,30 @@ itinerarySchema.pre('save', async function (next) {
         const activityDetails = await activityModel.find({
             _id: { $in: itinerary.activities }
         }).select('name location duration');
-        
-        // Derive locations
-        itinerary.location = activityDetails.map(activity => activity.location);
 
-        // Populate activity details with name and duration
+        console.log('Activity Details:', activityDetails);
+
+        // Use a Set to store unique locations
+        const uniqueLocations = new Set();
+
+        activityDetails.forEach(activity => {
+            console.log('Activity Location:', activity.location); // Log each activity's location
+            // Add the location to the set directly
+            if (activity.location) {
+                uniqueLocations.add(activity.location.toString());
+            }
+        });
+
+        // Populate activity details
         itinerary.activityDetails = activityDetails.map(activity => ({
             activityId: activity._id,
             name: activity.name,
-            duration: activity.duration || "Not specified" // Set default duration to 0 if not provided
+            duration: activity.duration || "Not specified" // Default duration if not provided
         }));
+
+        // Convert the Set to an array of arrays of numbers
+        itinerary.location = Array.from(uniqueLocations).map(loc => loc.split(',').map(Number)); // Split and convert to numbers
+        console.log('Unique Locations:', itinerary.location);
     }
     next();
 });

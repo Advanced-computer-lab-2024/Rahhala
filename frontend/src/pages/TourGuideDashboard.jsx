@@ -23,8 +23,8 @@ const TourGuideDashboard = () => {
         accessibility: '',
         tags: ''
     });
-    const [deleteId, setDeleteId] = useState(''); // State for the delete itinerary 
-    const [updateId, setUpdateId] = useState(''); // State for the itinerary ID to be updated
+    const [deleteName, setDeleteName] = useState(''); // State for the delete itinerary 
+    const [updateName, setupdateName] = useState(''); // State for the itinerary ID to be updated
 
     const handleInputChange = (e) => {
         setFormData({
@@ -56,7 +56,7 @@ const TourGuideDashboard = () => {
     const handleDeleteSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axiosInstance.delete(`/deleteItineraryByName/${deleteId}`);
+            await axiosInstance.delete(`/deleteItineraryByName/${deleteName}`);
             setShowDeleteForm(false);
             setSuccessMessage('Itinerary deleted successfully!');
             setTimeout(() => setSuccessMessage(''), 3000); 
@@ -76,7 +76,7 @@ const TourGuideDashboard = () => {
                 availableDates: formData.availableDates.split(',').map(date => new Date(date.trim())),
                 accessibility: formData.accessibility.split(',').map(item => item.trim())  
             };
-            await axiosInstance.put(`/updateItinerary/${updateId}`, formattedData); // Assuming your API has this endpoint
+            await axiosInstance.patch(`/updateItinerariesName/${updateName}`, formattedData); // Assuming your API has this endpoint
             setShowUpdateForm(false);
             setSuccessMessage('Itinerary updated successfully!');
             setTimeout(() => setSuccessMessage(''), 3000); 
@@ -228,8 +228,8 @@ const TourGuideDashboard = () => {
                                 <label>Itinerary ID:</label>
                                 <input
                                     type="text"
-                                    value={updateId}
-                                    onChange={(e) => setUpdateId(e.target.value)} // Manage update ID
+                                    value={updateName}
+                                    onChange={(e) => setupdateName(e.target.value)} // Manage update ID
                                     required
                                 />
                             </div>
@@ -241,7 +241,7 @@ const TourGuideDashboard = () => {
                                     name="name"
                                     value={formData.name}
                                     onChange={handleInputChange}
-                                    required
+                                    
                                 />
                             </div>
                             <div>
@@ -251,7 +251,7 @@ const TourGuideDashboard = () => {
                                     name="activities"
                                     value={formData.activities}
                                     onChange={handleInputChange}
-                                    required
+                                    
                                 />
                             </div>
                             <div>
@@ -261,7 +261,7 @@ const TourGuideDashboard = () => {
                                     name="timeline"
                                     value={formData.timeline}
                                     onChange={handleInputChange}
-                                    required
+                                    
                                 />
                             </div>
                             <div>
@@ -271,7 +271,7 @@ const TourGuideDashboard = () => {
                                     name="language"
                                     value={formData.language}
                                     onChange={handleInputChange}
-                                    required
+                                    
                                 />
                             </div>
                             <div>
@@ -281,7 +281,7 @@ const TourGuideDashboard = () => {
                                     name="price"
                                     value={formData.price}
                                     onChange={handleInputChange}
-                                    required
+                                    
                                 />
                             </div>
                             <div>
@@ -291,7 +291,7 @@ const TourGuideDashboard = () => {
                                     name="availableDates"
                                     value={formData.availableDates}
                                     onChange={handleInputChange}
-                                    required
+                                    
                                 />
                             </div>
                             <div>
@@ -301,7 +301,7 @@ const TourGuideDashboard = () => {
                                     name="pickupLocation"
                                     value={formData.pickupLocation}
                                     onChange={handleInputChange}
-                                    required
+                                    
                                 />
                             </div>
                             <div>
@@ -311,7 +311,7 @@ const TourGuideDashboard = () => {
                                     name="dropoffLocation"
                                     value={formData.dropoffLocation}
                                     onChange={handleInputChange}
-                                    required
+                                    
                                 />
                             </div>
                             <div>
@@ -349,8 +349,8 @@ const TourGuideDashboard = () => {
                                 <label>Itinerary ID:</label>
                                 <input
                                     type="text"
-                                    value={deleteId}
-                                    onChange={(e) => setDeleteId(e.target.value)}
+                                    value={deleteName}
+                                    onChange={(e) => setDeleteName(e.target.value)}
                                     required
                                 />
                             </div>

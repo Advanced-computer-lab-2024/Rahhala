@@ -48,6 +48,7 @@ app.post('/createItinerary', verifyToken, controllers.itineraryController.create
 app.get('/getItineraries', controllers.itineraryController.getAllItineraries);
 app.get('/getItineraries/:id', controllers.itineraryController.getItineraryById);
 app.patch('/updateItineraries/:id', controllers.itineraryController.updateItinerary);
+app.patch('/updateItinerariesName/:name', controllers.itineraryController.updateItineraryByName);
 app.delete('/deleteItineraries/:id', controllers.itineraryController.deleteItinerary);
 app.delete('/deleteItineraryByName/:name', controllers.itineraryController.deleteItineraryByName);
 app.post('/register', controllers.authController.register);
