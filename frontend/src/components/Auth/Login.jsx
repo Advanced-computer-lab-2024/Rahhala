@@ -67,6 +67,9 @@ const Login = () => {
             } 
             else if (userType === 'tourism_governor') {  // New route for Tourism Governor
                 navigate('/GovernorDashboard');
+            }
+            else if (userType === 'admin') {  // New route for Tourism Governor
+                navigate('/adminDashboard');
             }else {
                 navigate('/'); // Default redirect if needed
             }
@@ -108,6 +111,8 @@ const Login = () => {
                         <option value="seller">Seller</option>
                         <option value="advertiser">Advertiser</option>
                         <option value="tourism_governor">Tourism Governor</option>
+                        <option value="admin">admin</option>
+
 
                     </select>
                 </div>

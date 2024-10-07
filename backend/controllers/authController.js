@@ -1,16 +1,30 @@
+import adminModel from "../models/admin.js";
 import models from "../models/index.js";
 import { generateToken, comparePasswords } from '../utils/jwt.js';
 
 
-const handleLogin = async (model , email, password, userType) => {
+const handleLogin = async (username, model , email, password, userType) => {
     
 
     console.log(model);
+    // If admin, search by username; otherwise, search by email
+    let user;
+    
+    
+    if (model === models.adminModel) {
+        user = await model.findOne({ username }); 
+        console.log("here")
+    }
+    else if (model === models.governorModel) {
+        user = await model.findOne({ username });
+    } 
+    else {
+        user = await model.findOne({ email });
+    }
 
-    const user = await model.findOne({ email });
     console.log(user);
     if (!user) {
-        throw new Error('Invalid email or password.');
+        throw new Error('Invalid username or password.');
     }
 
     const isMatch = comparePasswords(user.password, password);
@@ -23,7 +37,7 @@ const handleLogin = async (model , email, password, userType) => {
 };
 // Login Controller
 const login = async (req, res) => {
-    const {email, password, userType } = req.body;
+    const {username, email, password, userType } = req.body;
 
     if (!email || !password || !userType) {
         return res.status(400).json({ message: 'Email, password, and userType are required.' });
@@ -48,13 +62,16 @@ const login = async (req, res) => {
         case 'tourism_governor':
             model = models.governorModel; // Ensure you have this model defined
             break;
+            case 'admin':
+            model = models.adminModel; // Ensure you have this model defined
+            break;
         default:
             return res.status(400).json({ message: 'Invalid userType.' });
     }
 
     try {
         console.log(email);
-        const token = await handleLogin(model, email, password, userType);
+        const token = await handleLogin(username, model, email, password, userType);
         res.status(200).json({ token });
     } catch (err) {
         res.status(400).json({ message: err.message });
