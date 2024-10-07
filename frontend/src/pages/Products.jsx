@@ -19,8 +19,11 @@ const Products = () => {
     if (auth.user && auth.user.type === 'tourist') {
         homePath = '/toursitAccount';
     }
-    else {
-        homePath = '/advertiser-dashboard';
+    else if(auth.user && auth.user.type === 'seller'){
+        homePath = '/seller-dashboard';
+    }
+    else if(auth.user && auth.user.type === 'admin'){
+        homePath = '/AdminDashboard';
     }
     useEffect(() => {
         const fetchProducts = async () => {

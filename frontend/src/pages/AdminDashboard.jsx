@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../utils/axiosConfig';
 import { useNavigate } from 'react-router-dom';
-
+import NavigateButton from '../components/UpdateProfileButton';
+import Lougout from '../components/Auth/Logout';
 function AdminDashboard() {
     const navigate = useNavigate(); 
     const [governorData, setGovernorData] = useState({
@@ -323,6 +324,9 @@ function AdminDashboard() {
                     <button type="submit">Add Admin</button>
                 </form>
             )}
+            <NavigateButton path="/products" text="View Products" />
+            <NavigateButton path='/createProduct' text='Create Product'/>
+            <Lougout/>
         </div>
     );
 }

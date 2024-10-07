@@ -2,7 +2,7 @@ import { AuthContext } from '../context/AuthContext';
 import axiosInstance from '../utils/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import React, { useContext, useEffect, useState } from 'react';
-
+import NavigateButton from '../components/UpdateProfileButton';
 const UpdateTouristAccount = () => {
     const navigate = useNavigate();
     const { auth } = useContext(AuthContext); // Get auth context
@@ -135,6 +135,7 @@ const UpdateTouristAccount = () => {
                 <button type="submit">Update Account</button>
 
             </form>
+            <NavigateButton path='/touristAccount' text='Back'/>
 
         </div>
     )

@@ -11,7 +11,7 @@ const CreateProduct = () => {
 
     let homePath;
     if (auth.user && auth.user.type === 'admin') {
-        homePath = '/admin-dashboard';
+        homePath = '/AdminDashboard';
     }
     else if(auth.user && auth.user.type === 'seller'){
         homePath = '/seller-dashboard';
@@ -74,6 +74,7 @@ const CreateProduct = () => {
         </div>
         <button type="submit">Create Product</button>
       </form>
+      <NavigateButton path={homePath} text='Home' />
     </div>
   );
 };
