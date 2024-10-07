@@ -2,21 +2,24 @@ import adminModel from "../models/admin.js";
 import models from "../models/index.js";
 
 const addAdmin = async (req, res) => {
-    const { username, password, name, email } = req.body;
+    const { email, password, name} = req.body;
+
+    console.log("Add admin request received with email:", email);
 
     try {
-        // Check if username already exists
-        const existingAdmin = await models.adminModel.findOne({ username });
+        // Check if email already exists
+        const existingAdmin = await models.adminModel.findOne({ email });
         if (existingAdmin) {
-            return res.status(400).json({ message: 'Username already exists' });
+            return res.status(400).json({ message: 'email already exists' });
         }
 
         // Hash the password
         // const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create a new admin instance
+        console.log("here")
         const newAdmin = await adminModel.create({
-            username, 
+            email, 
             password,
             
         });

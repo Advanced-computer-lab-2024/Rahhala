@@ -68,5 +68,7 @@ app.patch('/updateItineraries/:id', controllers.itineraryController.updateItiner
 app.patch('/updateItinerariesName/:name', controllers.itineraryController.updateItineraryByName);
 app.delete('/deleteItineraries/:id', controllers.itineraryController.deleteItinerary);
 app.delete('/deleteItineraryByName/:name', controllers.itineraryController.deleteItineraryByName);
+app.post('/addAdmin', controllers.adminController.addAdmin);
+
 app.post('/register', controllers.authController.register);
 app.post('/login', controllers.authController.login);
