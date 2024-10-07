@@ -1,0 +1,10 @@
+/* Assuming you have a CSS file for GuestNavBar, e.g., GuestNavBar.css */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Ensure it is above other content */
+    background-color: #fff; /* Set background color */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for better visibility */
+}

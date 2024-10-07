@@ -1,5 +1,7 @@
 import touristModel from "../models/tourist.js";
-
+import activityModel from "../models/activity.js";
+import itineraryModel from "../models/itinerary.js";
+import museumModel from "../models/museum.js";
 
 const getTourist = async (req, res) => {
     const { email } = req.params;
@@ -18,13 +20,10 @@ const getTourist = async (req, res) => {
 };
 
 const getTouristById = async (req, res) => {
-    console.log("entered getTouristById");
     const id = req.user.id; // Get the user ID from the verified JWT payload
-    console.log(id);
 
     try {
         const tourist = await touristModel.findById(id);
-        console.log(tourist);
       if (!tourist) {
         return res.status(404).json({ error: "Tourist profile not found" });
       }
@@ -37,18 +36,14 @@ const getTouristById = async (req, res) => {
 };
 
 const updateTourist = async (req, res) => {
-    const { email, mobileNumber, nationality, dob, occupation, wallet } = req.body;
+    const id = req.user.id; // Get the user ID from the verified JWT payload
+    const { email, mobileNumber, nationality, dob, occupation } = req.body;
 
     try {
-        const tourist = await touristModel.findOne({ email });
+        const tourist = await touristModel.findById(id);
 
         if (!tourist) {
         return res.status(404).json({ error: "Tourist not found" });
-        }
-
-        // Prevent updating the username and wallet
-        if (wallet && wallet !== tourist.wallet) {
-        return res.status(400).json({ error: "Wallet cannot be updated." });
         }
 
         // Update other profile fields
@@ -56,6 +51,8 @@ const updateTourist = async (req, res) => {
         tourist.nationality = nationality || tourist.nationality;
         tourist.dob = dob || tourist.dob;
         tourist.occupation = occupation || tourist.occupation;
+        tourist.email = email || tourist.email;
+
 
         await tourist.save();
         res.status(200).json({ message: "Tourist profile updated successfully", profile: tourist });
@@ -64,9 +61,24 @@ const updateTourist = async (req, res) => {
     }
 };
 
+const getAll = async (req, res) => {
+    try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Set the time to the start of the day
+        const activities = await activityModel.find({ date: { $gte: today } });
+
+        const itineraries = await itineraryModel.find({availableDates: { $elemMatch: { $gte: today } }});
+        const museums = await museumModel.find();
+        res.status(200).json({"activities": activities, "itineraries":itineraries, "museums":museums });
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ error: error.message });
+    }
+}
 const touristController = {
     updateTourist,
     getTourist,
+    getAll,
     getTouristById
 };
 

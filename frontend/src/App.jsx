@@ -10,14 +10,28 @@ import CreateActivityCategory from './pages/CreateActivityCategory';
 import { Navigate } from 'react-router-dom';
 import CreateTag from './pages/CreateTag';
 import ItinerariesPage from './pages/ItinerariesPage';
-
+import UpdateTouristAccount from './pages/UpdateTouristAccount';
+import ViewAll from './pages/ViewAll';
+import Activities from './pages/Activities';
+import Museums from './pages/Museums';
+import TouristItineraries from './pages/TouristItineraries';
+import NavBar from './components/NavBar';
 function App() {
     return (
         <Router>
+            <NavBar />
+            <br />
+            <br />
             <Routes>
+                <Route path="/touristItineraries" element={<TouristItineraries />} />
+                <Route path="/getMuseums" element={<Museums />} />
+                <Route path="/getActivities" element={<Activities />} />
+                <Route path="/viewAll" element={<ViewAll />} />
+                <Route path="/updateTouristAccount" element={<UpdateTouristAccount />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/touristAccount" element={<TouristAccount />} />
+                <Route path="/toursitUpdateAccount" element={<UpdateTouristAccount />} />
                 <Route path="/tourguide-dashboard" element={<TourGuideDashboard />}/>
                 <Route path="/createActivityCategory" element={<CreateActivityCategory />} />
                 <Route path="/createTag" element={<CreateTag />} />

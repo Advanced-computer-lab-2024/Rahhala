@@ -2,7 +2,7 @@ import activityModel from "../models/activity.js";
 
 
 const createActivity = async (req, res) =>{
-    const { name, date, time, location, price, category, tags, specialDiscounts, bookingOpen, userId } = req.body;
+    const { name, date, time, location, price, category, tags, specialDiscounts, bookingOpen, userId, rating } = req.body;
 try {
     if (!name)
         return res.status(400).json({ message: "Missing name" });
@@ -23,7 +23,7 @@ try {
     if (bookingOpen === undefined)
         return res.status(400).json({ message: "Missing booking open status" });
         
-        const activity = await activityModel.create({name, date, time, location, price, category, tags, specialDiscounts, bookingOpen, userId})
+        const activity = await activityModel.create({name, date, time, location, price, category, tags, specialDiscounts, bookingOpen, userId, rating})
         res.status(201).json(activity);
     }catch(err){
         res.status(500).json(err);

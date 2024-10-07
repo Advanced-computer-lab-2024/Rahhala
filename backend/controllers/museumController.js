@@ -20,10 +20,9 @@ const createMuseum = async (req, res) => {
     }
 };
 
-const getMuseum = async (req, res) => {
-    const {id} = req.params;
+const getAllMuseums = async (req, res) => {
     try {
-        const museum = await museumModel.findById(id);
+        const museum = await museumModel.find();
         if (!museum) {
             return res.status(404).json({ message: "Museum not found" });
         }
@@ -80,7 +79,8 @@ const deleteMuseum = async (req, res) => {
 
 const museumController = {
     createMuseum,
-    getMuseum,
+    getAllMuseums,
+    getMuseumsByUserID,
     updateMuseum,
     deleteMuseum
 };
