@@ -3,11 +3,12 @@ import mongoose from "mongoose";
 
 // Create a product
 const addProduct = async (req, res) => {
-  if (!req.body.name || !req.body.price || !req.body.picture) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
+    const id = req.user.id;
+    const { name, price, picture } = req.body;
   try {
-    const product = await productModel.create(req.body);
+    const product = await productModel.create({picture, price, name, sellerName: id});
+    console.log("here")
+
     res.status(201).send("product added successfully");
   } catch (error) {
     res.status(400).send("error adding product");
