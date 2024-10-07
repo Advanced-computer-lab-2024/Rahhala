@@ -1,19 +1,21 @@
 import governorModel from "../models/governor.js";
 
 const addGovernor = async (req, res) => {
-    const {email, password} = req.body;
+    const {username, password} = req.body;
     try {
+
+        console.log("herer")
+        console.log("username", username)
         // Check if the username already exists
-        const existingGovernor = await governorModel.findOne({ email });
+        const existingGovernor = await governorModel.findOne({ username });
         if (existingGovernor) {
             return res.status(400).json({ message: 'Username already exists' });
         }
+        console.log("here")
+        
 
-        // Hash the password before saving (optional)
-        // const hashedPassword = await bcrypt.hash(password, 10);
+        const newGovernor = await governorModel.create({username, password});
 
-        // Create the new governor
-        const newGovernor = await governorModel.create({email, password});
 
         res.status(201).json({ message: 'Governor created successfully' });
     } catch (error) {
