@@ -30,10 +30,18 @@ import UpdateActivity from './pages/UpdateActivity';
 import DeleteActivity from './pages/DeleteActivity';
 import MyActivities from './pages/MyActivities';
 import Products from './pages/Products';
+import SellerAccount from './pages/SellerAccount';
+import SellerDashboard from './pages/SellerDashboard';
+import UpdateSellerAccount from './pages/UpdateSellerAccount';
+import CreateProduct from './pages/CreateProduct';
 function App() {
     return (
         <Router>
             <Routes>
+                <Route path="/createProduct" element={<CreateProduct />} />
+                <Route path="/updateSellerAccount" element={<UpdateSellerAccount />} />
+                <Route path="/seller-dashboard" element={<SellerDashboard />} />
+                <Route path="/sellerAccount" element={<SellerAccount />} />
                 <Route path="/products" element={<Products />} />
                 <Route path="/getMyActivities" element={<MyActivities />} />
                 <Route path="/deleteActivity" element={<DeleteActivity />} />

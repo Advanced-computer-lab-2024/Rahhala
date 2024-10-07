@@ -91,6 +91,8 @@ const Products = () => {
                             <th>Description</th>
                             <th>Seller</th>
                             <th>Rating</th>
+                            <th>ID</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -102,6 +104,8 @@ const Products = () => {
                                 <td>{product.description}</td>
                                 <td>{product.sellerName}</td>
                                 <td>{product.averageRating}</td>
+                                <td>{product._id}</td>
+
                             </tr>
                         ))}
                     </tbody>

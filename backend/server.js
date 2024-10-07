@@ -38,7 +38,9 @@ app.listen(port,() => {
 })
 
 // endpoints
-app.get("/createProduct", controllers.productController.addProduct);
+app.patch("/updateSeller",verifyToken, controllers.sellerController.updateSeller); 
+app.get("/sellerAccount", verifyToken, controllers.sellerController.getSeller);
+app.post("/createProduct",verifyToken, controllers.productController.addProduct);
 app.get("/getProducts", controllers.productController.viewProducts);
 app.get("/getMyActivities", verifyToken, controllers.activityController.getActivitiesByUserID);
 app.delete("/deleteActivity/:id", controllers.activityController.deleteActivity);

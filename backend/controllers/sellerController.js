@@ -1,13 +1,13 @@
 import sellerModel from "../models/seller.js";
 
 const getSeller = async (req, res) => {
-    const { email } = req.params;
+    const id = req.user.id;
 
     try {
-        const seller = await Seller.findOne({ email });
+        const seller = await sellerModel.findById(id);
 
-        if (!seller || !seller.profileCreated) {
-        return res.status(404).json({ error: "Seller profile not found or not created yet" });
+        if (!seller) {
+        return res.status(404).json({ error: "Seller profile not found" });
         }
 
         res.status(200).json({ profile: seller });
@@ -17,11 +17,11 @@ const getSeller = async (req, res) => {
 };
 
 const updateSeller = async (req, res) => {
-
-    const { email, name, description } = req.body;
+    const id = req.user.id;
+    const { email, name, description, username } = req.body;
 
     try {
-        const seller = await sellerModel.findOne({ email });
+        const seller = await sellerModel.findById(id);
 
         if (!seller) {
         return res.status(404).json({ error: "Seller not found" });
@@ -30,6 +30,8 @@ const updateSeller = async (req, res) => {
         // Update seller's profile details
         seller.name = name || seller.name;
         seller.description = description || seller.description;
+        seller.email = email || seller.email;
+        seller.username = username || seller.username;
         seller.profileCreated = true;
 
         await seller.save();
