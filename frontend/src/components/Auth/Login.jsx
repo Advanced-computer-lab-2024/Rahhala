@@ -65,7 +65,13 @@ const Login = () => {
                 navigate('/touristAccount');
             } else if (userType === 'tourguide') {
                 navigate('/tourguide-dashboard');
-            } else if (userType === 'advertiser') {
+            } 
+            else if (userType === 'tourism_governor') {  // New route for Tourism Governor
+                navigate('/GovernorDashboard');
+            }
+            else if (userType === 'admin') {  // New route for Tourism Governor
+                navigate('/adminDashboard');
+            }else if (userType === 'advertiser') {
                 navigate('/advertiser-dashboard'); // Default redirect if needed
             }
         } catch (error) {
@@ -81,7 +87,7 @@ const Login = () => {
                 <div>
                     <label>Email:</label>
                     <input
-                        type="email"
+                        type="String"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
@@ -105,6 +111,10 @@ const Login = () => {
                         <option value="tourguide">Tour Guide</option>
                         <option value="seller">Seller</option>
                         <option value="advertiser">Advertiser</option>
+                        <option value="tourism_governor">Tourism Governor</option>
+                        <option value="admin">admin</option>
+
+
                     </select>
                 </div>
                 <br />

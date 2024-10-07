@@ -14,6 +14,9 @@ import UpdateTouristAccount from './pages/UpdateTouristAccount';
 import ViewAll from './pages/ViewAll';
 import Activities from './pages/Activities';
 import Museums from './pages/Museums';
+import GovernorDashboard from './pages/GovernorDashboard';
+import MuseumsList from './pages/MuseumsList';
+
 import TouristItineraries from './pages/TouristItineraries';
 import Guest from './pages/Guest';
 import TourguideAccount from './pages/TourguideAccount';
@@ -46,6 +49,10 @@ function App() {
                 <Route path="/createActivityCategory" element={<CreateActivityCategory />} />
                 <Route path="/createTag" element={<CreateTag />} />
                 <Route path="/showItineraries" element={<ItinerariesPage />} />
+                <Route path="/GovernorDashboard" element={<GovernorDashboard />} />
+                <Route path="/showAllMuseums" element={<MuseumsList />} />
+
+
                 <Route
                     path="/createItinerary"
                     element={

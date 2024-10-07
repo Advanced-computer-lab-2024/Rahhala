@@ -1,18 +1,21 @@
 import museumModel from "../models/museum.js";
 
 const createMuseum = async (req, res) => {
-    const { name, description, pictures, location, openingHours, foreignerPrice, nativePrice, studentPrice} = req.body;
+    const { name, description, pictures, location, openingHours, ticketPrice} = req.body;
+    console.log(req.body);  
 
     try {
+        const userId = req.user.id; // Assuming `req.user` is set by JWT middleware
+        console.log(userId);
         const museum = await museumModel.create({ 
             name, 
             description, 
             pictures, 
             location, 
             openingHours, 
-            studentPrice,
-            foreignerPrice,
-            nativePrice
+            ticketPrice,
+            userID: userId
+            
         });
         res.status(201).json(museum);
     } catch (error) {
@@ -21,6 +24,7 @@ const createMuseum = async (req, res) => {
 };
 
 const getAllMuseums = async (req, res) => {
+    console.log("get all museums");
     try {
         const museum = await museumModel.find();
         if (!museum) {
@@ -77,12 +81,48 @@ const deleteMuseum = async (req, res) => {
     }
 };
 
+const deleteMuseumByName = async (req, res) => {
+    const { name } = req.params; // Expecting the museum name as a parameter
+
+    try {
+        const deletedMuseum = await museumModel.findOneAndDelete({ name });
+
+        if (!deletedMuseum) {
+            return res.status(404).json({ message: "Museum not found" });
+        }
+
+        res.status(200).json({ message: "Museum deleted successfully" });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+
+const updateMuseumByName = async (req, res) => {
+    const { name } = req.params; // Expecting name as a parameter
+    const updates = req.body;
+
+    try {
+        const updatedMuseum = await museumModel.findOneAndUpdate({ name }, updates, { new: true });
+
+        if (!updatedMuseum) {
+            return res.status(404).json({ message: "Museum not found" });
+        }
+
+        res.status(200).json(updatedMuseum);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
 const museumController = {
     createMuseum,
     getAllMuseums,
     getMuseumsByUserID,
     updateMuseum,
-    deleteMuseum
+    deleteMuseum,
+    updateMuseumByName,
+    deleteMuseumByName
 };
 
 export default museumController;

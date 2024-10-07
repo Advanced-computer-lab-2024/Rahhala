@@ -21,10 +21,10 @@ const museumSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    ticketPrices: {
-        type: Number,
-        required: true,
-    },
+    ticketPrice: {
+    type: Number,
+    required: true,
+},
     userID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Governor',
