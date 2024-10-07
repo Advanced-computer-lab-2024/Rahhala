@@ -138,6 +138,7 @@ const deleteItineraryByName = async (req, res) => {
 const updateItineraryByName = async (req, res) => {
     try {
         const { name } = req.params; // Get the name from the request parameters
+        console.log("name is ", name);
         const updates = req.body; // Get the updates from the request body
 
         const updatedItinerary = await itineraryModel.findOneAndUpdate(
@@ -145,7 +146,7 @@ const updateItineraryByName = async (req, res) => {
             updates,
             {
                 new: true,
-                runValidators: true,
+                
             }
         )
         .populate('activities', 'name location duration');
