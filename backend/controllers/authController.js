@@ -53,6 +53,7 @@ const login = async (req, res) => {
 
 // Registration Controller (Optional for each user type)
 const register = async (req, res) => {
+    console.log("entered")
     const { userType, ...userData } = req.body;
 
     if (!userType) {

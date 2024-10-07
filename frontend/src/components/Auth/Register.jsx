@@ -4,9 +4,11 @@ import axiosInstance from '../../utils/axiosConfig'; // Adjust the path as neces
 import NavigateButton from '../UpdateProfileButton';
 import { useNavigate } from 'react-router-dom';
 const Register = () => {
+    const navigate = useNavigate();
+
     const [userType, setUserType] = useState('tourist'); // Default userType
     const [formData, setFormData] = useState({
-        userType: '',
+        userType: 'tourist',
         username: '',
         password: '',
         email: '',
@@ -71,7 +73,6 @@ const Register = () => {
             password: formData.password,
             email: formData.email,
         };
-        let redirectPath = '';
         switch (userType) {
             case 'tourist':
                 dataToSend = {
@@ -81,7 +82,6 @@ const Register = () => {
                     dob: formData.dob,
                     occupation: formData.occupation,
                 };
-                redirectPath = '/touristAccount';
                 break;
             case 'tourguide':
                 dataToSend = {
@@ -116,10 +116,13 @@ const Register = () => {
 
             // Optionally, store the token and redirect
             const { token } = response.data;
+
             localStorage.setItem('token', token);
+
             // Redirect to dashboard or login page
-            const navigate = useNavigate();
-            navigate(redirectPath);
+
+            navigate('/login');
+
         } catch (error) {
             setMessage(error.response?.data?.message || 'Registration failed.');
         }

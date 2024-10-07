@@ -3,6 +3,7 @@ import { AuthContext } from '../context/AuthContext';
 import axiosInstance from '../utils/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import NavigateButton from '../components/UpdateProfileButton';
+import Logout from '../components/Auth/Logout';
 const TourGuideDashboard = () => {
     const { auth } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -107,6 +108,7 @@ const TourGuideDashboard = () => {
             <button onClick={() => navigate('/showItineraries')}>Show Itineraries</button>
             <button onClick={() => setShowDeleteForm(true)}>Delete Itinerary</button>
             <NavigateButton path={"/tourguideAccount"} text={"View Account"}/>{'\u00A0'}
+            <Logout />
 
             {/* Create Itinerary Modal form */}
             {showForm && (
