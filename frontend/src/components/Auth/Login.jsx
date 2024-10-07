@@ -65,8 +65,8 @@ const Login = () => {
                 navigate('/touristAccount');
             } else if (userType === 'tourguide') {
                 navigate('/tourguide-dashboard');
-            } else {
-                navigate('/'); // Default redirect if needed
+            } else if (userType === 'advertiser') {
+                navigate('/advertiser-dashboard'); // Default redirect if needed
             }
         } catch (error) {
             setMessage(error.response?.data?.message || 'Login failed.');

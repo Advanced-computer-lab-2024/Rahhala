@@ -27,15 +27,14 @@ const updateAdvertiser = async (req, res) => {
     }
 };
 
-const getAdvertiser = async (req, res) => {
-
-    const { email } = req.params;
+const getAdvertiserById = async (req, res) => {
+    const id = req.user.id;
 
     try {
-    const advertiser = await Advertiser.findOne({ email });
+    const advertiser = await advertiserModel.findById(id);
 
-    if (!advertiser || !advertiser.profileCreated) {
-        return res.status(404).json({ error: "Advertiser profile not found or not created yet" });
+    if (!advertiser) {
+        return res.status(404).json({ error: "Advertiser profile not found" });
     }
 
     res.status(200).json({ profile: advertiser });
@@ -46,7 +45,7 @@ const getAdvertiser = async (req, res) => {
 
 const advertiserController = {
     updateAdvertiser,
-    getAdvertiser
+    getAdvertiserById
 };
 
 

@@ -18,10 +18,16 @@ import TouristItineraries from './pages/TouristItineraries';
 import Guest from './pages/Guest';
 import TourguideAccount from './pages/TourguideAccount';
 import UpdateTourguideAccount from './pages/UpdateTourguideAccount';
+import AdvertiserAccount from './pages/AdvertiserAccount';
+import AdvertiserDashboard from './pages/AdvertiserDashboard';
+import UpdateAdvertiserAccount from './pages/UpdateAdvertiserAccount';
 function App() {
     return (
         <Router>
             <Routes>
+                <Route path="/updateAdvertiserAccount" element={<UpdateAdvertiserAccount />} />
+                <Route path="/advertiserAccount" element={<AdvertiserAccount />} />
+                <Route path="/advertiser-dashboard" element={<AdvertiserDashboard />} />
                 <Route path="/updateTourguideAccount" element={<UpdateTourguideAccount />} />
                 <Route path="/tourguideAccount" element={<TourguideAccount />} />
                 <Route path="/guest" element={<Guest />} />

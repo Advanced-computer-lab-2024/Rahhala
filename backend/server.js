@@ -38,6 +38,8 @@ app.listen(port,() => {
 })
 
 // endpoints
+app.patch("/updateAdvertiser", verifyToken, controllers.advertiserController.updateAdvertiser);
+app.get("/advertiserAccount", verifyToken, controllers.advertiserController.getAdvertiserById);
 app.patch("/updateTourGuide", verifyToken, controllers.tourGuideController.updateTourGuide);
 app.get("/tourguideAccount", verifyToken, controllers.tourGuideController.getTourGuideById);
 app.post("/createActivity", controllers.activityController.createActivity);
