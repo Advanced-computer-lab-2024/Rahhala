@@ -81,12 +81,48 @@ const deleteMuseum = async (req, res) => {
     }
 };
 
+const deleteMuseumByName = async (req, res) => {
+    const { name } = req.params; // Expecting the museum name as a parameter
+
+    try {
+        const deletedMuseum = await museumModel.findOneAndDelete({ name });
+
+        if (!deletedMuseum) {
+            return res.status(404).json({ message: "Museum not found" });
+        }
+
+        res.status(200).json({ message: "Museum deleted successfully" });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+
+const updateMuseumByName = async (req, res) => {
+    const { name } = req.params; // Expecting name as a parameter
+    const updates = req.body;
+
+    try {
+        const updatedMuseum = await museumModel.findOneAndUpdate({ name }, updates, { new: true });
+
+        if (!updatedMuseum) {
+            return res.status(404).json({ message: "Museum not found" });
+        }
+
+        res.status(200).json(updatedMuseum);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
 const museumController = {
     createMuseum,
     getAllMuseums,
     getMuseumsByUserID,
     updateMuseum,
-    deleteMuseum
+    deleteMuseum,
+    updateMuseumByName,
+    deleteMuseumByName
 };
 
 export default museumController;

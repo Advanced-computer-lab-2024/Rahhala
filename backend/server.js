@@ -48,8 +48,12 @@ app.post("/createMuseum",verifyToken, controllers.museumController.createMuseum)
 app.get("/getMuseum/:id", controllers.museumController.getMuseumsByUserID);
 app.get("/getAllMuseum", controllers.museumController.getAllMuseums);
 
+app.patch("/updateMuseumName/:name", controllers.museumController.updateMuseumByName);
+
 app.patch("/updateMuseum/:id", controllers.museumController.updateMuseum);
 app.delete("/deleteMuseum/:id", controllers.museumController.deleteMuseum);
+app.delete("/deleteMuseumName/:name", controllers.museumController.deleteMuseumByName);
+
 app.post('/createItinerary', verifyToken, controllers.itineraryController.createItinerary);  
 app.get('/getItineraries', controllers.itineraryController.getAllItineraries);
 app.post('/createGovernor', controllers.governorController.addGovernor);
