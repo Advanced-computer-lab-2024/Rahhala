@@ -79,6 +79,8 @@ app.post('/addAdmin', controllers.adminController.addAdmin);
 
 app.get('/getCategories', controllers.activityCategoryController.getCategories);
 app.post('/createCategories', controllers.activityCategoryController.createCategory);
+app.delete('/deleteCategory/:id', controllers.activityCategoryController.deleteCategory);
+
 
 
 app.post('/register', controllers.authController.register);

@@ -18,13 +18,15 @@ function AdminDashboard() {
     const [updateCategoryData, setUpdateCategoryData] = useState({
         id: '',
         name: '',
-    }); // New state for updating category
+    });
+    const [deleteCategoryId, setDeleteCategoryId] = useState(''); // State for category ID to delete
 
     const [message, setMessage] = useState('');
     const [isGovernorFormVisible, setIsGovernorFormVisible] = useState(false);
     const [isAdminFormVisible, setIsAdminFormVisible] = useState(false);
     const [isCategoryFormVisible, setIsCategoryFormVisible] = useState(false);
-    const [isUpdateCategoryFormVisible, setIsUpdateCategoryFormVisible] = useState(false); // New state for update form
+    const [isUpdateCategoryFormVisible, setIsUpdateCategoryFormVisible] = useState(false); 
+    const [isDeleteCategoryFormVisible, setIsDeleteCategoryFormVisible] = useState(false); // New state for delete form
 
     // Handle input changes for governor form
     const handleGovernorChange = (e) => {
@@ -62,6 +64,11 @@ function AdminDashboard() {
         });
     };
 
+    // Handle input changes for delete category form
+    const handleDeleteCategoryChange = (e) => {
+        setDeleteCategoryId(e.target.value); // Update delete category ID
+    };
+
     // Handle form submission for governor
     const handleGovernorSubmit = async (e) => {
         e.preventDefault();
@@ -95,10 +102,10 @@ function AdminDashboard() {
         e.preventDefault();
         
         try {
-            await axiosInstance.post('/createCategories', categoryData); // Adjust the route accordingly
+            await axiosInstance.post('/createCategories', categoryData); 
             setMessage('Category added successfully!');
-            setCategoryData({ name: '' }); // Reset form
-            setIsCategoryFormVisible(false); // Hide the form after submission
+            setCategoryData({ name: '' }); 
+            setIsCategoryFormVisible(false); 
         } catch (error) {
             setMessage(error.response?.data?.message || 'Failed to add category.');
         }
@@ -111,10 +118,24 @@ function AdminDashboard() {
         try {
             await axiosInstance.patch(`/updateCategory/${updateCategoryData.id}`, { name: updateCategoryData.name });
             setMessage('Category updated successfully!');
-            setUpdateCategoryData({ id: '', name: '' }); // Reset form
-            setIsUpdateCategoryFormVisible(false); // Hide the form after submission
+            setUpdateCategoryData({ id: '', name: '' }); 
+            setIsUpdateCategoryFormVisible(false); 
         } catch (error) {
             setMessage(error.response?.data?.message || 'Failed to update category.');
+        }
+    };
+
+    // Handle form submission for deleting a category
+    const handleDeleteCategorySubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            await axiosInstance.delete(`/deleteCategory/${deleteCategoryId}`);
+            setMessage('Category deleted successfully!');
+            setDeleteCategoryId(''); // Reset form
+            setIsDeleteCategoryFormVisible(false); // Hide the form after submission
+        } catch (error) {
+            setMessage(error.response?.data?.message || 'Failed to delete category.');
         }
     };
 
@@ -139,6 +160,12 @@ function AdminDashboard() {
     // Toggle update category form visibility
     const toggleUpdateCategoryForm = () => {
         setIsUpdateCategoryFormVisible(!isUpdateCategoryFormVisible);
+        setMessage('');
+    };
+
+    // Toggle delete category form visibility
+    const toggleDeleteCategoryForm = () => {
+        setIsDeleteCategoryFormVisible(!isDeleteCategoryFormVisible);
         setMessage('');
     };
 
@@ -214,6 +241,26 @@ function AdminDashboard() {
                 </form>
             )}
 
+            {/* Button to toggle Delete Category form */}
+            <button onClick={toggleDeleteCategoryForm}>
+                {isDeleteCategoryFormVisible ? 'Cancel' : 'Delete Category'}
+            </button>
+            {isDeleteCategoryFormVisible && (
+                <form onSubmit={handleDeleteCategorySubmit}>
+                    <div>
+                        <label>Category ID:</label>
+                        <input
+                            type="text"
+                            value={deleteCategoryId}
+                            onChange={handleDeleteCategoryChange}
+                            required
+                        />
+                    </div>
+                    <br />
+                    <button type="submit">Delete Category</button>
+                </form>
+            )}
+
             {/* Button to toggle Governor form */}
             <button onClick={handleShowCategories}>Show All Categories</button>
 
@@ -247,7 +294,6 @@ function AdminDashboard() {
                 </form>
             )}
 
-            {/* Button to toggle Admin form */}
             <button onClick={toggleAdminForm}>
                 {isAdminFormVisible ? 'Cancel' : 'Add Admin'}
             </button>
