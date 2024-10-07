@@ -69,7 +69,8 @@ const Login = () => {
             else if (userType === 'tourism_governor') {  // New route for Tourism Governor
                 navigate('/GovernorDashboard');
             }
-            else if (userType === 'admin') {  // New route for Tourism Governor
+            else if (userType === 'admin') { 
+                console.log("here") // New route for Tourism Governor
                 navigate('/adminDashboard');
             }else if (userType === 'advertiser') {
                 navigate('/advertiser-dashboard'); // Default redirect if needed

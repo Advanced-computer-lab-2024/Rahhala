@@ -6,17 +6,12 @@ import { generateToken, comparePasswords } from '../utils/jwt.js';
 const handleLogin = async (username, model , email, password, userType) => {
     
 
-    console.log("the user name is  " , username);
+    console.log("the email is  " , email);
     // If admin, search by username; otherwise, search by email
     let user;
     
     
-    if (model === models.adminModel) {
-        console.log("here is the admin with name: ", username);
-        user = await model.findOne({ username });
-        console.log("here")
-    }
-    else if (model === models.governorModel) {
+    if (model === models.governorModel) {
         user = await model.findOne({ username });
     } 
     else {

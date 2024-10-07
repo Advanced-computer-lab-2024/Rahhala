@@ -16,7 +16,7 @@ import Activities from './pages/Activities';
 import Museums from './pages/Museums';
 import GovernorDashboard from './pages/GovernorDashboard';
 import MuseumsList from './pages/MuseumsList';
-
+import AdminDashboard from './pages/AdminDashboard';
 import TouristItineraries from './pages/TouristItineraries';
 import Guest from './pages/Guest';
 import TourguideAccount from './pages/TourguideAccount';
@@ -51,6 +51,8 @@ function App() {
                 <Route path="/showItineraries" element={<ItinerariesPage />} />
                 <Route path="/GovernorDashboard" element={<GovernorDashboard />} />
                 <Route path="/showAllMuseums" element={<MuseumsList />} />
+                <Route path="/AdminDashboard" element={<AdminDashboard />} />
+
 
 
                 <Route
