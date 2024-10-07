@@ -10,9 +10,12 @@ const AdvertiserDashboard = () => {
     <div>
         <NavigateButton path={"/advertiserAccount"} text={"View Account"}/>{'\u00A0'}
         <NavigateButton path={"/updateAdvertiserAccount"} text={"Update Account"}/>{'\u00A0'}
-
         <NavigateButton path={"/getActivities"} text={"View Activities"}/>{'\u00A0'}
         <NavigateButton path={"/createActivity"} text={"Create Activity"}/>{'\u00A0'}
+        <NavigateButton path={"/updateActivity"} text={"Update Activity"}/>{'\u00A0'}
+        <NavigateButton path={"/deleteActivity"} text={"Delete Activity"}/>{'\u00A0'}
+        <NavigateButton path={"/getMyActivities"} text={"View My Activities"}/>{'\u00A0'}
+
         <Logout />
     </div>
   )
