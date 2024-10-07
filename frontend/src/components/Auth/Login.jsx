@@ -64,7 +64,10 @@ const Login = () => {
                 navigate('/touristAccount');
             } else if (userType === 'tourguide') {
                 navigate('/tourguide-dashboard');
-            } else {
+            } 
+            else if (userType === 'tourism_governor') {  // New route for Tourism Governor
+                navigate('/GovernorDashboard');
+            }else {
                 navigate('/'); // Default redirect if needed
             }
         } catch (error) {
@@ -80,7 +83,7 @@ const Login = () => {
                 <div>
                     <label>Email:</label>
                     <input
-                        type="email"
+                        type="String"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
@@ -104,6 +107,8 @@ const Login = () => {
                         <option value="tourguide">Tour Guide</option>
                         <option value="seller">Seller</option>
                         <option value="advertiser">Advertiser</option>
+                        <option value="tourism_governor">Tourism Governor</option>
+
                     </select>
                 </div>
                 <button type="submit">Login</button>

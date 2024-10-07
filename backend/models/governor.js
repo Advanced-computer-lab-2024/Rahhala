@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const governorSchema = new mongoose.Schema({
-    username: {
+    email: {
         type: String,
         required: true,
         unique: true, // Ensures username is unique

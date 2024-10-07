@@ -1,10 +1,10 @@
 import governorModel from "../models/governor.js";
 
 const addGovernor = async (req, res) => {
-    const {username, password} = req.body;
+    const {email, password} = req.body;
     try {
         // Check if the username already exists
-        const existingGovernor = await governorModel.findOne({ username });
+        const existingGovernor = await governorModel.findOne({ email });
         if (existingGovernor) {
             return res.status(400).json({ message: 'Username already exists' });
         }
@@ -13,7 +13,7 @@ const addGovernor = async (req, res) => {
         // const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create the new governor
-        const newGovernor = await governorModel.create({username, password});
+        const newGovernor = await governorModel.create({email, password});
 
         res.status(201).json({ message: 'Governor created successfully' });
     } catch (error) {

@@ -1,18 +1,21 @@
 import museumModel from "../models/museum.js";
 
 const createMuseum = async (req, res) => {
-    const { name, description, pictures, location, openingHours, foreignerPrice, nativePrice, studentPrice} = req.body;
+    const { name, description, pictures, location, openingHours, ticketPrice} = req.body;
+    console.log(req.body);  
 
     try {
+        const userId = req.user.id; // Assuming `req.user` is set by JWT middleware
+        console.log(userId);
         const museum = await museumModel.create({ 
             name, 
             description, 
             pictures, 
             location, 
             openingHours, 
-            studentPrice,
-            foreignerPrice,
-            nativePrice
+            ticketPrice,
+            userID: userId
+            
         });
         res.status(201).json(museum);
     } catch (error) {
@@ -21,6 +24,7 @@ const createMuseum = async (req, res) => {
 };
 
 const getAllMuseums = async (req, res) => {
+    console.log("get all museums");
     try {
         const museum = await museumModel.find();
         if (!museum) {
