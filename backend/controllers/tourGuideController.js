@@ -2,9 +2,10 @@ import tourGuideModel from "../models/tourGuide.js";
 // Tour Guide profile routes
 const updateTourGuide = async (req, res) =>{
     const { email, mobileNumber, yearsOfExperience, previousWork } = req.body;
+    const id = req.user.id;
   
     try {
-      const user = await tourGuideModel.findOne({ email });
+      const user = await tourGuideModel.findById(id);
   
       if (!user) {
         return res.status(404).json({ error: "Tour guide not found" });
@@ -26,13 +27,16 @@ const updateTourGuide = async (req, res) =>{
   };
   
   const getTourGuideById = async (req, res) =>{
-    const { email } = req.params;
+    const id  = req.user.id;
+    console.log("entered");
+
   
     try {
-      const user = await tourGuideModel.findOne({ email });
+      const user = await tourGuideModel.findById(id);
+      console.log(user);
   
-      if (!user || !user.profileCreated) {
-        return res.status(404).json({ error: "Tour guide profile not found or not created yet" });
+      if (!user) {
+        return res.status(404).json({ error: "Tour guide profile not found" });
       }
   
       res.status(200).json({ profile: user });

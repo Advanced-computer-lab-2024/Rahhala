@@ -11,7 +11,14 @@ const ViewAll = () => {
     const [museums, setMuseums] = useState(null);
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
-
+    const { auth } = useContext(AuthContext); // Get auth context
+    let path;
+    if(auth.isAuthenticated) {
+        path='/touristAccount';
+    }
+    else {
+        path='/guest';
+    }
     useEffect(() => {
         const fetchAll = async () => {
             try {
@@ -36,7 +43,7 @@ const ViewAll = () => {
 
     return (
         <div>
-            <NavigateButton path='/touristAccount' text='Home'/>{'\u00A0'} <br/><br/>
+            <NavigateButton path={path} text='Home'/>{'\u00A0'} <br/><br/>
             <NavigateButton path='/getActivities' text='Activities'/>{'\u00A0'}
             <NavigateButton path='/touristItineraries' text='Itineraries'/>{'\u00A0'}
             <NavigateButton path='/getMuseums' text='Museums'/>

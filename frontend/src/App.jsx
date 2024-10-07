@@ -15,10 +15,16 @@ import ViewAll from './pages/ViewAll';
 import Activities from './pages/Activities';
 import Museums from './pages/Museums';
 import TouristItineraries from './pages/TouristItineraries';
+import Guest from './pages/Guest';
+import TourguideAccount from './pages/TourguideAccount';
+import UpdateTourguideAccount from './pages/UpdateTourguideAccount';
 function App() {
     return (
         <Router>
             <Routes>
+                <Route path="/updateTourguideAccount" element={<UpdateTourguideAccount />} />
+                <Route path="/tourguideAccount" element={<TourguideAccount />} />
+                <Route path="/guest" element={<Guest />} />
                 <Route path="/touristItineraries" element={<TouristItineraries />} />
                 <Route path="/getMuseums" element={<Museums />} />
                 <Route path="/getActivities" element={<Activities />} />

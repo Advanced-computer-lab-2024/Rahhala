@@ -4,6 +4,7 @@ import axiosInstance from '../../utils/axiosConfig'; // Ensure correct path
 import { AuthContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import NavigateButton from '../UpdateProfileButton';
 
 const Login = () => {
     const { setAuth } = useContext(AuthContext);
@@ -106,7 +107,11 @@ const Login = () => {
                         <option value="advertiser">Advertiser</option>
                     </select>
                 </div>
+                <br />
                 <button type="submit">Login</button>
+                <br /><br /><br />
+                <NavigateButton path="/register" text="Register" /> {"\u00A0"}
+                <NavigateButton path="/guest" text="Continue as Guest" />
             </form>
         </div>
     );

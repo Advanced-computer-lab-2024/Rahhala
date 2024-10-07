@@ -38,6 +38,8 @@ app.listen(port,() => {
 })
 
 // endpoints
+app.patch("/updateTourGuide", verifyToken, controllers.tourGuideController.updateTourGuide);
+app.get("/tourguideAccount", verifyToken, controllers.tourGuideController.getTourGuideById);
 app.post("/createActivity", controllers.activityController.createActivity);
 app.get("/museums", controllers.museumController.getAllMuseums);
 app.get("/activities", controllers.activityController.getActivities);
