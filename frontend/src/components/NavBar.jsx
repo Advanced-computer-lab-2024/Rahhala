@@ -12,6 +12,7 @@ const NavBar = () => {
         switch (auth.user) {
             case 'tourist':
                 endPoints = [
+                    ["Log out","/logout"],
                     ["My Account", "/touristAccount"],
                     ["Itineraries", "/touristItineraries"],
                     ["Activities", "/activities"],
