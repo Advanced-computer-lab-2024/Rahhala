@@ -1,8 +1,10 @@
 // src/components/AdminDashboard.jsx
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../utils/axiosConfig';
+import { useNavigate } from 'react-router-dom';
 
 function AdminDashboard() {
+    const navigate = useNavigate(); // Initialize navigate
     const [governorData, setGovernorData] = useState({
         username: '',
         password: '',
@@ -85,12 +87,18 @@ function AdminDashboard() {
         }
     }, [message]); // Run effect when message changes
 
+    const handleShowCategories = () => {
+        navigate('/ActivityCategories'); // Redirect to the museums list page
+      };
+
     return (
         <div>
             <h2>Admin Dashboard</h2>
             {message && <p>{message}</p>}
             
             {/* Button to toggle Governor form */}
+            <button onClick={handleShowCategories}>Show All Categories</button>
+
             <button onClick={toggleGovernorForm}>
                 {isGovernorFormVisible ? 'Cancel' : 'Add Tourism Governor'}
             </button>

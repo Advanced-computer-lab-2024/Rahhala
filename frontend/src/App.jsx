@@ -25,6 +25,7 @@ import AdvertiserAccount from './pages/AdvertiserAccount';
 import AdvertiserDashboard from './pages/AdvertiserDashboard';
 import UpdateAdvertiserAccount from './pages/UpdateAdvertiserAccount';
 import CreateActivity from './pages/CreateActivity';
+import ActivityCategories from './pages/ActivityCategories';
 function App() {
     return (
         <Router>
@@ -52,6 +53,8 @@ function App() {
                 <Route path="/GovernorDashboard" element={<GovernorDashboard />} />
                 <Route path="/showAllMuseums" element={<MuseumsList />} />
                 <Route path="/AdminDashboard" element={<AdminDashboard />} />
+                <Route path="/ActivityCategories" element={<ActivityCategories />} />
+
 
 
 
