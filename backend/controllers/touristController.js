@@ -19,7 +19,7 @@ const getTourist = async (req, res) => {
 
 const getTouristById = async (req, res) => {
     console.log("entered getTouristById");
-    const { id } = req.params;
+    const id = req.user.id; // Get the user ID from the verified JWT payload
     console.log(id);
 
     try {

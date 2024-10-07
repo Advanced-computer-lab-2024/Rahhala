@@ -1,10 +1,12 @@
 import itineraryModel from "../models/itinerary.js";
 
+
 const createItinerary = async (req, res) => {
     try {
+        console.log('entered createItinerary');
         const { name, activities, timeline, language, price, availableDates, accessibility, pickupLocation, dropoffLocation, tags } = req.body;
         const userId = req.user.id; // Assuming `req.user` is set by JWT middleware
-
+        console.log(userId);
         const itinerary = new itineraryModel({
             name,
             activities,
@@ -16,7 +18,7 @@ const createItinerary = async (req, res) => {
             pickupLocation,
             dropoffLocation,
             tags,
-            createdBy: userId
+            userId: userId
         });
 
         await itinerary.save();
@@ -48,9 +50,7 @@ const getItineraryById = async (req, res) => {
             .populate('activities', 'name location duration') 
             .populate('tags', 'name'); 
 
-        if (!updatedCategory) {
-            return res.status(404).json({ error: "Category not found" });
-        }
+        
 
         res.status(200).json(itinerary);
     } catch (err) {
@@ -98,6 +98,8 @@ const updateItinerary = async (req, res) => {
     }
 };
 
+
+
 const deleteItinerary = async (req, res) => {
     try {
         const { id } = req.params;
@@ -114,6 +116,52 @@ const deleteItinerary = async (req, res) => {
     }
 };
 
+const deleteItineraryByName = async (req, res) => {
+    try {
+        console.log("entered deleteItineraryByName");
+        const { name } = req.params; // Get the name from the request parameters
+        console.log(name);
+        const deletedItinerary = await itineraryModel.findOneAndDelete({ name }); // Find and delete itinerary by name
+
+        if (!deletedItinerary) {
+            return res.status(404).json({ message: "Itinerary not found" });
+        }
+
+        res.status(200).json({ message: "Itinerary deleted successfully" });
+    } catch (err) {
+        console.error("Error deleting itinerary by name:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+
+const updateItineraryByName = async (req, res) => {
+    try {
+        const { name } = req.params; // Get the name from the request parameters
+        const updates = req.body; // Get the updates from the request body
+
+        const updatedItinerary = await itineraryModel.findOneAndUpdate(
+            { name }, // Find itinerary by name
+            updates,
+            {
+                new: true,
+                runValidators: true,
+            }
+        )
+        .populate('activities', 'name location duration');
+
+        if (!updatedItinerary) {
+            return res.status(404).json({ message: "Itinerary not found" });
+        }
+
+        res.status(200).json(updatedItinerary);
+    } catch (err) {
+        console.error("Error updating itinerary by name:", err);
+        res.status(400).json({ error: err.message });
+    }
+};
+
+
 const itineraryController = {
     createItinerary,
     getAllItineraries,
@@ -121,6 +169,7 @@ const itineraryController = {
     getItineraryByUserID,
     updateItinerary,
     deleteItinerary,
+    deleteItineraryByName
 };
 
 export default itineraryController;

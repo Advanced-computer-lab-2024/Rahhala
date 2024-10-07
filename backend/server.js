@@ -39,15 +39,16 @@ app.listen(port,() => {
 
 // endpoints
 
-app.get("/touristAccount/:id", controllers.touristController.getTouristById);
+app.get("/touristAccount",verifyToken , controllers.touristController.getTouristById);
 app.post("/createMuseum", controllers.museumController.createMuseum);
 app.get("/getMuseum/:id", controllers.museumController.getMuseum);
 app.patch("/updateMuseum/:id", controllers.museumController.updateMuseum);
 app.delete("/deleteMuseum/:id", controllers.museumController.deleteMuseum);
-app.post("/createItinerary", verifyToken,  controllers.itineraryController.createItinerary);
+app.post('/createItinerary', verifyToken, controllers.itineraryController.createItinerary);  
 app.get('/getItineraries', controllers.itineraryController.getAllItineraries);
 app.get('/getItineraries/:id', controllers.itineraryController.getItineraryById);
 app.patch('/updateItineraries/:id', controllers.itineraryController.updateItinerary);
 app.delete('/deleteItineraries/:id', controllers.itineraryController.deleteItinerary);
+app.delete('/deleteItineraryByName/:name', controllers.itineraryController.deleteItineraryByName);
 app.post('/register', controllers.authController.register);
 app.post('/login', controllers.authController.login);

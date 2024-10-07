@@ -61,10 +61,11 @@ const Login = () => {
             // Redirect to a protected route based on userType
             // For example:
             if (userType === 'tourist') {
-                navigate('/tourist-dashboard');
-            }    
-            else {
-                navigate('/'); // Default redirect
+                navigate('/touristAccount');
+            } else if (userType === 'tourguide') {
+                navigate('/tourguide-dashboard');
+            } else {
+                navigate('/'); // Default redirect if needed
             }
         } catch (error) {
             setMessage(error.response?.data?.message || 'Login failed.');

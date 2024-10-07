@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import axiosInstance from '../utils/axiosConfig';
 
+
+
 const TouristAccount = () => {
     const { auth } = useContext(AuthContext); // Get auth context
     const [profile, setProfile] = useState(null); // State to hold the tourist profile
@@ -12,7 +14,7 @@ const TouristAccount = () => {
         if (auth.isAuthenticated && auth.user) {
             const fetchTourist = async () => {
                 try {
-                    const response = await axiosInstance.get(`/touristAccount/${auth.user.id}`);
+                    const response = await axiosInstance.get('/touristAccount');
                     console.log("response:", response.data.profile);
                 } catch (err) {
                     setError('Failed to load tourist profile.');
@@ -36,16 +38,6 @@ const TouristAccount = () => {
     return (
         <div>
             <h2>Tourist Account</h2>
-            {error && <p>{error}</p>}
-            {itineraries ? (
-                <ul>
-                    {itineraries.map((itinerary) => (
-                        <li key={itinerary._id}>{itinerary.name}</li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No itineraries found.</p>
-            )}
         </div>
     );
 };
