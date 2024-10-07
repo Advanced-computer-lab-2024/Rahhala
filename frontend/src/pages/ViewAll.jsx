@@ -73,6 +73,8 @@ const ViewAll = () => {
                             <th>Special Discounts</th>
                             <th>Booking Open</th>
                             <th>Rating</th>
+                            <th>ID</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -88,6 +90,8 @@ const ViewAll = () => {
                                 <td>{activity.specialDiscounts}</td>
                                 <td>{activity.bookingOpen ? 'Yes' : 'No'}</td>
                                 <td>{activity.rating}</td>
+                                <td>{activity._id}</td>
+
                             </tr>
                         ))}
                     </tbody>
@@ -112,6 +116,8 @@ const ViewAll = () => {
                             <th>Pickup Location</th>
                             <th>Dropoff Location</th>
                             <th>Rating</th>
+                            <th>ID</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -128,6 +134,8 @@ const ViewAll = () => {
                                 <td>{itinerary.pickupLocation}</td>
                                 <td>{itinerary.dropoffLocation}</td>
                                 <td>{itinerary.rating}</td>
+                                <td>{itinerary._id}</td>
+
                             </tr>
                         ))}
                     </tbody>
@@ -147,6 +155,8 @@ const ViewAll = () => {
                             <th>Opening Hours</th>
                             <th>Ticket Prices</th>
                             <th>Tags</th>
+                            <th>ID</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -158,6 +168,8 @@ const ViewAll = () => {
                                 <td>{museum.openingHours}</td>
                                 <td>{museum.ticketPrices}</td>
                                 <td>{museum.tags.join(', ')}</td>
+                                <td>{museum._id}</td>
+
                             </tr>
                         ))}
                     </tbody>

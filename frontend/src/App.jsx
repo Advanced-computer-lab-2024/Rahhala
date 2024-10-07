@@ -21,10 +21,12 @@ import UpdateTourguideAccount from './pages/UpdateTourguideAccount';
 import AdvertiserAccount from './pages/AdvertiserAccount';
 import AdvertiserDashboard from './pages/AdvertiserDashboard';
 import UpdateAdvertiserAccount from './pages/UpdateAdvertiserAccount';
+import CreateActivity from './pages/CreateActivity';
 function App() {
     return (
         <Router>
             <Routes>
+                <Route path="/createActivity" element={<CreateActivity />} />
                 <Route path="/updateAdvertiserAccount" element={<UpdateAdvertiserAccount />} />
                 <Route path="/advertiserAccount" element={<AdvertiserAccount />} />
                 <Route path="/advertiser-dashboard" element={<AdvertiserDashboard />} />

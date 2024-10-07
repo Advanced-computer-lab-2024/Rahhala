@@ -17,7 +17,14 @@ const Activities = () => {
     const [sortOrder, setSortOrder] = useState('asc');
     const [tags, setTags] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-
+    const { auth } = useContext(AuthContext); // Get auth context
+    let homePath;
+    if (auth.user && auth.user.type === 'tourist') {
+        homePath = '/viewAll';
+    }
+    else {
+        homePath = '/advertiser-dashboard';
+    }
     useEffect(() => {
         const fetchActivities = async () => {
             try {
@@ -140,7 +147,7 @@ const Activities = () => {
                 <div>Loading activities...</div>
             )}
             {error && <div>{error}</div>}
-            <NavigateButton path='/viewAll' text='Back'/>{'\u00A0'}
+            <NavigateButton path={homePath} text='Back'/>{'\u00A0'}
         </div>
     );
 };

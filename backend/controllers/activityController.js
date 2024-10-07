@@ -2,7 +2,9 @@ import activityModel from "../models/activity.js";
 
 
 const createActivity = async (req, res) =>{
-    const { name, date, time, location, price, category, tags, specialDiscounts, bookingOpen, userId, rating } = req.body;
+    console.log("entered");
+    const userId = req.user.id;
+    const { name, date, time, location, price, category, tags, specialDiscounts, bookingOpen, rating } = req.body;
 try {
     if (!name)
         return res.status(400).json({ message: "Missing name" });
