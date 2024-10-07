@@ -81,6 +81,11 @@ app.get('/getCategories', controllers.activityCategoryController.getCategories);
 app.post('/createCategories', controllers.activityCategoryController.createCategory);
 app.delete('/deleteCategory/:id', controllers.activityCategoryController.deleteCategory);
 
+app.post('/tags', controllers.tagController.createTag);             // Create a new tag
+app.get('/tags', controllers.tagController.getAllTags);              // Get all tags
+app.patch('/tags/:id', controllers.tagController.updateTag);        // Update a specific tag by ID
+app.delete('/tags/:id', controllers.tagController.deleteTag);
+
 
 
 app.post('/register', controllers.authController.register);

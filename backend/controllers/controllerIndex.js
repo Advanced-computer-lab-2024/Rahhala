@@ -9,6 +9,7 @@ import museumController from "./museumController.js";
 import sellerController from "./sellerController.js";
 import touristController from "./touristController.js";
 import tourGuideController from "./tourGuideController.js";
+import tagController from "./tagController.js";
 import productController from "./productController.js";
 export default {
     activityCategoryController,
@@ -22,5 +23,6 @@ export default {
     sellerController,
     touristController,
     tourGuideController,
+    tagController,
     productController
 };
