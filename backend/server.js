@@ -70,6 +70,8 @@ app.post('/createItinerary', verifyToken, controllers.itineraryController.create
 app.get('/getItineraries', controllers.itineraryController.getAllItineraries);
 app.post('/createGovernor', controllers.governorController.addGovernor);
 
+app.patch('/updateCategory/:id', controllers.activityCategoryController.updateCategory);
+
 app.get('/getItineraries/:id', controllers.itineraryController.getItineraryById);
 app.patch('/updateItineraries/:id', controllers.itineraryController.updateItinerary);
 app.patch('/updateItinerariesName/:name', controllers.itineraryController.updateItineraryByName);
@@ -78,6 +80,10 @@ app.delete('/deleteItineraryByName/:name', controllers.itineraryController.delet
 app.post('/addAdmin', controllers.adminController.addAdmin);
 
 app.get('/getCategories', controllers.activityCategoryController.getCategories);
+app.post('/createCategories', controllers.activityCategoryController.createCategory);
+app.delete('/deleteCategory/:id', controllers.activityCategoryController.deleteCategory);
+
+
 
 app.post('/register', controllers.authController.register);
 app.post('/login', controllers.authController.login);
