@@ -1,6 +1,7 @@
 import categoryModel from "../models/activityCategory.js";
 
 const createCategory = async (req, res) => {
+    console.log("create category");
     const { name } = req.body;
     if (!name) {
         return res.status(400).json({ error: "Name is required" });

@@ -75,5 +75,7 @@ app.delete('/deleteItineraries/:id', controllers.itineraryController.deleteItine
 app.delete('/deleteItineraryByName/:name', controllers.itineraryController.deleteItineraryByName);
 app.post('/addAdmin', controllers.adminController.addAdmin);
 
+app.get('/getCategories', controllers.activityCategoryController.getCategories);
+
 app.post('/register', controllers.authController.register);
 app.post('/login', controllers.authController.login);
