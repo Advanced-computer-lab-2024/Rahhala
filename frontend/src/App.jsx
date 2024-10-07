@@ -26,10 +26,16 @@ import AdvertiserDashboard from './pages/AdvertiserDashboard';
 import UpdateAdvertiserAccount from './pages/UpdateAdvertiserAccount';
 import CreateActivity from './pages/CreateActivity';
 import ActivityCategories from './pages/ActivityCategories';
+import UpdateActivity from './pages/UpdateActivity';
+import DeleteActivity from './pages/DeleteActivity';
+import MyActivities from './pages/MyActivities';
 function App() {
     return (
         <Router>
             <Routes>
+                <Route path="/getMyActivities" element={<MyActivities />} />
+                <Route path="/deleteActivity" element={<DeleteActivity />} />
+                <Route path="/updateActivity" element={<UpdateActivity />} />
                 <Route path="/createActivity" element={<CreateActivity />} />
                 <Route path="/updateAdvertiserAccount" element={<UpdateAdvertiserAccount />} />
                 <Route path="/advertiserAccount" element={<AdvertiserAccount />} />

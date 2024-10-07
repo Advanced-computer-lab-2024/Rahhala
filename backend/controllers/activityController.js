@@ -64,15 +64,25 @@ const updateActivity = async (req, res) =>{
     const id = req.params.id;
     if(!id)
         return res.status(400).json({ message: "Missing ID" });
-    const {updates} = req.body;
-    if(!updates)
-        return res.status(400).json({ message: "Update one field at least" });
+    const {name, date, time, location, price, category, tags, specialDiscounts, bookingOpen, rating} = req.body;
     try{
         const options = { new: true }; // Return the updated document
-        
-        const activity = await activityModel.findByIdAndUpdate(id, updates, options)
+        const activity = await activityModel.findById(id);
         if(!activity)
             return res.status(404).json({ message: "Activity not found" });
+
+        activity.name = name || activity.name;
+        activity.date = date || activity.date;
+        activity.time = time || activity.time;
+        activity.location = location || activity.location;
+        activity.price = price || activity.price;
+        activity.category = category || activity.category;
+        activity.tags = tags || activity.tags;
+        activity.specialDiscounts = specialDiscounts || activity.specialDiscounts;
+        activity.bookingOpen = bookingOpen || activity.bookingOpen;
+        activity.rating = rating || activity.rating;
+        await activity.save();
+
         return res.status(200).json(activity);
 
     } catch (error) {
@@ -82,6 +92,7 @@ const updateActivity = async (req, res) =>{
 }
 
 const deleteActivity = async (req, res) => {
+    console.log("entered");
     const id = req.params.id;
     if (!id) 
         return res.status(400).json({ message: "Missing ID" });
