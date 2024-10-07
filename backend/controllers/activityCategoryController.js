@@ -1,4 +1,5 @@
 import categoryModel from "../models/activityCategory.js";
+import mongoose from "mongoose";
 
 const createCategory = async (req, res) => {
     console.log("create category");
