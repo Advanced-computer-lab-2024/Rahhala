@@ -1,13 +1,20 @@
 import productModel from "../models/product.model.js";
 import mongoose from "mongoose";
 
-// Create a product
-const addProduct = async (req, res) => {
-    const id = req.user.id;
-    const { name, price, picture } = req.body;
+// Add product to the database
+export const addProduct = async (req, res) => {
+  console.log("entered addProduct");
+
+  const id = req.user.id;
+  const { name, price, picture } = req.body;
   try {
-    const product = await productModel.create({picture, price, name, sellerName: id});
-    console.log("here")
+    const product = await productModel.create({
+      picture,
+      price,
+      name,
+      sellerName: id,
+    });
+    console.log("here");
 
     res.status(201).send("product added successfully");
   } catch (error) {
@@ -15,8 +22,10 @@ const addProduct = async (req, res) => {
   }
 };
 
-// View all products
-const viewProducts = async (req, res) => {
+// Get all products from the database
+export const getProducts = async (req, res) => {
+  console.log("entered getProducts");
+
   try {
     const products = await productModel.find({});
     res.status(200).send(products);
@@ -26,7 +35,9 @@ const viewProducts = async (req, res) => {
 };
 
 // Sort products by ratings
-const sortProductsByRatings = async (req, res) => {
+export const sortProductsByRatings = async (req, res) => {
+  console.log("entered sortProductsByRatings");
+
   try {
     const products = await productModel.find({}).sort({ ratings: -1 });
     res.status(200).send(products);
@@ -34,8 +45,11 @@ const sortProductsByRatings = async (req, res) => {
     res.status(500).send(error);
   }
 };
+
 // Filter products by price
-const filterProductsByPrice = async (req, res) => {
+export const filterProductsByPrice = async (req, res) => {
+  console.log("entered filterProductsByPrice");
+
   const minPrice = req.query.minPrice || 0;
   const maxPrice = req.query.maxPrice || 1000000;
   try {
@@ -52,7 +66,9 @@ const filterProductsByPrice = async (req, res) => {
 };
 
 // Search for a product by name
-const searchProductByName = async (req, res) => {
+export const searchProductByName = async (req, res) => {
+  console.log("entered searchProductByName");
+
   const productName = req.query.name;
   try {
     const products = await productModel.find({ name: productName });
@@ -66,7 +82,9 @@ const searchProductByName = async (req, res) => {
 };
 
 // Edit product description and price
-const editProduct = async (req, res) => {
+export const editProduct = async (req, res) => {
+  console.log("entered editProduct");
+
   const { productId } = req.params;
   const { description, price } = req.body;
   if (!mongoose.Types.ObjectId.isValid(productId)) {
@@ -86,14 +104,3 @@ const editProduct = async (req, res) => {
     res.status(500).send("error updating product");
   }
 };
-
-const productController = {
-  addProduct,
-  viewProducts,
-  sortProductsByRatings,
-  filterProductsByPrice,
-  searchProductByName,
-  editProduct,
-};
-
-export default productController;
