@@ -76,7 +76,7 @@ const Login = () => {
                 navigate('/advertiser-dashboard'); // Default redirect if needed
             }
             else if (userType === 'seller') {
-                navigate('/sellerAccount'); // Default redirect if needed
+                navigate('/seller-dashboard'); // Default redirect if needed
             }
         } catch (error) {
             setMessage(error.response?.data?.message || 'Login failed.');

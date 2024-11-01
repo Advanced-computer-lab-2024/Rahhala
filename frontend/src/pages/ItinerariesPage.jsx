@@ -60,6 +60,7 @@ const ItinerariesPage = () => {
                                     </li>
                                 ))}
                             </ul>
+                            <p><strong>ID:</strong> {itinerary._id}</p>
                         </li>
                     ))}
                 </ul>
