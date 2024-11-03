@@ -1,40 +1,46 @@
 import models from "../models/index.model.js";
 import { generateToken, comparePasswords } from "../utils/jwt.js";
 
-const handleLogin = async (username, model, email, password, userType) => {
-  console.log("the email is  ", email);
-  // If admin, search by username; otherwise, search by email
-  let user;
+const handleLogin = async (model, credentials, userType) => {
+  const { username, email, password } = credentials;
+  
+  // Check if either username or email is provided
+  if (!password || (!username && !email)) {
+    throw new Error("Please provide either username or email, and password.");
+  }
 
-  if (model === models.governorModel) {
+  let user;
+  // Search by username if provided, otherwise search by email
+  if (username) {
     user = await model.findOne({ username });
   } else {
     user = await model.findOne({ email });
   }
 
-  console.log(user);
   if (!user) {
-    throw new Error("Invalid username or password.");
+    throw new Error("Invalid credentials.");
   }
 
-  const isMatch = comparePasswords(user.password, password);
+  const isMatch = await comparePasswords(user.password, password);
   if (!isMatch) {
-    throw new Error("Invalid email or password.");
+    throw new Error("Invalid credentials.");
   }
 
   const token = generateToken(user, userType);
   return token;
 };
+
 // Login Controller
 export const login = async (req, res) => {
-  console.log("entered  login");
+  console.log("entered login");
 
   const { username, email, password, userType } = req.body;
 
-  if (!email || !password || !userType) {
-    return res
-      .status(400)
-      .json({ message: "Email, password, and userType are required." });
+  // Check if at least one identifier (username or email) is provided
+  if ((!username && !email) || !password || !userType) {
+    return res.status(400).json({ 
+      message: "Please provide either username or email, along with password and userType." 
+    });
   }
 
   let model;
@@ -52,26 +58,25 @@ export const login = async (req, res) => {
     case "seller":
       model = models.sellerModel;
       break;
-    case "tourism governor": // New case for Tourism Governor
+    case "tourism governor":
     case "tourism_governor":
-      model = models.governorModel; // Ensure you have this model defined
+      model = models.governorModel;
       break;
     case "admin":
-      model = models.adminModel; // Ensure you have this model defined
+      model = models.adminModel;
       break;
     default:
       return res.status(400).json({ message: "Invalid userType." });
   }
 
   try {
-    console.log(email);
-    const token = await handleLogin(username, model, email, password, userType);
+    const credentials = { username, email, password };
+    const token = await handleLogin(model, credentials, userType);
     res.status(200).json({ token });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 };
-
 // Registration Controller (Optional for each user type)
 export const register = async (req, res) => {
   console.log("entered register");

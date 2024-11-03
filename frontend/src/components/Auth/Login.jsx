@@ -1,6 +1,5 @@
-// src/components/Auth/Login.jsx
 import React, { useState, useContext } from 'react';
-import axiosInstance from '../../utils/axiosConfig'; // Ensure correct path
+import axiosInstance from '../../utils/axiosConfig';
 import { AuthContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
@@ -10,14 +9,14 @@ const Login = () => {
     const { setAuth } = useContext(AuthContext);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        email: '',
+        identifier: '', // Combined field for username/email
         password: '',
-        userType: 'tourist', // Default userType
+        userType: 'tourist',
     });
 
     const [message, setMessage] = useState('');
+    const [identifierType, setIdentifierType] = useState('email'); // Track whether user is using email or username
 
-    // Handle input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -26,21 +25,31 @@ const Login = () => {
         });
     };
 
-    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const response = await axiosInstance.post('/api/auth/login', formData);
+            // Determine if identifier is email or username based on format
+            const isEmail = formData.identifier.includes('@');
+            
+            // Prepare the data based on identifier type
+            const loginData = {
+                password: formData.password,
+                userType: formData.userType,
+                // Set either email or username based on the identifier format
+                ...(isEmail 
+                    ? { email: formData.identifier }
+                    : { username: formData.identifier }
+                )
+            };
+
+            const response = await axiosInstance.post('/api/auth/login', loginData);
             const { token } = response.data;
 
-            // Store token in localStorage
             localStorage.setItem('token', token);
-
-            // Decode token to extract user information
             const decoded = jwtDecode(token);
             const userType = decoded.userType;
-            // Update Auth Context
+
             setAuth({
                 token,
                 isAuthenticated: true,
@@ -53,26 +62,21 @@ const Login = () => {
 
             setMessage('Login successful! Redirecting...');
 
-            // Redirect to a protected route based on userType
-            // For example:
-            
-            if (userType === 'tourist') {
-                navigate('/touristAccount');
-            } else if (userType === 'tourguide') {
-                console.log("tourguide");
-                navigate('/tourguide-dashboard');
-            } 
-            else if (userType === 'tourism_governor') {  // New route for Tourism Governor
-                navigate('/GovernorDashboard');
+            // Route mapping object for cleaner navigation logic
+            const routes = {
+                tourist: '/touristAccount',
+                tourguide: '/tourguide-dashboard',
+                tourism_governor: '/GovernorDashboard',
+                admin: '/adminDashboard',
+                advertiser: '/advertiser-dashboard',
+                seller: '/seller-dashboard'
+            };
+
+            const targetRoute = routes[userType.toLowerCase()];
+            if (targetRoute) {
+                navigate(targetRoute);
             }
-            else if (userType === 'admin') { 
-                navigate('/adminDashboard');
-            }else if (userType === 'advertiser') {
-                navigate('/advertiser-dashboard'); // Default redirect if needed
-            }
-            else if (userType === 'seller') {
-                navigate('/seller-dashboard'); // Default redirect if needed
-            }
+
         } catch (error) {
             setMessage(error.response?.data?.message || 'Login failed.');
         }
@@ -84,12 +88,13 @@ const Login = () => {
             {message && <p>{message}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label>Email/Username:</label>
+                    <label>Email or Username:</label>
                     <input
-                        type="String"
-                        name="email"
-                        value={formData.email}
+                        type="text"
+                        name="identifier"
+                        value={formData.identifier}
                         onChange={handleChange}
+                        placeholder="Enter email or username"
                         required
                     />
                 </div>
@@ -105,15 +110,18 @@ const Login = () => {
                 </div>
                 <div>
                     <label>User Type:</label>
-                    <select name="userType" value={formData.userType} onChange={handleChange} required>
+                    <select 
+                        name="userType" 
+                        value={formData.userType} 
+                        onChange={handleChange} 
+                        required
+                    >
                         <option value="tourist">Tourist</option>
                         <option value="tourguide">Tour Guide</option>
                         <option value="seller">Seller</option>
                         <option value="advertiser">Advertiser</option>
                         <option value="tourism_governor">Tourism Governor</option>
-                        <option value="admin">admin</option>
-
-
+                        <option value="admin">Admin</option>
                     </select>
                 </div>
                 <br />
