@@ -61,14 +61,10 @@ const Login = () => {
 
             setMessage('Login successful! Redirecting...');
 
-            // Route mapping object for cleaner navigation logic
+            // add your disired routes here //
             const routes = {
-                tourist: '/touristAccount',
                 tourguide: '/tourguide-dashboard',
-                tourism_governor: '/GovernorDashboard',
-                admin: '/adminDashboard',
-                advertiser: '/advertiser-dashboard',
-                seller: '/seller-dashboard'
+
             };
 
             const targetRoute = routes[userType.toLowerCase()];
