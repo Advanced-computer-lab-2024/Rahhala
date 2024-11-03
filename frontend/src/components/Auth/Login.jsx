@@ -15,7 +15,6 @@ const Login = () => {
     });
 
     const [message, setMessage] = useState('');
-    const [identifierType, setIdentifierType] = useState('email'); // Track whether user is using email or username
 
     const handleChange = (e) => {
         const { name, value } = e.target;
