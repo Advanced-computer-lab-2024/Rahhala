@@ -14,7 +14,7 @@ import touristRoutes from "./routes/tourist.route.js";
 import tourGuideRoutes from "./routes/tourGuide.route.js";
 import productRoutes from "./routes/product.route.js";
 
-dotenv.config();
+dotenv.config({path: "../.env"});
 
 const app = express();
 app.use(express.json());
