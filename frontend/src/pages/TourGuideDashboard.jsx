@@ -14,7 +14,7 @@ const TourGuideDashboard = () => {
     const [showDeleteForm, setShowDeleteForm] = useState(false); // Control delete form visibility
     const [formData, setFormData] = useState({
         name: '',
-        activities: '',
+        activityDetails: [], // Initialized 
         timeline: '',
         language: '',
         price: '',
@@ -26,6 +26,23 @@ const TourGuideDashboard = () => {
     });
     const [deleteName, setDeleteName] = useState(''); // State for the delete itinerary 
     const [updateName, setupdateName] = useState(''); // State for the itinerary ID to be updated
+    const [activityInput, setActivityInput] = useState({ name: '', location: '', duration: '', time: '' }); // New state for individual activity detail
+     // Handle change for individual activity detail input
+     const handleActivityInputChange = (e) => {
+        setActivityInput({
+            ...activityInput,
+            [e.target.name]: e.target.value
+        });
+    };
+
+     // Add activity to activityDetails array
+     const addActivityDetail = () => {
+        setFormData({
+            ...formData,
+            activityDetails: [...formData.activityDetails, activityInput]
+        });
+        setActivityInput({ name: '', location: '', duration: '', time: '' }); // Clear input after adding
+    };
 
     const handleInputChange = (e) => {
         setFormData({
@@ -39,12 +56,11 @@ const TourGuideDashboard = () => {
         try {
             const formattedData = {
                 ...formData,
-                activities: formData.activities.split(',').map(item => item.trim()),
                 tags: formData.tags.split(',').map(tag => tag.trim()), 
                 availableDates: formData.availableDates.split(',').map(date => new Date(date.trim())),
                 accessibility: formData.accessibility.split(',').map(item => item.trim())  
             };
-            await axiosInstance.post('/createItinerary', formattedData);
+            await axiosInstance.post('/api/itinerary/', formattedData);
             setShowForm(false);
             setSuccessMessage('Itinerary created successfully!');
             setTimeout(() => setSuccessMessage(''), 3000); 
@@ -127,15 +143,43 @@ const TourGuideDashboard = () => {
                                 />
                             </div>
                             <div>
-                                <label>Activities (comma separated IDs):</label>
+                                <label>Activity Name:</label>
                                 <input
                                     type="text"
-                                    name="activities"
-                                    value={formData.activities}
-                                    onChange={handleInputChange}
-                                    required
+                                    name="name"
+                                    value={activityInput.name}
+                                    onChange={handleActivityInputChange}
                                 />
                             </div>
+                            <div>
+                                <label>Location:</label>
+                                <input
+                                    type="text"
+                                    name="location"
+                                    value={activityInput.location}
+                                    onChange={handleActivityInputChange}
+                                />
+                            </div>
+                            <div>
+                                <label>Duration:</label>
+                                <input
+                                    type="text"
+                                    name="duration"
+                                    value={activityInput.duration}
+                                    onChange={handleActivityInputChange}
+                                />
+                            </div>
+                            <div>
+                                <label>Time:</label>
+                                <input
+                                    type="text"
+                                    name="time"
+                                    value={activityInput.time}
+                                    onChange={handleActivityInputChange}
+                                />
+                            </div>
+                            <button type="button" onClick={addActivityDetail}>Add Activity</button>
+
                             <div>
                                 <label>Timeline:</label>
                                 <input

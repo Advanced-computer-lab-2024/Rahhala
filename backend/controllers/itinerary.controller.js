@@ -2,44 +2,122 @@ import itineraryModel from "../models/itinerary.model.js";
 
 // Add Itinerary to the Database
 export const addItinerary = async (req, res) => {
-  console.log("entered  addItinerary");
+  console.log("Received request body:", req.body);
+
+  const requiredFields = ['name', 'activityDetails', 'timeline', 'language', 'price', 
+    'availableDates', 'pickupLocation', 'dropoffLocation'];
+
+  // Check for missing required fields
+  const missingFields = requiredFields.filter(field => !req.body[field]);
+  if (missingFields.length > 0) {
+    return res.status(400).json({
+      error: `Missing required fields: ${missingFields.join(', ')}`
+    });
+  }
+
 
   try {
     const {
       name,
-      activities,
+      activityDetails,
       timeline,
       language,
       price,
       availableDates,
-      accessibility,
       pickupLocation,
       dropoffLocation,
-      tags,
+      accessibility,
+      tags
     } = req.body;
-    const userId = req.user.id; // Assuming `req.user` is set by JWT middleware
-    console.log(userId);
-    const itinerary = new itineraryModel({
+
+// Parse and validate activityDetails
+const formattedActivityDetails = activityDetails.map(activity => {
+  // Parse location string into array of numbers
+  let locationArray;
+  try {
+    // Handle string format by removing any extra brackets and splitting
+    if (typeof activity.location === 'string') {
+      // Remove all brackets and split by comma
+      locationArray = activity.location
+        .replace(/[\[\]'"\s]/g, '') // Remove brackets, quotes, and whitespace
+        .split(',')
+        .map(num => Number(num));
+    } else if (Array.isArray(activity.location)) {
+      locationArray = activity.location.map(num => Number(num));
+    } else {
+      throw new Error('Invalid location format');
+    }
+
+    // Validate location array
+    if (!Array.isArray(locationArray) || 
+        locationArray.length !== 2 || 
+        locationArray.some(coord => isNaN(coord))) {
+      throw new Error('Location must be exactly 2 numbers');
+    }
+  } catch (error) {
+    throw new Error(`Invalid location format for activity "${activity.name}". Expected [latitude, longitude]. ${error.message}`);
+  }
+
+  return {
+    name: activity.name,
+    location: locationArray,
+    duration: activity.duration,
+    time: activity.time
+  };
+});
+
+// Convert availableDates to an array of Date objects
+const formattedAvailableDates = availableDates.map(date => new Date(date));
+
+// Ensure price is a number
+const formattedPrice = Number(price);
+if (isNaN(formattedPrice)) {
+  return res.status(400).json({
+    error: 'Price must be a valid number'
+  });
+}
+
+    // Log the formatted data
+    console.log("Formatted data:", {
       name,
-      activities,
+      activityDetails: formattedActivityDetails,
       timeline,
       language,
-      price,
-      availableDates,
-      accessibility,
+      price: formattedPrice,
+      availableDates: formattedAvailableDates,
       pickupLocation,
       dropoffLocation,
-      tags,
-      userId: userId,
+      accessibility,
+      tags
     });
 
+    const userId = req.user.id; // Assuming `req.user` is set by JWT middleware
+    console.log("User ID:", userId);
+
+    const itinerary = new itineraryModel({
+      name,
+      activityDetails: formattedActivityDetails,
+      timeline,
+      language,
+      price: formattedPrice,
+      availableDates: formattedAvailableDates,
+      pickupLocation,
+      dropoffLocation,
+      accessibility,
+      tags,
+      userId
+    });
+
+    // Save the itinerary to the database
     await itinerary.save();
+
+    // Send a response back to the client
     res.status(201).json(itinerary);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+  } catch (error) {
+    console.error("Error creating itinerary:", error);
+    res.status(500).json({ error: 'Failed to create itinerary' });
   }
 };
-
 // Get Itineraries from the Database
 export const getItineraries = async (req, res) => {
   console.log("entered  getItineraries");
