@@ -1,7 +1,6 @@
 // src/components/Auth/Register.jsx
 import React, { useState } from 'react';
 import axiosInstance from '../../utils/axiosConfig'; // Adjust the path as necessary
-import NavigateButton from '../UpdateProfileButton';
 import { useNavigate } from 'react-router-dom';
 const Register = () => {
     const navigate = useNavigate();
@@ -62,6 +61,14 @@ const Register = () => {
         });
     };
 
+    const navigateBasedOnUserType = () => {
+        if (userType === 'tourguide') {
+            navigate('/tourguide-dashboard');
+        } else {
+            navigate('/'); // Default path if userType is not recognized
+        }
+    };
+
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -111,17 +118,15 @@ const Register = () => {
         }
 
         try {
-            const response = await axiosInstance.post('/register', dataToSend);
+            const response = await axiosInstance.post('api/auth/register', dataToSend);
             setMessage('Registration successful!');
 
-            // Optionally, store the token and redirect
+            // store the token and redirect
             const { token } = response.data;
 
             localStorage.setItem('token', token);
 
-            // Redirect to dashboard or login page
-
-            navigate('/login');
+            navigateBasedOnUserType();
 
         } catch (error) {
             setMessage(error.response?.data?.message || 'Registration failed.');
@@ -313,8 +318,6 @@ const Register = () => {
                 )}
                 <br/>
                 <button type="submit">Register</button>{"\u00A0"}<br/><br/>
-                <NavigateButton path="/login" text="Login" /> 
-
             </form>
         </div>
     );
