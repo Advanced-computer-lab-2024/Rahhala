@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 
 
-const { setAuth } = useContext(AuthContext);
 
 const Register = () => {
+    const { setAuth } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const [userType, setUserType] = useState('tourist'); // Default userType

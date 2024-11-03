@@ -31,7 +31,7 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const response = await axiosInstance.post('/login', formData);
+            const response = await axiosInstance.post('/api/auth/login', formData);
             const { token } = response.data;
 
             // Store token in localStorage
@@ -39,8 +39,7 @@ const Login = () => {
 
             // Decode token to extract user information
             const decoded = jwtDecode(token);
-
-            console.log('Decoded Token:', decoded); // Debugging: Log decoded token
+            const userType = decoded.userType;
             // Update Auth Context
             setAuth({
                 token,
@@ -48,18 +47,19 @@ const Login = () => {
                 loading: false,
                 user: {
                     id: decoded.id,
-                    type: decoded.userType,
+                    type: userType,
                 },
             });
-            console.log(token);
 
             setMessage('Login successful! Redirecting...');
 
             // Redirect to a protected route based on userType
             // For example:
+            
             if (userType === 'tourist') {
                 navigate('/touristAccount');
             } else if (userType === 'tourguide') {
+                console.log("tourguide");
                 navigate('/tourguide-dashboard');
             } 
             else if (userType === 'tourism_governor') {  // New route for Tourism Governor
