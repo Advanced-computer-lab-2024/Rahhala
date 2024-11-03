@@ -1,8 +1,11 @@
 // src/components/Auth/Register.jsx
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react'; // Added useContext import
 import axiosInstance from '../../utils/axiosConfig'; // Adjust the path as necessary
 import { useNavigate } from 'react-router-dom';
+
 import { AuthContext } from '../../context/AuthContext';
+import { jwtDecode } from 'jwt-decode';
+
 
 
 
@@ -123,12 +126,15 @@ const Register = () => {
         }
 
         try {
+            console.log('Submitting registration data:', dataToSend);
             const response = await axiosInstance.post('api/auth/register', dataToSend);
+            console.log('Received response:', response.data);
             setMessage('Registration successful!');
 
             // store the token and redirect
             const { token } = response.data;
             const decoded = jwtDecode(token);
+            console.log("decoded is ",decoded);
 
             setAuth({
                 token,

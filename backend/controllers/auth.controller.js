@@ -76,6 +76,8 @@ export const login = async (req, res) => {
 export const register = async (req, res) => {
   console.log("entered register");
   const { userType, ...userData } = req.body;
+  console.log("userType is ", userType);
+  console.log("userData is ", userData);
 
   if (!userType) {
     return res.status(400).json({ message: "userType is required." });
@@ -106,6 +108,7 @@ export const register = async (req, res) => {
 
     const token = generateToken(user, userType);
     res.status(201).json({ token });
+    console.log(token);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
