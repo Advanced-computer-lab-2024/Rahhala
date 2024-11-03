@@ -13,11 +13,13 @@ import sellerRoutes from "./routes/seller.route.js";
 import touristRoutes from "./routes/tourist.route.js";
 import tourGuideRoutes from "./routes/tourGuide.route.js";
 import productRoutes from "./routes/product.route.js";
+import cors from "cors";
 
 dotenv.config({path: "../.env"});
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.use("/api/activity", activityRoutes);
 app.use("/api/activityCategory", activityCategoryRoutes);
