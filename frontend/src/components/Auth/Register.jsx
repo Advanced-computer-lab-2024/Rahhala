@@ -2,6 +2,11 @@
 import React, { useState } from 'react';
 import axiosInstance from '../../utils/axiosConfig'; // Adjust the path as necessary
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
+
+
+const { setAuth } = useContext(AuthContext);
+
 const Register = () => {
     const navigate = useNavigate();
 
@@ -123,6 +128,17 @@ const Register = () => {
 
             // store the token and redirect
             const { token } = response.data;
+            const decoded = jwtDecode(token);
+
+            setAuth({
+                token,
+                isAuthenticated: true,
+                loading: false,
+                user: {
+                    id: decoded.id,
+                    type: decoded.userType,
+                },
+            });
 
             localStorage.setItem('token', token);
 

@@ -41,18 +41,14 @@ const Login = () => {
             const decoded = jwtDecode(token);
 
             console.log('Decoded Token:', decoded); // Debugging: Log decoded token
-
-            const userId = decoded.id;
-            const userType = decoded.userType;
-
             // Update Auth Context
             setAuth({
                 token,
                 isAuthenticated: true,
                 loading: false,
                 user: {
-                    id: userId,
-                    type: userType,
+                    id: decoded.id,
+                    type: decoded.userType,
                 },
             });
             console.log(token);
@@ -70,7 +66,6 @@ const Login = () => {
                 navigate('/GovernorDashboard');
             }
             else if (userType === 'admin') { 
-                console.log("here") // New route for Tourism Governor
                 navigate('/adminDashboard');
             }else if (userType === 'advertiser') {
                 navigate('/advertiser-dashboard'); // Default redirect if needed
