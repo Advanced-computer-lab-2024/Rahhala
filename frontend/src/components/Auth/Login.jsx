@@ -64,6 +64,10 @@ const Login = () => {
             // add your disired routes here //
             const routes = {
                 tourguide: '/tourguide-dashboard',
+                admin: '/AdminDashboard',
+                seller: '/seller-dashboard',
+                advertiser: '/advertiser-dashboard',
+                tourism_governor: '/GovernorDashboard',
 
             };
 

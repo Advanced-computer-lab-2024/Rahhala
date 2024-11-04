@@ -12,10 +12,15 @@ const handleLogin = async (model, credentials, userType) => {
   let user;
   // Search by username if provided, otherwise search by email
   if (username) {
+    console.log("entered username");
     user = await model.findOne({ username });
   } else {
     user = await model.findOne({ email });
   }
+  console.log("username is ", username);
+  console.log("email is ", email);
+  console.log("model is", model);
+  console.log("user is ", user);  
 
   if (!user) {
     throw new Error("Invalid credentials.");
@@ -42,6 +47,7 @@ export const login = async (req, res) => {
       message: "Please provide either username or email, along with password and userType." 
     });
   }
+  console.log(req.body);
 
   let model;
   switch (userType.toLowerCase()) {
@@ -68,10 +74,12 @@ export const login = async (req, res) => {
     default:
       return res.status(400).json({ message: "Invalid userType." });
   }
+  console.log("model is ", model);
 
   try {
     const credentials = { username, email, password };
     const token = await handleLogin(model, credentials, userType);
+    console.log("token is ", token);
     res.status(200).json({ token });
   } catch (err) {
     res.status(400).json({ message: err.message });

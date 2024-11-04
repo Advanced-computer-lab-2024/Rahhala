@@ -72,7 +72,14 @@ const Register = () => {
     const navigateBasedOnUserType = () => {
         if (userType === 'tourguide') {
             navigate('/tourguide-dashboard');
-        } else {
+        } 
+        else if (userType === 'seller') {
+            navigate('/seller-dashboard');
+        }
+        else if (userType === 'advertiser') {
+            navigate('/advertiser-dashboard');
+        }
+        else {
             navigate('/'); // Default path if userType is not recognized
         }
     };
