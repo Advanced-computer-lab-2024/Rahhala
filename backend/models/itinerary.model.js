@@ -71,6 +71,10 @@ const itinerarySchema = new mongoose.Schema(
       min: 0,
       max: 5,
     },
+    isActive: {
+      type: Boolean,
+      default: true, // You can set this to true or false as needed
+    },
   },
   {
     timestamps: true,
