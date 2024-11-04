@@ -266,3 +266,60 @@ export const deleteItineraryByName = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+
+export const deactivateItinerary = async (req, res) => {
+  console.log("entered deactivateItinerary");
+
+  try {
+    const { id } = req.params; // Get the itinerary ID from the route parameters
+
+    // Find the itinerary by ID and set isActive to false
+    const updatedItinerary = await itineraryModel.findByIdAndUpdate(
+      id,
+      { isActive: false },
+      { new: true }
+    );
+
+    if (!updatedItinerary) {
+      return res.status(404).json({ message: "Itinerary not found" });
+    }
+
+    res.status(200).json({
+      message: "Itinerary deactivated successfully",
+      itinerary: updatedItinerary,
+    });
+  } catch (err) {
+    console.error("Error deactivating itinerary:", err);
+    res.status(500).json({ message: "An error occurred while deactivating the itinerary" });
+  }
+};
+
+
+export const activateItinerary = async (req, res) => {
+  console.log("entered activateItinerary");
+
+  try {
+    const { id } = req.params; // Get the itinerary ID from the route parameters
+    console.log(id);
+    // Find the itinerary by ID and set isActive to true
+    const updatedItinerary = await itineraryModel.findByIdAndUpdate(
+      id,
+      { isActive: true },
+      { new: true }
+    );
+
+    if (!updatedItinerary) {
+      return res.status(404).json({ message: "Itinerary not found" });
+    }
+
+    res.status(200).json({
+      message: "Itinerary activated successfully",
+      itinerary: updatedItinerary,
+    });
+  } catch (err) {
+    console.error("Error activating itinerary:", err);
+    res.status(500).json({ message: "An error occurred while activating the itinerary" });
+  }
+};
+
