@@ -117,6 +117,9 @@ export const fileComplaint = async (req, res) => {
   }
 };
 
+
+
+
 // Request Account Deletion
 export const requestAccountDeletion = async (req, res) => {
   console.log("Requesting Account to be deleted");
@@ -127,6 +130,25 @@ export const requestAccountDeletion = async (req, res) => {
     
     if (!tourist) {
       return res.status(404).json({ error: "Tourist not found" });
+    }
+
+    // Check for upcoming paid activities
+    const today = new Date();
+    const upcomingActivities = await activityModel.find({
+      userId: touristId,
+      date: { $gte: today },
+      bookingOpen: true // Assuming only open bookings count
+    });
+
+    // Check for upcoming itineraries
+    const upcomingItineraries = await itineraryModel.find({
+      userId: touristId,
+      availableDates: { $elemMatch: { $gte: today } }
+    });
+
+    // If there are any upcoming activities or itineraries, do not allow deletion
+    if (upcomingActivities.length > 0 || upcomingItineraries.length > 0) {
+      return res.status(400).json({ error: "Account cannot be deleted while there are upcoming paid bookings." });
     }
 
     // Create a new account deletion request
