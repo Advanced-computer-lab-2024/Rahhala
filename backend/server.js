@@ -42,3 +42,4 @@ app.get("/filterItinerary", (req, res) => getItinerary(req, res, conn))
 app.get("/sortItinerary", (req, res) => sortItinerary(req, res, conn))
 app.get("/sortActivity", (req, res) => sortActivity(req, res, conn))
 app.patch("/updateItinerary", (req, res) => updateItinerary(req, res, conn))
+
