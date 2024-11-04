@@ -2,6 +2,8 @@ import touristModel from "../models/tourist.model.js";
 import activityModel from "../models/activity.model.js";
 import itineraryModel from "../models/itinerary.model.js";
 import museumModel from "../models/museum.model.js";
+import Complaint from '../models/complaint.model.js';
+import AccountDeletionRequest from '../models/accountDeletionRequest.model.js'; 
 
 // Get Tourist profile by email
 export const getTouristByEmail = async (req, res) => {
@@ -90,5 +92,68 @@ export const getTourists = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(400).json({ error: error.message });
+  }
+};
+
+// File a Complaint
+export const fileComplaint = async (req, res) => {
+  console.log("Filing a complaint");
+  const { title, body } = req.body; // Get title and body from the request body
+  const touristId = req.user.id; // Get the user ID from the verified JWT payload
+
+  try {
+    // Create a new complaint
+    const complaint = new Complaint({
+      title,
+      body,
+      touristId,
+    });
+
+    await complaint.save(); // Save the complaint to the database
+    res.status(201).json({ message: "Complaint filed successfully.", complaint });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error filing complaint." });
+  }
+};
+
+// Request Account Deletion
+export const requestAccountDeletion = async (req, res) => {
+  console.log("Requesting Account to be deleted");
+  const touristId = req.user.id; // Get the user ID from the verified JWT payload
+
+  try {
+    const tourist = await touristModel.findById(touristId);
+    
+    if (!tourist) {
+      return res.status(404).json({ error: "Tourist not found" });
+    }
+
+    // Create a new account deletion request
+    const deletionRequest = new AccountDeletionRequest({
+      touristId: touristId,
+    });
+
+    await deletionRequest.save(); // Save the request to the database
+
+    console.log(`Account deletion requested for user: ${tourist.email}`);
+    res.status(200).json({ message: "Account deletion request sent to admin." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error processing account deletion request." });
+  }
+};
+
+export const getComplaints = async (req, res) => {
+  console.log("Viewing Filed Complaints");
+  const touristId = req.user.id; // Get the user ID from the verified JWT payload
+
+  try {
+    const complaints = await Complaint.find({ touristId }).populate('touristId', 'email'); // Adjust the populated fields as necessary
+
+    res.status(200).json({ complaints });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error fetching complaints." });
   }
 };

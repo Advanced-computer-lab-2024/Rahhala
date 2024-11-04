@@ -34,6 +34,8 @@ app.use("/api/tourist", touristRoutes);
 app.use("/api/tourGuide", tourGuideRoutes);
 app.use("/api/product", productRoutes);
 
+
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
