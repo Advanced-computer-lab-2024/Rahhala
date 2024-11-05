@@ -4,7 +4,7 @@ import tourGuideModel from "../models/tourGuide.model.js";
 // Edit Tour Guide Information
 export const editTourGuide = async (req, res) => {
   console.log("entered  editTourGuide");
-  const { email, mobileNumber, yearsOfExperience, previousWork } = req.body;
+  const { certificationImages, email, mobileNumber, yearsOfExperience, previousWork } = req.body;
   const id = req.user.id;
 
   try {

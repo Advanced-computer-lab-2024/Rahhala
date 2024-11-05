@@ -1,17 +1,4 @@
 import mongoose from 'mongoose';
-// Define the subdocument schema for previous work experience
-const previousWorkSchema = new mongoose.Schema({
-    work: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    yearsOfExperience: {
-        type: Number,
-        required: true
-    }
-});
-
 
 // Define the TourGuide schema
 const tourGuideSchema = new mongoose.Schema({
@@ -45,15 +32,18 @@ const tourGuideSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    yearsOfExperience: {
-        type: Number,
-        required: true
-    },
-    previousWork: {
-        type: String,
-        default: null,
-        trim: true
-    }
+    previousWork: [
+        {
+            yearsOfExperience: {
+                type: Number,
+                required: true
+            },
+            work: {
+                type: String,
+                required: true
+            }
+        }
+    ],
 }, { timestamps: true }); // Adds createdAt and updatedAt timestamps
 
 // Create the TourGuide model
