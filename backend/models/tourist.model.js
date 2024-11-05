@@ -60,15 +60,18 @@ const touristSchema = new mongoose.Schema({
         trim: true,
         default: 'EGP'
     },
-    booked: [{
-        type: mongoose.Schema.Types.Mixed,
-        refPath: 'bookedModel'
+    bookedActivities: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Activity'
     }],
-    bookedModel: {
-        type: String,
-        required: true,
-        enum: ['Activity', 'Itinerary', 'Museum']
-    },
+    bookedItineraries: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Itinerary'
+    }],
+    bookedMuseums: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Museum'
+    }],
     totalLoyaltyPoints: {
         type: Number,
         default: 0

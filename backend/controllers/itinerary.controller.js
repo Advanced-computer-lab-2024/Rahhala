@@ -1,5 +1,7 @@
 import itineraryModel from "../models/itinerary.model.js";
-
+import tourGuideModel from "../models/tourGuide.model.js";
+import touristModel from "../models/tourist.model.js";
+import reviewModel from "../models/review.model.js";
 // Add Itinerary to the Database
 export const addItinerary = async (req, res) => {
   console.log("Received request body:", req.body);
@@ -323,3 +325,49 @@ export const activateItinerary = async (req, res) => {
   }
 };
 
+export const addReview = async (req, res) => {
+    console.log("entered addReview");
+    
+    try {
+        const userId = req.user.id;
+        const { id } = req.params; // Get the itinerary ID from the route parameters
+        const { title, body, rating } = req.body; // Get the review from the request body
+    
+        // Find the itinerary by ID
+        const itinerary = await itineraryModel.findById(id);
+        const tourist = await touristModel.findById(userId);
+
+        if (!itinerary) {
+        return res.status(404).json({ message: "Itinerary not found" });
+        }
+
+        if (!tourist) {
+            return res.status(404).json({ message: "Tourist not found" });
+        }
+
+        // Create a new review
+        const review = new reviewModel({
+        tourist: userId,
+        title,
+        body,
+        rating,
+        });
+
+        // Save the review to the database
+        await review.save();
+    
+        // Add the review to the itinerary
+        itinerary.reviews.push(review);
+    
+        // Save the updated itinerary
+        await itinerary.save();
+    
+        res.status(200).json({
+        message: "Review added successfully",
+        itinerary,
+        });
+    } catch (err) {
+        console.error("Error adding review:", err);
+        res.status(500).json({ message: "An error occurred while adding the review" });
+    }
+    }

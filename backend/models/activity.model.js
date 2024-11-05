@@ -42,11 +42,10 @@ name: {
     ref: 'advertiser',
     required: true,
   },
-  rating: {
-    type: Number, // Rating of the activity (e.g., 4.5)
-    min: 0, // Minimum value for rating
-    max: 5 // Maximum value for rating
-  },
+  reviews: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Review'
+  }],
 }, { timestamps: true }); // Adds createdAt and updatedAt timestamps
 
 // Create the model based on the schema
