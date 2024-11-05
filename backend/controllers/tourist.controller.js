@@ -215,3 +215,35 @@ export const bookItinerary = async (req, res) => {
     }
         
 };
+
+export const changePassword = async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    const userID = req.user.id;
+    console.log("Change password request received with ID:", userID);
+    try {
+        // Search for the tourist using the email
+        const tourist = await touristModel.findById(userID);
+        if (!tourist) {
+            return res.status(404).json({ message: "Tourist not found" });
+        }
+        // Check if the old password matches
+        if (oldPassword !== tourist.password) {
+            return res.status(400).json({ message: "Old password is incorrect" });
+        }
+
+        // Check if the new password is the same as the old password
+        if (newPassword === oldPassword) {
+            return res.status(400).json({ message: "New password cannot be the same as the old password" });
+        }
+
+        // Update the password
+        tourist.password = newPassword;
+        await tourist.save();
+
+        res.status(200).json({ message: "Password changed successfully" });
+    } catch (error) {
+        console.error("Error changing password:", error);
+        res.status(500).json({ message: "Error changing password" });
+    }
+    
+};

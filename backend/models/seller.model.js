@@ -20,6 +20,14 @@ const sellerSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    idCardImage: {
+        type: String,
+        required: true
+    },
+    taxationRegistryImage: {
+        type: String,
+        required: true
+    },
     description: {
         type: String,
         required: false

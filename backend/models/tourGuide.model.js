@@ -21,6 +21,14 @@ const tourGuideSchema = new mongoose.Schema({
         unique: true,
         trim: true
     },
+    idCardImage: {
+        type: String,
+        required: true
+    },
+    certificationImages: {
+        type: [String],
+        required: true
+    },
     email: {
         type: String,
         required: true,

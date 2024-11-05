@@ -5,6 +5,14 @@ const advertiserSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    idCardImage: {
+        type: String,
+        required: true
+    },
+    taxationRegistryImage: {
+        type: String,
+        required: true
+    },
     email: {
         type: String,
         required: true,
