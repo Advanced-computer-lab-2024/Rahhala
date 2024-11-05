@@ -44,6 +44,10 @@ const tourGuideSchema = new mongoose.Schema({
             }
         }
     ],
+    profilePhoto: {
+        type: String,
+        required: true
+    },
 }, { timestamps: true }); // Adds createdAt and updatedAt timestamps
 
 // Create the TourGuide model

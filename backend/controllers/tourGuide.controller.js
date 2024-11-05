@@ -1,10 +1,9 @@
 import tourGuideModel from "../models/tourGuide.model.js";
-// Tour Guide profile routes
 
 // Edit Tour Guide Information
 export const editTourGuide = async (req, res) => {
-  console.log("entered  editTourGuide");
-  const { certificationImages, email, mobileNumber, yearsOfExperience, previousWork } = req.body;
+  console.log("entered editTourGuide");
+  const { work, yearsOfExperience, certificationImages, email, mobileNumber } = req.body;
   const id = req.user.id;
 
   try {
@@ -16,11 +15,14 @@ export const editTourGuide = async (req, res) => {
 
     // Update the tour guide's profile details
     user.mobileNumber = mobileNumber || user.mobileNumber;
-    user.yearsOfExperience = yearsOfExperience || user.yearsOfExperience;
-    if (previousWork) {
-      user.previousWork = previousWork; // Replace with new data
-    }
     user.profileCreated = true;
+    user.email = email || user.email;
+    if (work && yearsOfExperience) {
+        user.previousWork.push({ work, yearsOfExperience });
+    }
+    if (certificationImages && certificationImages.length > 0) {
+        user.certificationImages = user.certificationImages.concat(certificationImages);
+    }
 
     await user.save();
     res.status(200).json({
