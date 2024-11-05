@@ -1,4 +1,5 @@
 import advertiserModel from "../models/advertiser.model.js";
+import advertiserRequestModel from "../models/advertiserRequest.model.js";
 
 // Add Advertiser
 export const editAdvertiser = async (req, res) => {
@@ -108,4 +109,30 @@ export const submitDocuments = async (req, res) => {
         res.status(500).json({ error: "Error submitting documents" });
     }
 };
+
+export const createAccoutRequest = async (req, res) => {
+    const {username, email, password, companyName, website, hotline, companyProfile, idCardImage, taxationRegistryImage, logo } = req.body;
+
+    try {
+        const advertiser = await advertiserRequestModel.create({
+            username,
+            email,
+            password,
+            companyName,
+            website,
+            hotline,
+            companyProfile,
+            idCardImage,
+            taxationRegistryImage,
+            logo,
+        });
+
+        res.status(201).json({
+            message: "Advertiser account request created successfully",
+            profile: advertiser,
+        });
+    } catch (error) {
+        res.status(500).json({ error: "Error creating advertiser account request" });
+    }
+}
 

@@ -35,6 +35,10 @@ const sellerRequestSchema = new mongoose.Schema({
       type: Boolean,
       default: false, // You can set this to true or false as needed
     },
+    logo: {
+        type: String,
+        required: true
+    },
   // Add any other seller-specific fields here
 });
 

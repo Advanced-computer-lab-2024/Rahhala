@@ -13,4 +13,6 @@ router.put("/:id", verifyToken, editTourGuide);
 router.get("/:id", verifyToken, getTourGuideByID);
 router.put("/changePassword", verifyToken, changePassword);
 router.post("/submitDocuments", verifyToken, submitDocuments);
+
+
 export default router;
