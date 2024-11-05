@@ -33,7 +33,11 @@ const advertiserSchema = new mongoose.Schema({
     companyProfile: {
         type: String,
         required: true
-    }
+    },
+    logo: {
+        type: String,
+        required: true
+    },
 });
 
 const advertiserModel = mongoose.model('Advertiser', advertiserSchema);
