@@ -46,7 +46,7 @@ export const getTouristByID = async (req, res) => {
 export const editTourist = async (req, res) => {
   console.log("entered editTourist");
   const id = req.user.id; // Get the user ID from the verified JWT payload
-  const { email, mobileNumber, nationality, dob, occupation } = req.body;
+  const { email, mobileNumber, nationality, dob, occupation, profilePicture, currency } = req.body;
 
   try {
     const tourist = await touristModel.findById(id);
@@ -56,11 +56,13 @@ export const editTourist = async (req, res) => {
     }
 
     // Update other profile fields
+    tourist.email = email || tourist.email;
     tourist.mobileNumber = mobileNumber || tourist.mobileNumber;
     tourist.nationality = nationality || tourist.nationality;
     tourist.dob = dob || tourist.dob;
     tourist.occupation = occupation || tourist.occupation;
-    tourist.email = email || tourist.email;
+    tourist.profilePicture = profilePicture || tourist.profilePicture;
+    tourist.currency = currency || tourist.currency;
 
     await tourist.save();
     res.status(200).json({
