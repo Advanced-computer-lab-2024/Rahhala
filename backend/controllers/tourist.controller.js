@@ -249,3 +249,50 @@ export const changePassword = async (req, res) => {
     }
     
 };
+
+
+export const addReview = async (req, res) => {
+    try {
+        const touristId = req.user.id; // From JWT auth middleware
+        const { rating, title, body, reviewedEntity, reviewedEntityType } = req.body;
+
+        // Validate required fields
+        if (!rating || !reviewedEntity || !reviewedEntityType) {
+            return res.status(400).json({ 
+                message: "Rating, reviewed entity, and entity type are required" 
+            });
+        }
+
+        // Validate rating range
+        if (rating < 0 || rating > 5) {
+            return res.status(400).json({ 
+                message: "Rating must be between 0 and 5" 
+            });
+        }
+
+        // Create new review
+        const review = new Review({
+            tourist: touristId,
+            rating,
+            title,
+            body,
+            reviewedEntity,
+            reviewedEntityType
+        });
+
+        // Save review
+        await review.save();
+
+        res.status(201).json({
+            message: "Review added successfully",
+            review
+        });
+
+    } catch (error) {
+        console.error("Error adding review:", error);
+        res.status(500).json({ 
+            message: "Error adding review",
+            error: error.message 
+        });
+    }
+};

@@ -23,4 +23,5 @@ router.post("/complaints", verifyToken, fileComplaint);
 router.get("/viewComplaints", verifyToken, getComplaints);
 router.post("/bookItinerary", verifyToken, bookItinerary);
 router.put("/changePassword", verifyToken, changePassword);
+router.post('/reviews', verifyToken, addReview);
 export default router;
