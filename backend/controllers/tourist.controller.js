@@ -5,6 +5,9 @@ import museumModel from "../models/museum.model.js";
 import complaintModel from '../models/complaint.model.js';
 import accountDeletionRequestModel from '../models/accountDeletionRequest.model.js'; 
 import reviewModel from '../models/review.model.js';
+import tourGuideModel from '../models/tourGuide.model.js';
+import productModel from '../models/product.model.js';
+import mongoose from 'mongoose';
 
 // Get Tourist profile by email
 export const getTouristByEmail = async (req, res) => {
@@ -254,7 +257,7 @@ export const changePassword = async (req, res) => {
 
 export const addReview = async (req, res) => {
     try {
-        const touristId = req.user.id; // From JWT auth middleware
+        const touristId = req.user.id;
         const { rating, title, body, reviewedEntity, reviewedEntityType } = req.body;
 
         // Validate required fields
@@ -264,10 +267,44 @@ export const addReview = async (req, res) => {
             });
         }
 
+        // Validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(reviewedEntity)) {
+            return res.status(400).json({
+                message: "Invalid entity ID format"
+            });
+        }
+
         // Validate rating range
         if (rating < 0 || rating > 5) {
             return res.status(400).json({ 
                 message: "Rating must be between 0 and 5" 
+            });
+        }
+
+        // Check if entity exists based on type
+        let entityExists = false;
+        switch (reviewedEntityType) {
+            case 'Itinerary':
+                entityExists = await itineraryModel.findById(reviewedEntity);
+                break;
+            case 'TourGuide':
+                entityExists = await tourGuideModel.findById(reviewedEntity);
+                break;
+            case 'Activity':
+                entityExists = await activityModel.findById(reviewedEntity);
+                break;
+            case 'Product':
+                entityExists = await productModel.findById(reviewedEntity);
+                break;
+            default:
+                return res.status(400).json({
+                    message: "Invalid entity type"
+                });
+        }
+
+        if (!entityExists) {
+            return res.status(404).json({
+                message: `${reviewedEntityType} with ID ${reviewedEntity} not found`
             });
         }
 
@@ -281,7 +318,6 @@ export const addReview = async (req, res) => {
             reviewedEntityType
         });
 
-        // Save review
         await review.save();
 
         res.status(201).json({
