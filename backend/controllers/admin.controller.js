@@ -47,8 +47,8 @@ export const deleteEntity = async (req, res) => {
     case "admin":
       Model = models.adminModel;
       break;
-    case "governer":
-      Model = models.governerModel;
+    case "governor":
+      Model = models.governorModel;
       break;
     case "tourist":
       Model = models.touristModel;

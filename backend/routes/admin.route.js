@@ -9,6 +9,6 @@ import {
 const router = express.Router();
 
 router.post("/", addAdmin);
-router.delete("/", deleteEntity);
+router.delete("/:id/:entityType", deleteEntity);
 router.put("/changePassword", verifyToken, changePassword);
 export default router;
