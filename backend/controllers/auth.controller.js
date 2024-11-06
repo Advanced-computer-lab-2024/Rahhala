@@ -25,8 +25,13 @@ const handleLogin = async (model, credentials, userType) => {
   console.log("model is", model);
   console.log("user is ", user);  
 
-  if (!user) {
-    throw new Error("Invalid credentials.");
+   // Additional check for specific user types if no user is found
+   if (!user) {
+    if (["advertiser", "seller", "tour guide"].includes(userType.toLowerCase())) {
+      throw new Error(`Your ${userType} account has not been approved by an admin yet., check your login credentials or try again later.`);
+    } else {
+      throw new Error("Invalid credentials.");
+    }
   }
 
   const isMatch = comparePasswords(user.password, password);
