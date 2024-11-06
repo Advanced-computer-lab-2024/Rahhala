@@ -8,6 +8,8 @@ import {
   requestAccountDeletion,
   fileComplaint,
   getComplaints,
+  bookItinerary,
+  changePassword,
   setTripPreferences
 } from "../controllers/tourist.controller.js";
 
@@ -20,6 +22,7 @@ router.get("/", getTouristByEmail);
 router.post("/profile/request-delete", verifyToken, requestAccountDeletion);
 router.post("/complaints", verifyToken, fileComplaint);
 router.get("/viewComplaints", verifyToken, getComplaints);
+router.post("/bookItinerary", verifyToken, bookItinerary);
+router.put("/changePassword", verifyToken, changePassword);
 router.post("/preferences", verifyToken, setTripPreferences);
-
 export default router;

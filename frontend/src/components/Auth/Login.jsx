@@ -41,7 +41,7 @@ const Login = () => {
                     : { username: formData.identifier }
                 )
             };
-
+            console.log(loginData);
             const response = await axiosInstance.post('/api/auth/login', loginData);
             const { token } = response.data;
 

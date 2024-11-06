@@ -1,9 +1,14 @@
 import express from "express";
-import { addAdmin, deleteEntity } from "../controllers/admin.controller.js";
+import { verifyToken } from "../middleware/auth.js";
+import { 
+    addAdmin, 
+    deleteEntity,
+    changePassword,
+     } from "../controllers/admin.controller.js";
 
 const router = express.Router();
 
 router.post("/", addAdmin);
 router.delete("/", deleteEntity);
-
+router.put("/changePassword", verifyToken, changePassword);
 export default router;

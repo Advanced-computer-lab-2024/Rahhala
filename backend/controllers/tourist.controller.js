@@ -213,3 +213,72 @@ export const setTripPreferences = async (req, res) => {
     res.status(500).json({ error: "Error updating trip preferences." });
   }
 };
+
+
+export const bookItinerary = async (req, res) => {
+    console.log("Booking an itinerary");
+    const touristId = req.user.id; // Get the user ID from the verified JWT payload
+    const { itineraryId } = req.body; // Get the itinerary ID from the request body
+    try {
+        const tourist = await touristModel.findById(touristId);
+        const itinerary = await itineraryModel.findById(itineraryId);
+
+        if (!tourist) {
+            return res.status(404).json({ error: "Tourist not found" });
+        }
+
+        if (!itinerary) {
+            return res.status(404).json({ error: "Itinerary not found" });
+        }
+
+        if (tourist.wallet < itinerary.price) {
+            return res.status(400).json({ error: "Insufficient funds in wallet" });
+        }
+
+        // Deduct the price from the tourist's wallet
+        tourist.wallet -= itinerary.price;
+
+        // Add the itinerary to the tourist's bookedItineraries
+        tourist.bookedItineraries.push(itineraryId);
+
+        await tourist.save();
+
+        res.status(200).json({ message: "Itinerary booked successfully", itinerary });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error booking itinerary." });
+    }
+        
+};
+
+export const changePassword = async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    const userID = req.user.id;
+    console.log("Change password request received with ID:", userID);
+    try {
+        // Search for the tourist using the email
+        const tourist = await touristModel.findById(userID);
+        if (!tourist) {
+            return res.status(404).json({ message: "Tourist not found" });
+        }
+        // Check if the old password matches
+        if (oldPassword !== tourist.password) {
+            return res.status(400).json({ message: "Old password is incorrect" });
+        }
+
+        // Check if the new password is the same as the old password
+        if (newPassword === oldPassword) {
+            return res.status(400).json({ message: "New password cannot be the same as the old password" });
+        }
+
+        // Update the password
+        tourist.password = newPassword;
+        await tourist.save();
+
+        res.status(200).json({ message: "Password changed successfully" });
+    } catch (error) {
+        console.error("Error changing password:", error);
+        res.status(500).json({ message: "Error changing password" });
+    }
+    
+};
