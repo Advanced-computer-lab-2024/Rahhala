@@ -7,7 +7,8 @@ import {
   getTouristByEmail,
   requestAccountDeletion,
   fileComplaint,
-  getComplaints
+  getComplaints,
+  setTripPreferences
 } from "../controllers/tourist.controller.js";
 
 const router = express.Router();
@@ -19,4 +20,6 @@ router.get("/", getTouristByEmail);
 router.post("/profile/request-delete", verifyToken, requestAccountDeletion);
 router.post("/complaints", verifyToken, fileComplaint);
 router.get("/viewComplaints", verifyToken, getComplaints);
+router.post("/preferences", verifyToken, setTripPreferences);
+
 export default router;

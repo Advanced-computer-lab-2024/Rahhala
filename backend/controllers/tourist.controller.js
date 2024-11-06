@@ -179,3 +179,37 @@ export const getComplaints = async (req, res) => {
     res.status(500).json({ error: "Error fetching complaints." });
   }
 };
+
+
+// Set Trip Preferences
+export const setTripPreferences = async (req, res) => {
+  console.log("Setting trip preferences");
+  const touristId = req.user.id; // Get the user ID from the verified JWT payload
+  const { preferences } = req.body; // preferences should be an array of strings (tags)
+
+  try {
+    // Validate that preferences is an array of strings
+    if (!Array.isArray(preferences) || preferences.some(pref => typeof pref !== 'string')) {
+      return res.status(400).json({ error: "Preferences should be an array of strings." });
+    }
+
+    // Find the tourist and update their preferences
+    const tourist = await touristModel.findById(touristId);
+    if (!tourist) {
+      return res.status(404).json({ error: "Tourist profile not found" });
+    }
+
+    // Set or update the trip preferences in the tourist profile
+    tourist.tripPreferences = preferences;
+    await tourist.save();
+
+    res.status(200).json({
+
+      message: "Trip preferences updated successfully.",
+      tripPreferences: tourist.tripPreferences
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error updating trip preferences." });
+  }
+};

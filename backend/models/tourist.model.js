@@ -37,6 +37,10 @@ const touristSchema = new mongoose.Schema({
         enum: ['job', 'student'],
         required: true
     },
+    tripPreferences: {
+        type: [String], // An array to hold tags for preferences (e.g., "historic", "beach", "family-friendly", "budget")
+        default: []
+      },
     wallet: {
         type: Number,
         default: 0
