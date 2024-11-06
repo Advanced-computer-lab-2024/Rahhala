@@ -31,7 +31,11 @@ const sellerSchema = new mongoose.Schema({
     description: {
         type: String,
         required: false
-    }
+    },
+    logo: {
+        type: String,
+        required: true
+    },
 }, {
     timestamps: true
 });

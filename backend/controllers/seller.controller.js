@@ -1,4 +1,5 @@
 import sellerModel from "../models/seller.model.js";
+import sellerRequestModel from "../models/sellerRequest.model.js";
 
 // Add Seller to the Database
 export const getSeller = async (req, res) => {
@@ -107,3 +108,29 @@ export const submitDocuments = async (req, res) => {
         res.status(500).json({ error: "Error submitting documents" });
     }
 };
+
+export const createAccoutRequest = async (req, res) => {
+    const { email, password, name, username, idCardImage, taxationRegistryImage, logo, description } = req.body;
+
+    try {
+        const seller = await sellerRequestModel.create({
+            username,
+            email,
+            password,
+            name,
+            username,
+            idCardImage,
+            taxationRegistryImage,
+            description,
+            logo,
+        });
+
+        res.status(201).json({
+            message: "Seller account request created successfully",
+            profile: seller,
+        });
+    } catch (error) {
+        res.status(500).json({ error: "Error creating seller account request" });
+    }
+}
+
