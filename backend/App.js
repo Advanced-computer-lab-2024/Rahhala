@@ -15,6 +15,7 @@ import touristRoutes from "./routes/tourist.route.js";
 import tourGuideRoutes from "./routes/tourGuide.route.js";
 import productRoutes from "./routes/product.route.js";
 import AccountDeletionRequestRoutes from "./routes/accountDeletionRequest.route.js";
+import preferenceTagRoutes from "./routes/preferenceTag.route.js";
 import cors from "cors";
 
 dotenv.config({path: "../.env"});
@@ -36,7 +37,7 @@ app.use("/api/tourist", touristRoutes);
 app.use("/api/tourGuide", tourGuideRoutes);
 app.use("/api/product", productRoutes);
 app.use("/api/accountDeletionRequest", AccountDeletionRequestRoutes);
-
+app.use("/api/preferenceTag", preferenceTagRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
