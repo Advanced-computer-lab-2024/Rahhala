@@ -10,6 +10,7 @@ import {
   getComplaints,
   bookItinerary,
   changePassword,
+  addReview,
 } from "../controllers/tourist.controller.js";
 
 const router = express.Router();
