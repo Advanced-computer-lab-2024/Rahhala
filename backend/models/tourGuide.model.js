@@ -48,6 +48,10 @@ const tourGuideSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    acceptedTermsAndConditions: {
+        type: Boolean,
+        default: false
+    },
 }, { timestamps: true }); // Adds createdAt and updatedAt timestamps
 
 // Create the TourGuide model

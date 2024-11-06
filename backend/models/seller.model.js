@@ -36,6 +36,10 @@ const sellerSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    acceptedTermsAndConditions: {
+        type: Boolean,
+        default: false
+    },
 }, {
     timestamps: true
 });

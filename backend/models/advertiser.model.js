@@ -38,6 +38,10 @@ const advertiserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    acceptedTermsAndConditions: {
+        type: Boolean,
+        default: false
+    },
 });
 
 const advertiserModel = mongoose.model('Advertiser', advertiserSchema);
