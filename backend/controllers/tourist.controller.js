@@ -2,8 +2,8 @@ import touristModel from "../models/tourist.model.js";
 import activityModel from "../models/activity.model.js";
 import itineraryModel from "../models/itinerary.model.js";
 import museumModel from "../models/museum.model.js";
-import Complaint from '../models/complaint.model.js';
-import AccountDeletionRequest from '../models/accountDeletionRequest.model.js'; 
+import complaintModel from '../models/complaint.model.js';
+import accountDeletionRequestModel from '../models/accountDeletionRequest.model.js'; 
 import reviewModel from '../models/review.model.js';
 
 // Get Tourist profile by email
@@ -106,7 +106,7 @@ export const fileComplaint = async (req, res) => {
 
   try {
     // Create a new complaint
-    const complaint = new Complaint({
+    const complaint = new complaintModel({
       title,
       body,
       touristId,
@@ -155,7 +155,7 @@ export const requestAccountDeletion = async (req, res) => {
     }
 
     // Create a new account deletion request
-    const deletionRequest = new AccountDeletionRequest({
+    const deletionRequest = new accountDeletionRequestModel({
       touristId: touristId,
     });
 
@@ -174,7 +174,7 @@ export const getComplaints = async (req, res) => {
   const touristId = req.user.id; // Get the user ID from the verified JWT payload
 
   try {
-    const complaints = await Complaint.find({ touristId }).populate('touristId', 'email'); // Adjust the populated fields as necessary
+    const complaints = await complaintModel.find({ touristId }).populate('touristId', 'email'); // Adjust the populated fields as necessary
 
     res.status(200).json({ complaints });
   } catch (error) {
