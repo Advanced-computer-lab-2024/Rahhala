@@ -4,6 +4,7 @@ import itineraryModel from "../models/itinerary.model.js";
 import museumModel from "../models/museum.model.js";
 import Complaint from '../models/complaint.model.js';
 import AccountDeletionRequest from '../models/accountDeletionRequest.model.js'; 
+import reviewModel from '../models/review.model.js';
 
 // Get Tourist profile by email
 export const getTouristByEmail = async (req, res) => {
@@ -271,7 +272,7 @@ export const addReview = async (req, res) => {
         }
 
         // Create new review
-        const review = new Review({
+        const review = new reviewModel({
             tourist: touristId,
             rating,
             title,
