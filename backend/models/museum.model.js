@@ -38,9 +38,10 @@ const museumSchema = new mongoose.Schema({
         ref: 'Governor',
         required: true,
     },
-    tags: {
-        type: [String],
-    },
+    tags: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'MuseumTag',
+    }],
 }, {
     timestamps: true 
 });
