@@ -1,26 +1,71 @@
 import productModel from "../models/product.model.js";
 import mongoose from "mongoose";
 
-// Add product to the database
-export const addProduct = async (req, res) => {
-  console.log("entered addProduct");
+export const viewProductsQuantitiesAndSales = async (req, res) => {
+  console.log("entered viewProductsQuantitiesAndSales");
 
-  const id = req.user.id;
-  const { name, price, picture } = req.body;
+  const { id: userId, userType } = req.user; // Get user ID and role from the token
+console.log("userId: ", userId);
+console.log("userType: ", userType);
   try {
-    const product = await productModel.create({
+    let products;
+
+    if (userType === "admin") {
+      // Admin can view quantities and sales for all products
+      products = await productModel.find({}).select("name quantity sales");
+    } else if (userType === "seller") {
+      // Sellers can view only their own products' quantities and sales
+      products = await productModel.find({ sellerName: userId }).select("name quantity sales");
+    } else {
+      return res.status(403).send("Unauthorized access");
+    }
+
+    if (!products || products.length === 0) {
+      return res.status(404).send("No products found");
+    }
+
+    res.status(200).send(products); // Return the products with their quantities and sales
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching product quantities and sales");
+  }
+};
+
+// Create a new product
+export const createProduct = async (req, res) => {
+  console.log("entered createProduct");
+
+  const { name, description, price, quantity, sellerName, averageRating, picture } = req.body;
+
+  // Validate required fields
+  if (!name || !price || !quantity || !sellerName) {
+    return res.status(400).send("Missing required fields: name, price, quantity, and sellerName.");
+  }
+
+  try {
+    // Create a new product document
+    const newProduct = new productModel({
       picture,
       price,
       name,
-      sellerName: id,
+      description,
+      sellerName,
+      quantity,
+      sales: 0, // Set sales to 0 by default
+      averageRating: averageRating || 0 // Default to 0 if not provided
     });
-    console.log("here");
 
-    res.status(201).send("product added successfully");
+    // Save the product to the database
+    await newProduct.save();
+
+    res.status(201).send("Product created successfully");
   } catch (error) {
-    res.status(400).send("error adding product");
+    console.error(error);
+    res.status(500).send("Error creating product");
   }
 };
+
+
 
 // Get all products from the database
 export const getProducts = async (req, res) => {
@@ -30,7 +75,8 @@ export const getProducts = async (req, res) => {
     const products = await productModel.find({});
     res.status(200).send(products);
   } catch (error) {
-    res.status(500).send("error fetching products");
+    console.error(error);
+    res.status(500).send("Error fetching products");
   }
 };
 
@@ -39,9 +85,10 @@ export const sortProductsByRatings = async (req, res) => {
   console.log("entered sortProductsByRatings");
 
   try {
-    const products = await productModel.find({}).sort({ ratings: -1 });
+    const products = await productModel.find({}).sort({ averageRating: -1 }); // Sort by averageRating
     res.status(200).send(products);
   } catch (error) {
+    console.error(error);
     res.status(500).send(error);
   }
 };
@@ -56,12 +103,13 @@ export const filterProductsByPrice = async (req, res) => {
     const products = await productModel.find({
       price: { $gte: minPrice, $lte: maxPrice },
     });
-    if (!products) {
+    if (!products || products.length === 0) {
       return res.status(404).send("No products found");
     }
-    res.status(200).send("products filtered successfully");
+    res.status(200).send(products); // Return the filtered products
   } catch (error) {
-    res.status(500).send("error filtering products");
+    console.error(error);
+    res.status(500).send("Error filtering products");
   }
 };
 
@@ -72,35 +120,39 @@ export const searchProductByName = async (req, res) => {
   const productName = req.query.name;
   try {
     const products = await productModel.find({ name: productName });
-    if (!products) {
+    if (!products || products.length === 0) {
       return res.status(404).send("Product not found");
     }
-    res.status(200).send("products found successfully");
+    res.status(200).send(products); // Return the found products
   } catch (error) {
-    res.status(500).send("error fetching products");
+    console.error(error);
+    res.status(500).send("Error fetching products");
   }
 };
 
-// Edit product description and price
+// Edit product description, price, quantity
 export const editProduct = async (req, res) => {
   console.log("entered editProduct");
 
   const { productId } = req.params;
-  const { description, price } = req.body;
+  const { description, price, quantity } = req.body; // Include quantity in the request body
   if (!mongoose.Types.ObjectId.isValid(productId)) {
     return res.status(400).json({ error: "Invalid product ID format" });
   }
   try {
-    if (!description || !price) {
-      return res.status(400).json({ error: "Missing required fields" });
-    }
+    const updateFields = {};
+    if (description) updateFields.description = description;
+    if (price) updateFields.price = price;
+    if (quantity !== undefined) updateFields.quantity = quantity; // Update quantity if provided
+
     const product = await productModel.findByIdAndUpdate(
       productId,
-      { description, price },
+      updateFields,
       { new: true }
     );
-    res.status(200).send("product updated successfully");
+    res.status(200).send("Product updated successfully");
   } catch (error) {
-    res.status(500).send("error updating product");
+    console.error(error);
+    res.status(500).send("Error updating product");
   }
 };

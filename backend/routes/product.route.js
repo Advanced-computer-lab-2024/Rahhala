@@ -1,22 +1,22 @@
+// product.route.js
 import express from "express";
 import { verifyToken } from "../middleware/auth.js";
 import {
-  addProduct,
+  viewProductsQuantitiesAndSales,
   getProducts,
   sortProductsByRatings,
   filterProductsByPrice,
   searchProductByName,
   editProduct,
+  createProduct,  
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
 
 // Define routes
-router.post("/", addProduct);
-router.get("/", getProducts);
-router.get("/sort", sortProductsByRatings);
-router.get("/filter", filterProductsByPrice);
-router.get("/search", searchProductByName);
-router.put("/", editProduct);
+router.get("/quantities-sales", verifyToken, viewProductsQuantitiesAndSales); // Route to view product quantities and sales
+router.get("/", getProducts); // Route to get all products
+router.post("/create", verifyToken, createProduct); // Route to create a new product
 
 export default router;
+

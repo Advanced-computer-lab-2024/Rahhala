@@ -48,3 +48,7 @@ export const editSeller = async (req, res) => {
     res.status(500).json({ error: "Error updating seller profile" });
   }
 };
+
+// seller.controller.js
+
+
