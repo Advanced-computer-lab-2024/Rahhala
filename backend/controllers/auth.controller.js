@@ -1,4 +1,7 @@
 import models from "../models/index.model.js";
+import tourGuideRequestModel from "../models/tourGuideRequest.model.js";
+import sellerRequestModel from "../models/sellerRequest.model.js";
+import advertiserRequestModel from "../models/advertiserRequest.model.js";
 import { generateToken, comparePasswords } from "../utils/jwt.js";
 
 const handleLogin = async (model, credentials, userType) => {
@@ -22,11 +25,16 @@ const handleLogin = async (model, credentials, userType) => {
   console.log("model is", model);
   console.log("user is ", user);  
 
-  if (!user) {
-    throw new Error("Invalid credentials.");
+   // Additional check for specific user types if no user is found
+   if (!user) {
+    if (["advertiser", "seller", "tour guide"].includes(userType.toLowerCase())) {
+      throw new Error(`Your ${userType} account has not been approved by an admin yet., check your login credentials or try again later.`);
+    } else {
+      throw new Error("Invalid credentials.");
+    }
   }
 
-  const isMatch = await comparePasswords(user.password, password);
+  const isMatch = comparePasswords(user.password, password);
   if (!isMatch) {
     throw new Error("Invalid credentials.");
   }
@@ -103,13 +111,13 @@ export const register = async (req, res) => {
       break;
     case "tour guide":
     case "tourguide":
-      model = models.tourGuideModel;
+      model = tourGuideRequestModel;
       break;
     case "advertiser":
-      model = models.advertiserModel;
+      model = advertiserRequestModel;
       break;
     case "seller":
-      model = models.sellerModel;
+      model = sellerRequestModel;
       break;
     default:
       return res.status(400).json({ message: "Invalid userType." });
@@ -118,10 +126,14 @@ export const register = async (req, res) => {
   try {
     const user = new model(userData);
     await user.save();
-
+    if(model == models.touristModel){
     const token = generateToken(user, userType);
     res.status(201).json({ token });
     console.log(token);
+    }
+    else{
+      res.status(201).json({ message: "your account creation request was submitted succesfully you will be admitted to the system once an admin apporves", user });
+    }
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

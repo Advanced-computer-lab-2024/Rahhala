@@ -1,8 +1,7 @@
 import mongoose from 'mongoose';
 
-
-const sellerSchema = new mongoose.Schema({
-    username: {
+const sellerRequestSchema = new mongoose.Schema({
+  username: {
         type: String,
         required: true,
         unique: true
@@ -32,18 +31,16 @@ const sellerSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    isAccepted: {
+      type: Boolean,
+      default: false, // You can set this to true or false as needed
+    },
     logo: {
         type: String,
         required: true
     },
-    acceptedTermsAndConditions: {
-        type: Boolean,
-        default: false
-    },
-}, {
-    timestamps: true
+  // Add any other seller-specific fields here
 });
 
-const sellerModel = mongoose.model('Seller', sellerSchema);
-
-export default sellerModel;
+const SellerRequest = mongoose.model('SellerRequest', sellerRequestSchema);
+export default SellerRequest;

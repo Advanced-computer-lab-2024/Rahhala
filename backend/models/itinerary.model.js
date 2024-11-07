@@ -13,7 +13,6 @@ const itinerarySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    location: { type: [[Number]], default: [] }, // Array of arrays of numbers
     activityDetails: [
   {
     name: {
@@ -66,11 +65,10 @@ const itinerarySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    rating: {
-      type: Number,
-      min: 0,
-      max: 5,
-    },
+    reviews: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Review'
+      }],
     isActive: {
       type: Boolean,
       default: true, // You can set this to true or false as needed

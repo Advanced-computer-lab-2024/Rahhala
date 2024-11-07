@@ -18,6 +18,16 @@ const reviewSchema = new mongoose.Schema({
     },
     body: {
         type: String,
+    },
+    reviewedEntity: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        refPath: 'reviewedEntityType'
+    },
+    reviewedEntityType: {
+        type: String,
+        required: true,
+        enum: ['Product', 'Itinerary', 'TourGuide', 'Activity']
     }
 }, { timestamps: true }); // Adds createdAt and updatedAt timestamps
 

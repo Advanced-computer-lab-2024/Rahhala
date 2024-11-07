@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
-const advertiserSchema = new mongoose.Schema({
-    username: {
+
+const advertiserRequestSchema = new mongoose.Schema({
+  username: {
         type: String,
         required: true,
         unique: true
@@ -34,16 +35,16 @@ const advertiserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    isAccepted: {
+      type: Boolean,
+      default: false, // You can set this to true or false as needed
+    },
     logo: {
         type: String,
         required: true
     },
-    acceptedTermsAndConditions: {
-        type: Boolean,
-        default: false
-    },
+  
 });
 
-const advertiserModel = mongoose.model('Advertiser', advertiserSchema);
-
-export default advertiserModel;
+const AdvertiserRequest = mongoose.model('AdvertiserRequest', advertiserRequestSchema);
+export default AdvertiserRequest;

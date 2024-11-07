@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 
 const adminSchema = new mongoose.Schema({
-    email: {
+    username: {
         type: String,
         required: true,
-        unique: true, 
+        unique: true, // Ensures username is unique
     },
     password: {
         type: String,

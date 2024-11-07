@@ -3,33 +3,25 @@ import models from "../models/index.model.js";
 
 // Add Admin to the Database
 export const addAdmin = async (req, res) => {
-  const { email, password, name } = req.body;
+    console.log("entered addAdmin");
 
-  console.log("Add admin request received with email:", email);
-
-  try {
-    // Check if email already exists
-    const existingAdmin = await models.adminModel.findOne({ email });
-    if (existingAdmin) {
-      return res.status(400).json({ message: "email already exists" });
+    const { username, password } = req.body;
+    try {
+      console.log("username", username);
+      // Check if the username already exists
+      const existingAdmin = await adminModel.findOne({ username });
+      if (existingAdmin) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+  
+      const newAdmin = await adminModel.create({ username, password });
+  
+      res.status(201).json({ message: "Admin created successfully", admin: newAdmin });
+    } catch (error) {
+      console.error("Error adding admin:", error);
+      res.status(500).json({ message: "Error adding admin" });
     }
-
-    // Hash the password
-    // const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create a new admin instance
-    console.log("here");
-    const newAdmin = await adminModel.create({
-      email,
-      password,
-    });
-
-    res.status(201).json({ message: "Admin added successfully" });
-  } catch (error) {
-    console.error("Error adding admin:", error);
-    res.status(500).json({ message: "Error adding admin" });
-  }
-};
+  };
 
 //Delete Admin from the Database
 export const deleteEntity = async (req, res) => {
@@ -47,8 +39,8 @@ export const deleteEntity = async (req, res) => {
     case "admin":
       Model = models.adminModel;
       break;
-    case "governer":
-      Model = models.governerModel;
+    case "governor":
+      Model = models.governorModel;
       break;
     case "tourist":
       Model = models.touristModel;
@@ -76,4 +68,36 @@ export const deleteEntity = async (req, res) => {
     console.error(`Error deleting ${entityType}:`, error);
     res.status(500).json({ message: `Error deleting ${entityType}` });
   }
+};
+
+export const changePassword = async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    const userID = req.user.id;
+    console.log("Change password request received with ID:", userID);
+    try {
+        // Search for the admin using the email
+        const admin = await adminModel.findById(userID);
+        if (!admin) {
+            return res.status(404).json({ message: "Admin not found" });
+        }
+        // Check if the old password matches
+        if (oldPassword !== admin.password) {
+            return res.status(400).json({ message: "Old password is incorrect" });
+        }
+
+        // Check if the new password is the same as the old password
+        if (newPassword === oldPassword) {
+            return res.status(400).json({ message: "New password cannot be the same as the old password" });
+        }
+
+        // Update the password
+        admin.password = newPassword;
+        await admin.save();
+
+        res.status(200).json({ message: "Password changed successfully" });
+    } catch (error) {
+        console.error("Error changing password:", error);
+        res.status(500).json({ message: "Error changing password" });
+    }
+    
 };

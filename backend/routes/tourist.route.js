@@ -7,7 +7,10 @@ import {
   getTouristByEmail,
   requestAccountDeletion,
   fileComplaint,
-  getComplaints
+  getComplaints,
+  bookItinerary,
+  changePassword,
+  addReview,
 } from "../controllers/tourist.controller.js";
 
 const router = express.Router();
@@ -19,4 +22,7 @@ router.get("/", getTouristByEmail);
 router.post("/profile/request-delete", verifyToken, requestAccountDeletion);
 router.post("/complaints", verifyToken, fileComplaint);
 router.get("/viewComplaints", verifyToken, getComplaints);
+router.post("/bookItinerary", verifyToken, bookItinerary);
+router.put("/changePassword", verifyToken, changePassword);
+router.post('/reviews', verifyToken, addReview);
 export default router;

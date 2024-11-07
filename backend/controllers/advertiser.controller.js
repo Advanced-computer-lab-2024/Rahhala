@@ -1,33 +1,35 @@
 import advertiserModel from "../models/advertiser.model.js";
+import advertiserRequestModel from "../models/advertiserRequest.model.js";
 
 // Add Advertiser
 export const editAdvertiser = async (req, res) => {
-  console.log("entered  editAdvertiser");
+    console.log("entered  editAdvertiser");
 
-  const { email, companyName, website, hotline, companyProfile } = req.body;
+    const { email, companyName, website, hotline, companyProfile } = req.body;
+    const userId = req.user.id;
+    try {
+        const advertiser = await advertiserModel.findById(userId);
 
-  try {
-    const advertiser = await advertiserModel.findOne({ email });
+        if (!advertiser) {
+        return res.status(404).json({ error: "Advertiser not found" });
+        }
 
-    if (!advertiser) {
-      return res.status(404).json({ error: "Advertiser not found" });
+        // Update advertiser's profile details
+        advertiser.email = email || advertiser.email;
+        advertiser.companyName = companyName || advertiser.companyName;
+        advertiser.website = website || advertiser.website;
+        advertiser.hotline = hotline || advertiser.hotline;
+        advertiser.companyProfile = companyProfile || advertiser.companyProfile;
+        advertiser.profileCreated = true;
+
+        await advertiser.save();
+        res.status(200).json({
+        message: "Advertiser profile updated successfully",
+        profile: advertiser,
+        });
+    } catch (error) {
+        res.status(500).json({ error: "Error updating advertiser profile" });
     }
-
-    // Update advertiser's profile details
-    advertiser.companyName = companyName || advertiser.companyName;
-    advertiser.website = website || advertiser.website;
-    advertiser.hotline = hotline || advertiser.hotline;
-    advertiser.companyProfile = companyProfile || advertiser.companyProfile;
-    advertiser.profileCreated = true;
-
-    await advertiser.save();
-    res.status(200).json({
-      message: "Advertiser profile updated successfully",
-      profile: advertiser,
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Error updating advertiser profile" });
-  }
 };
 
 // Get Advertiser by ID
@@ -48,3 +50,89 @@ export const getAdvertiserByID = async (req, res) => {
     res.status(500).json({ error: "Error fetching advertiser profile" });
   }
 };
+
+export const changePassword = async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    const userID = req.user.id;
+    console.log("Change password request received with ID:", userID);
+    try {
+        // Search for the advertiser using the email
+        const advertiser = await advertiserModel.findById(userID);
+        if (!advertiser) {
+            return res.status(404).json({ message: "Advertiser not found" });
+        }
+        // Check if the old password matches
+        if (oldPassword !== advertiser.password) {
+            return res.status(400).json({ message: "Old password is incorrect" });
+        }
+
+        // Check if the new password is the same as the old password
+        if (newPassword === oldPassword) {
+            return res.status(400).json({ message: "New password cannot be the same as the old password" });
+        }
+
+        // Update the password
+        advertiser.password = newPassword;
+        await advertiser.save();
+
+        res.status(200).json({ message: "Password changed successfully" });
+    } catch (error) {
+        console.error("Error changing password:", error);
+        res.status(500).json({ message: "Error changing password" });
+    }
+    
+};
+
+export const submitDocuments = async (req, res) => {
+    const { idCardImage, taxationRegistryImage } = req.body;
+    const userID = req.user.id;
+
+    try {
+        const advertiser = await advertiserModel.findById(userID);
+
+        if (!advertiser) {
+            return res.status(404).json({ error: "Advertiser not found" });
+        }
+        if (!idCardImage || !taxationRegistryImage) {
+            return res.status(400).json({ error: "Both ID card image and taxation registry image are required" });
+        }
+        advertiser.idCardImage = idCardImage;
+        advertiser.taxationRegistryImage = taxationRegistryImage;
+
+        await advertiser.save();
+
+        res.status(200).json({
+            message: "Documents submitted successfully",
+            profile: advertiser,
+        });
+    } catch (error) {
+        res.status(500).json({ error: "Error submitting documents" });
+    }
+};
+
+export const createAccoutRequest = async (req, res) => {
+    const {username, email, password, companyName, website, hotline, companyProfile, idCardImage, taxationRegistryImage, logo } = req.body;
+
+    try {
+        const advertiser = await advertiserRequestModel.create({
+            username,
+            email,
+            password,
+            companyName,
+            website,
+            hotline,
+            companyProfile,
+            idCardImage,
+            taxationRegistryImage,
+            logo,
+        });
+
+        res.status(201).json({
+            message: "Advertiser account request created successfully",
+            profile: advertiser,
+        });
+    } catch (error) {
+        res.status(500).json({ error: "Error creating advertiser account request" });
+    }
+}
+

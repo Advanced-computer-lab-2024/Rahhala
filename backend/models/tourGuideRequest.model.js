@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
-// Define the TourGuide schema
-const tourGuideSchema = new mongoose.Schema({
-    username: {
+const tourGuideRequestSchema = new mongoose.Schema({
+  
+  username: {
         type: String,
         required: true,
         unique: true,
@@ -44,18 +44,17 @@ const tourGuideSchema = new mongoose.Schema({
             }
         }
     ],
+    isAccepted: {
+      type: Boolean,
+      default: false, // You can set this to true or false as needed
+    },
     profilePhoto: {
         type: String,
         required: true
     },
-    acceptedTermsAndConditions: {
-        type: Boolean,
-        default: false
-    },
-}, { timestamps: true }); // Adds createdAt and updatedAt timestamps
+}
+  // Add any other tour guide-specific fields here
+);
 
-// Create the TourGuide model
-const tourGuideModel = mongoose.model('TourGuide', tourGuideSchema);
-
-// Export the TourGuide model
-export default tourGuideModel;
+const TourGuideRequest = mongoose.model('TourGuideRequest', tourGuideRequestSchema);
+export default TourGuideRequest;

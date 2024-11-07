@@ -2,28 +2,31 @@ import museumModel from "../models/museum.model.js";
 
 //Add Museum to the Database
 export const addMuseum = async (req, res) => {
-  console.log("entered  addMuseum");
+    console.log("entered  addMuseum");
+    const { name, description, pictures, location, openingHours, 
+            foreignerPrice, nativePrice, studentPrice, tags} =
+        req.body;
+    console.log(req.body);
 
-  const { name, description, pictures, location, openingHours, ticketPrice } =
-    req.body;
-  console.log(req.body);
-
-  try {
-    const userId = req.user.id; // Assuming `req.user` is set by JWT middleware
-    console.log(userId);
-    const museum = await museumModel.create({
-      name,
-      description,
-      pictures,
-      location,
-      openingHours,
-      ticketPrice,
-      userID: userId,
-    });
-    res.status(201).json(museum);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
+    try {
+        const userId = req.user.id; // Assuming `req.user` is set by JWT middleware
+        console.log(userId);
+        const museum = await museumModel.create({
+        name,
+        description,
+        pictures,
+        location,
+        openingHours,
+        foreignerPrice,
+        nativePrice, 
+        studentPrice,
+        userID: userId,
+        tags
+        });
+        res.status(201).json(museum);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
 };
 
 //Get Museums from the Database

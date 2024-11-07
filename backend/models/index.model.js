@@ -8,7 +8,7 @@ import sellerModel from "./seller.model.js";
 import tourGuideModel from "./tourGuide.model.js";
 import touristModel from "./tourist.model.js";
 import categoryModel from "./activityCategory.model.js";
-import tagModel from "./tag.model.js";
+import tagModel from "./preferenceTag.model.js";
 
 export default {
   activityModel,
