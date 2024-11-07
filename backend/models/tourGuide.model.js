@@ -46,7 +46,6 @@ const tourGuideSchema = new mongoose.Schema({
     ],
     profilePhoto: {
         type: String,
-        required: true
     },
     acceptedTermsAndConditions: {
         type: Boolean,

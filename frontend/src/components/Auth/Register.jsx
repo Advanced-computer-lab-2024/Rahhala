@@ -1,13 +1,8 @@
 // src/components/Auth/Register.jsx
-import React, { useState, useContext } from 'react'; // Added useContext import
-import axiosInstance from '../../utils/axiosConfig'; // Adjust the path as necessary
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import { AuthContext } from '../../context/AuthContext';
-import { jwtDecode } from 'jwt-decode';
-
-
-
+import axiosInstance from '../../utils/axiosConfig';
 
 const Register = () => {
     const { setAuth } = useContext(AuthContext);
@@ -26,7 +21,9 @@ const Register = () => {
         occupation: 'job',
         // TourGuide Fields
         yearsOfExperience: '',
-        previousWork: '',
+        previousWork: [{ yearsOfExperience: '', work: '' }], // Updated field
+        certificationImages: [], // New field
+        idCardImage: '', // New field
         // Seller Fields
         name: '',
         description: '',
@@ -51,7 +48,9 @@ const Register = () => {
             dob: '',
             occupation: 'job',
             yearsOfExperience: '',
-            previousWork: '',
+            previousWork: [{ yearsOfExperience: '', work: '' }], // Updated field
+            certificationImages: [], // New field
+            idCardImage: '', // New field
             name: '',
             description: '',
             websiteLink: '',
@@ -69,6 +68,32 @@ const Register = () => {
         });
     };
 
+    const handlePreviousWorkChange = (index, e) => {
+        const { name, value } = e.target;
+        const updatedPreviousWork = formData.previousWork.map((work, i) => 
+            i === index ? { ...work, [name]: value } : work
+        );
+        setFormData({
+            ...formData,
+            previousWork: updatedPreviousWork
+        });
+    };
+
+    const addPreviousWork = () => {
+        setFormData({
+            ...formData,
+            previousWork: [...formData.previousWork, { yearsOfExperience: '', work: '' }]
+        });
+    };
+
+    const removePreviousWork = (index) => {
+        const updatedPreviousWork = formData.previousWork.filter((_, i) => i !== index);
+        setFormData({
+            ...formData,
+            previousWork: updatedPreviousWork
+        });
+    };
+
     const navigateBasedOnUserType = () => {
         if (userType === 'tourguide') {
             navigate('/tourguide-dashboard');
@@ -83,6 +108,9 @@ const Register = () => {
             navigate('/'); // Default path if userType is not recognized
         }
     };
+
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 
     // Handle form submission
     const handleSubmit = async (e) => {
@@ -110,7 +138,9 @@ const Register = () => {
                     ...dataToSend,
                     mobileNumber: formData.mobileNumber,
                     yearsOfExperience: formData.yearsOfExperience,
-                    previousWork: formData.previousWork,
+                    previousWork: formData.previousWork, // Updated field
+                    certificationImages: formData.certificationImages, // New field
+                    idCardImage: formData.idCardImage, // New field
                 };
                 break;
             case 'seller':
@@ -133,11 +163,18 @@ const Register = () => {
         }
 
         try {
-            console.log('Submitting registration data:', dataToSend);
-            const response = await axiosInstance.post('api/auth/register', dataToSend);
-            console.log('Received response:', response.data);
-            setMessage('Registration successful!');
+        console.log('Submitting registration data:', dataToSend);
+        const response = await axiosInstance.post('api/auth/register', dataToSend);
+        console.log('Received response:', response.data);
 
+        // Set appropriate success message and conditional redirection
+        if (['tourguide', 'seller', 'advertiser'].includes(userType)) {
+            setMessage('Registration successful! Please wait for admin approval then login.');
+            await sleep(3000); // Wait for 3 seconds
+            navigate('/login');
+        } else {
+            setMessage('Registration successful!');
+        }
             // store the token and redirect
             const { token } = response.data;
             const decoded = jwtDecode(token);
@@ -158,6 +195,7 @@ const Register = () => {
             navigateBasedOnUserType();
 
         } catch (error) {
+
             setMessage(error.response?.data?.message || 'Registration failed.');
         }
     };
@@ -170,7 +208,10 @@ const Register = () => {
                 {/* User Type Selection */}
                 <div>
                     <label>User Type:</label>
-                    <select name="userType" value={userType} onChange={handleUserTypeChange} required>
+                    <select name="userType" value={userType} onChange={(e) => {
+                        setUserType(e.target.value);
+                        handleChange(e);
+                    }} required>
                         <option value="tourist">Tourist</option>
                         <option value="tourguide">Tour Guide</option>
                         <option value="seller">Seller</option>
@@ -278,10 +319,48 @@ const Register = () => {
                         </div>
                         <div>
                             <label>Previous Work:</label>
+                            {formData.previousWork.map((work, index) => (
+                                <div key={index}>
+                                    <input
+                                        type="number"
+                                        name="yearsOfExperience"
+                                        placeholder="Years of Experience"
+                                        value={work.yearsOfExperience}
+                                        onChange={(e) => handlePreviousWorkChange(index, e)}
+                                        required
+                                    />
+                                    <input
+                                        type="text"
+                                        name="work"
+                                        placeholder="Work"
+                                        value={work.work}
+                                        onChange={(e) => handlePreviousWorkChange(index, e)}
+                                        required
+                                    />
+                                    <button type="button" onClick={() => removePreviousWork(index)}>Remove</button>
+                                </div>
+                            ))}
+                            <button type="button" onClick={addPreviousWork}>Add Previous Work</button>
+                        </div>
+                        <div>
+                            <label>Certification Images (comma separated URLs):</label>
                             <input
                                 type="text"
-                                name="previousWork"
-                                value={formData.previousWork}
+                                name="certificationImages"
+                                value={formData.certificationImages}
+                                onChange={(e) => setFormData({
+                                    ...formData,
+                                    certificationImages: e.target.value.split(',').map(img => img.trim())
+                                })}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label>ID Card Image URL:</label>
+                            <input
+                                type="text"
+                                name="idCardImage"
+                                value={formData.idCardImage}
                                 onChange={handleChange}
                                 required
                             />
