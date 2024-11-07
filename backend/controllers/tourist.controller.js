@@ -477,6 +477,13 @@ export const addReview = async (req, res) => {
             });
         }
 
+        const tourist = await touristModel.findById(id);
+        if (!tourist) {
+            return res.status(404).json({
+                message: "Tourist not found"
+            });
+        }
+
         // Check if entity exists based on type
         let entityExists = false;
         switch (reviewedEntityType) {
@@ -497,11 +504,68 @@ export const addReview = async (req, res) => {
                     message: "Invalid entity type"
                 });
         }
-
         if (!entityExists) {
             return res.status(404).json({
                 message: `${reviewedEntityType} with ID ${reviewedEntity} not found`
             });
+        }
+        console.log(entityExists);
+        // Check if the itinerary or activity is booked and the date today is after the event's date
+        if (reviewedEntityType === 'Itinerary' || reviewedEntityType === 'Activity') {
+            const today = new Date();
+            let isBooked = false;
+            let eventDate;
+
+            if (reviewedEntityType === 'Itinerary') {
+                isBooked = tourist.bookedItineraries.includes(reviewedEntity);
+                eventDate = new Date(Math.min(...entityExists.availableDates));
+            } else if (reviewedEntityType === 'Activity') {
+            isBooked = tourist.bookedActivities.includes(reviewedEntity);
+            eventDate = new Date(entityExists.date);
+            }
+
+            if (!isBooked) {
+            return res.status(400).json({
+                message: `You must book the ${reviewedEntityType.toLowerCase()} before reviewing it`
+            });
+            }
+
+            if (today < eventDate) {
+            return res.status(400).json({
+                message: `You can only review the ${reviewedEntityType.toLowerCase()} after the event date`
+            });
+            }
+        }
+
+        if (reviewedEntityType === 'TourGuide') {
+            const itineraries = await itineraryModel.find({ userId: reviewedEntity });
+            const today = new Date();
+            let hasAttended = false;
+
+            for (const itinerary of itineraries) {
+                const isBooked = tourist.bookedItineraries.includes(itinerary._id);
+                const eventDate = new Date(Math.min(...itinerary.availableDates));
+
+                if (isBooked && today > eventDate) {
+                    hasAttended = true;
+                    break;
+                }
+            }
+
+            if (!hasAttended) {
+                return res.status(400).json({
+                    message: "You must attend an itinerary created by this tour guide before reviewing"
+                });
+            }
+        }
+
+        if (reviewedEntityType === 'Product') {
+            const isPurchased = tourist.purchasedProducts.includes(reviewedEntity);
+            if (!isPurchased) {
+                return res.status(400).json({
+                    message: "You must purchase the product before reviewing it"
+                });
+            }
         }
 
         // Create new review

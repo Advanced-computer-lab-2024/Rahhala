@@ -20,7 +20,11 @@ const complaintSchema = new mongoose.Schema({
         enum: ['resolved', 'pending'],
         default: 'pending',
         required: true
-    }
+    },
+    reply: {
+        type: String,
+        default: ''
+    },
 }, { timestamps: true }); // Adds createdAt and updatedAt timestamps
 
 // Create the Complaint model
