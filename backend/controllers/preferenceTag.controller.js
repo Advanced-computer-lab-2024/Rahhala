@@ -1,4 +1,4 @@
-import PreferenceTag from '../models/preferenceTag.model';
+import PreferenceTag from '../models/preferenceTag.model.js';
 
 // Create a new tag
 export const createTag = async (req, res) => {

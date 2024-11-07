@@ -13,4 +13,5 @@ router.get("/", verifyToken, getSeller);
 router.put("/changePassword", verifyToken, changePassword);
 router.post("/submitDocuments", verifyToken, submitDocuments);
 
+
 export default router;
