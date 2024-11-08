@@ -39,8 +39,9 @@ const SellerAccount = () => {
         try {
             const response = await axiosInstance.post('api/accountDeletionRequest/');
             setMessage('Account deletion request submitted successfully');
+            setError(null); // Clear any previous errors
         } catch (err) {
-            setError('Error submitting account deletion request');
+            setError(err.response?.data?.error || 'Error submitting account deletion request');
         }
     };
 

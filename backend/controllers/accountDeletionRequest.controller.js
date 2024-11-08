@@ -5,7 +5,16 @@ export const createAccountDeletionRequest = async (req, res) => {
     console.log("entered createAccountDeletionRequest");
     const userId = req.user.id;
     const userType = req.user.userType;
+    console.log("userId is ", userId);
+    console.log("userType is ", userType);
+
     try {
+        // Check if a request with this user ID and user type already exists
+        const existingRequest = await AccountDeletionRequestModel.findOne({ userId, userType });
+        if (existingRequest) {
+            return res.status(400).json({ error: "An account deletion request already exists." });
+        }
+
         const newRequest = new AccountDeletionRequestModel({
             userId,
             userType,
