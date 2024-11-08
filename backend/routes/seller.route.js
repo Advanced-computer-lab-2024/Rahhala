@@ -5,7 +5,9 @@ import {
     getSeller,
     changePassword,
     submitDocuments,
-    acceptTerms } from "../controllers/seller.controller.js";
+    acceptTerms,
+    getDocuments // Add this import
+} from "../controllers/seller.controller.js";
 
 const router = express.Router();
 
@@ -14,6 +16,6 @@ router.get("/", verifyToken, getSeller);
 router.put("/changePassword", verifyToken, changePassword);
 router.post("/submitDocuments", verifyToken, submitDocuments);
 router.put("/acceptTerms", verifyToken, acceptTerms);
-
+router.get("/documents", verifyToken, getDocuments); // Add this route
 
 export default router;

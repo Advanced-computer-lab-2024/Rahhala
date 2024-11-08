@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import NavigateButton from '../components/UpdateProfileButton';
 import Logout from '../components/Auth/Logout';
 import ChangePassword from './ChangePassword';
+import ViewDocuments from '../components/ViewDocuments'; // Add this import
 import './AdminDashboard.css';
 
 function AdminDashboard() {
@@ -141,6 +142,15 @@ function AdminDashboard() {
                 <button onClick={() => toggleForm('changePassword')}>
                     {visibleForm === 'changePassword' ? 'Cancel' : 'Change Password'}
                 </button>
+                <button onClick={() => toggleForm('viewTourGuideDocuments')}>
+                    {visibleForm === 'viewTourGuideDocuments' ? 'Cancel' : 'View Tour Guide Documents'}
+                </button>
+                <button onClick={() => toggleForm('viewAdvertiserDocuments')}>
+                    {visibleForm === 'viewAdvertiserDocuments' ? 'Cancel' : 'View Advertiser Documents'}
+                </button>
+                <button onClick={() => toggleForm('viewSellerDocuments')}>
+                    {visibleForm === 'viewSellerDocuments' ? 'Cancel' : 'View Seller Documents'}
+                </button>
             </div>
 
             <div className="form-container">
@@ -258,6 +268,18 @@ function AdminDashboard() {
                         userRole="admin"
                         handleChangePassword={handleChangePassword}
                     />
+                )}
+
+                {visibleForm === 'viewTourGuideDocuments' && (
+                    <ViewDocuments userType="tourGuide" />
+                )}
+
+                {visibleForm === 'viewAdvertiserDocuments' && (
+                    <ViewDocuments userType="advertiser" />
+                )}
+
+                {visibleForm === 'viewSellerDocuments' && (
+                    <ViewDocuments userType="seller" />
                 )}
             </div>
 

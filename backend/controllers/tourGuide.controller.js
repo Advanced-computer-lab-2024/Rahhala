@@ -115,7 +115,15 @@ export const submitDocuments = async (req, res) => {
         res.status(500).json({ error: "Error submitting documents" });
     }
 };
-
+// Add this function to fetch documents
+export const getDocuments = async (req, res) => {
+  try {
+      const documents = await tourGuideRequestmodel.find({}, 'idCardImage certificationImages');
+      res.status(200).json({ documents });
+  } catch (error) {
+      res.status(500).json({ error: "Error fetching documents" });
+  }
+};
 export const createAccoutRequest = async (req, res) => {
   const { username, idCardImage, certificationImages, email, password, mobileNumber, previousWork, profilePhoto } = req.body;
   console.log("entered createAccoutRequest");
