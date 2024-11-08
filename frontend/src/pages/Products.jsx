@@ -28,7 +28,7 @@ const Products = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axiosInstance.get('/getProducts');
+                const response = await axiosInstance.get('/api/product');
                 console.log(response.data);
                 setProducts(response.data);
             } catch (err) {
@@ -41,7 +41,7 @@ const Products = () => {
     const filterProducts = () => {
         return products.filter(product => {
             return (
-                (price ? product.price <= price : true) &&
+                (price ? product.price.toString().startsWith(price) : true) &&
                 (rating ? product.averageRating >= rating : true) &&
                 (searchQuery ? product.name.toLowerCase().includes(searchQuery.toLowerCase()) : true)
             );

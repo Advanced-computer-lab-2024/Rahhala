@@ -50,7 +50,6 @@ const tourGuideRequestSchema = new mongoose.Schema({
     },
     profilePhoto: {
         type: String,
-        required: true
     },
 }
   // Add any other tour guide-specific fields here
