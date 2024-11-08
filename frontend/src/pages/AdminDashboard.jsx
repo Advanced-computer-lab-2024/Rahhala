@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '../utils/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import NavigateButton from '../components/UpdateProfileButton';
-import Lougout from '../components/Auth/Logout';
+import Logout from '../components/Auth/Logout';
+
 function AdminDashboard() {
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
     const [governorData, setGovernorData] = useState({
         username: '',
         password: '',
@@ -21,12 +22,11 @@ function AdminDashboard() {
         name: '',
     });
     const [deleteCategoryId, setDeleteCategoryId] = useState(''); // State for category ID to delete
-
     const [message, setMessage] = useState('');
     const [isGovernorFormVisible, setIsGovernorFormVisible] = useState(false);
     const [isAdminFormVisible, setIsAdminFormVisible] = useState(false);
     const [isCategoryFormVisible, setIsCategoryFormVisible] = useState(false);
-    const [isUpdateCategoryFormVisible, setIsUpdateCategoryFormVisible] = useState(false); 
+    const [isUpdateCategoryFormVisible, setIsUpdateCategoryFormVisible] = useState(false);
     const [isDeleteCategoryFormVisible, setIsDeleteCategoryFormVisible] = useState(false); // New state for delete form
 
     // Handle input changes for governor form
@@ -75,7 +75,7 @@ function AdminDashboard() {
         e.preventDefault();
         
         try {
-            await axiosInstance.post('/createGovernor', governorData);
+            await axiosInstance.post('/api/governor', governorData);
             setMessage('Tourism Governor added successfully!');
             setGovernorData({ username: '', password: '' }); 
             setIsGovernorFormVisible(false); 
@@ -89,7 +89,7 @@ function AdminDashboard() {
         e.preventDefault();
         
         try {
-            await axiosInstance.post('/api/admin', adminData); 
+            await axiosInstance.post('/api/admin/addAdmin', adminData); 
             setMessage('Admin added successfully!');
             setAdminData({ username: '', password: '' }); 
             setIsAdminFormVisible(false); 
@@ -104,7 +104,7 @@ function AdminDashboard() {
         e.preventDefault();
         
         try {
-            await axiosInstance.post('/createCategories', categoryData); 
+            await axiosInstance.post('/api/activityCategory', categoryData); 
             setMessage('Category added successfully!');
             setCategoryData({ name: '' }); 
             setIsCategoryFormVisible(false); 
@@ -118,7 +118,7 @@ function AdminDashboard() {
         e.preventDefault();
 
         try {
-            await axiosInstance.patch(`/updateCategory/${updateCategoryData.id}`, { name: updateCategoryData.name });
+            await axiosInstance.put(`/api/activityCategory/${updateCategoryData.id}`, { name: updateCategoryData.name });
             setMessage('Category updated successfully!');
             setUpdateCategoryData({ id: '', name: '' }); 
             setIsUpdateCategoryFormVisible(false); 
@@ -132,7 +132,7 @@ function AdminDashboard() {
         e.preventDefault();
 
         try {
-            await axiosInstance.delete(`/deleteCategory/${deleteCategoryId}`);
+            await axiosInstance.delete(`/api/activityCategory/${deleteCategoryId}`);
             setMessage('Category deleted successfully!');
             setDeleteCategoryId(''); // Reset form
             setIsDeleteCategoryFormVisible(false); // Hide the form after submission
@@ -327,7 +327,7 @@ function AdminDashboard() {
             )}
             <NavigateButton path="/products" text="View Products" />
             <NavigateButton path='/createProduct' text='Create Product'/>
-            <Lougout/>
+            <Logout/>
         </div>
     );
 }

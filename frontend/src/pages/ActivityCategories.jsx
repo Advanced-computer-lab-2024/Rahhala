@@ -10,7 +10,7 @@ function ActivityCategories() {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axiosInstance.get('/getCategories');
+                const response = await axiosInstance.get('/api/activityCategory');
                 setCategories(response.data);
             } catch (error) {
                 setMessage(error.response?.data?.message || 'Failed to fetch categories.');
