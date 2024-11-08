@@ -16,7 +16,7 @@ const ProtectedRoute = ({ children, roles }) => {
     }
 
     // If not authenticated or does not have the required role, redirect to login or not authorized page
-    return <Navigate to="/login" />;
+    return <Navigate to="/access-denied" />;
 };
 
 export default ProtectedRoute;

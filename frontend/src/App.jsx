@@ -1,14 +1,14 @@
 // App.jsx
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Register from './components/Auth/Register';
 import Login from './components/Auth/Login';
-import CreateItinerary from './pages/CreateItinerary';
 import ProtectedRoute from './components/ProtectedRoute';
+import AccessDenied from './pages/AccessDenied';
+import CreateItinerary from './pages/CreateItinerary';
 import TourGuideDashboard from './pages/TourGuideDashboard';
 import TouristAccount from './pages/TouristAccount';
 import CreateActivityCategory from './pages/CreateActivityCategory';
-import { Navigate } from 'react-router-dom';
 import CreateTag from './pages/CreateTag';
 import ItinerariesPage from './pages/ItinerariesPage';
 import UpdateTouristAccount from './pages/UpdateTouristAccount';
@@ -40,7 +40,25 @@ function App() {
     return (
         <Router>
             <Routes>
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/guest" element={<Guest />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/getMyActivities" element={<MyActivities />} />
+                <Route path="/deleteActivity" element={<DeleteActivity />} />
+                <Route path="/updateActivity" element={<UpdateActivity />} />
+                <Route path="/createActivity" element={<CreateActivity />} />
+                <Route path="/createActivityCategory" element={<CreateActivityCategory />} />
+                <Route path="/createTag" element={<CreateTag />} />
+                <Route path="/showItineraries" element={<ItinerariesPage />} />
+                <Route path="/viewAll" element={<ViewAll />} />
+                <Route path="/getMuseums" element={<Museums />} />
+                <Route path="/getActivities" element={<Activities />} />
+                <Route path="/showAllMuseums" element={<MuseumsList />} />
+                <Route path="/touristItineraries" element={<TouristItineraries />} />
+                <Route path="/ActivityCategories" element={<ActivityCategories />} />
                 <Route path="/createProduct" element={<CreateProduct />} />
+
                 <Route
                     path="/updateSellerAccount"
                     element={
@@ -65,11 +83,6 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-                <Route path="/products" element={<Products />} />
-                <Route path="/getMyActivities" element={<MyActivities />} />
-                <Route path="/deleteActivity" element={<DeleteActivity />} />
-                <Route path="/updateActivity" element={<UpdateActivity />} />
-                <Route path="/createActivity" element={<CreateActivity />} />
                 <Route
                     path="/updateAdvertiserAccount"
                     element={
@@ -97,7 +110,7 @@ function App() {
                 <Route
                     path="/updateTourguideAccount"
                     element={
-                        <ProtectedRoute roles={['tourGuide']}>
+                        <ProtectedRoute roles={['tourguide']}>
                             <UpdateTourguideAccount />
                         </ProtectedRoute>
                     }
@@ -105,16 +118,11 @@ function App() {
                 <Route
                     path="/tourguideAccount"
                     element={
-                        <ProtectedRoute roles={['tourGuide']}>
+                        <ProtectedRoute roles={['tourguide']}>
                             <TourguideAccount />
                         </ProtectedRoute>
                     }
                 />
-                <Route path="/guest" element={<Guest />} />
-                <Route path="/touristItineraries" element={<TouristItineraries />} />
-                <Route path="/getMuseums" element={<Museums />} />
-                <Route path="/getActivities" element={<Activities />} />
-                <Route path="/viewAll" element={<ViewAll />} />
                 <Route
                     path="/updateTouristAccount"
                     element={
@@ -123,8 +131,6 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-                <Route path="/register" element={<Register />} />
-                <Route path="/login" element={<Login />} />
                 <Route
                     path="/touristAccount"
                     element={
@@ -133,7 +139,6 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-                <Route path="/toursitUpdateAccount" element={<UpdateTouristAccount />} />
                 <Route
                     path="/tourguide-dashboard"
                     element={
@@ -142,9 +147,6 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-                <Route path="/createActivityCategory" element={<CreateActivityCategory />} />
-                <Route path="/createTag" element={<CreateTag />} />
-                <Route path="/showItineraries" element={<ItinerariesPage />} />
                 <Route
                     path="/GovernorDashboard"
                     element={
@@ -153,7 +155,6 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-                <Route path="/showAllMuseums" element={<MuseumsList />} />
                 <Route
                     path="/AdminDashboard"
                     element={
@@ -162,15 +163,17 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-                <Route path="/ActivityCategories" element={<ActivityCategories />} />
-
                 <Route
                     path="/createItinerary"
                     element={
-                        <ProtectedRoute roles={['tourGuide', 'admin']}>
+                        <ProtectedRoute roles={['tourguide', 'admin']}>
                             <CreateItinerary />
                         </ProtectedRoute>
                     }
+                />
+                <Route
+                    path="/access-denied"
+                    element={<AccessDenied />}
                 />
 
                 {/* Redirect unknown routes to login */}
