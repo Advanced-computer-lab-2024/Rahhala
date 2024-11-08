@@ -15,9 +15,9 @@ const productSchema = mongoose.Schema(
     averageRating: { type: Number, default: 0 }, // Store average rating
     quantity: { type: Number, required: true }, // Field for available quantity
     sales: { type: Number, default: 0 }, // Field for total sales
+    isArchived: { type: Boolean, default: false }, // Field to archive products
   },
   { timestamps: true }
 );
 
 export default mongoose.model("Product", productSchema); // Exporting the model
-
