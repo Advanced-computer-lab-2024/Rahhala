@@ -10,7 +10,7 @@ function AdminDashboard() {
         password: '',
     });
     const [adminData, setAdminData] = useState({
-        email: '',
+        username: '',
         password: '',
     });
     const [categoryData, setCategoryData] = useState({
@@ -89,11 +89,12 @@ function AdminDashboard() {
         e.preventDefault();
         
         try {
-            await axiosInstance.post('/addAdmin', adminData); 
+            await axiosInstance.post('/api/admin', adminData); 
             setMessage('Admin added successfully!');
-            setAdminData({ email: '', password: '' }); 
+            setAdminData({ username: '', password: '' }); 
             setIsAdminFormVisible(false); 
         } catch (error) {
+            console.error('Error adding admin:', error.response || error.message);
             setMessage(error.response?.data?.message || 'Failed to add Admin.');
         }
     };
@@ -301,17 +302,17 @@ function AdminDashboard() {
             {isAdminFormVisible && (
                 <form onSubmit={handleAdminSubmit}>
                     <div>
-                        <label>Email:</label>
+                        <label>Username: </label>
                         <input
-                            type="email"
-                            name="email"
-                            value={adminData.email}
+                            type="username"
+                            name="username"
+                            value={adminData.username}
                             onChange={handleAdminChange}
                             required
                         />
                     </div>
                     <div>
-                        <label>Password:</label>
+                        <label>Password: </label>
                         <input
                             type="password"
                             name="password"
