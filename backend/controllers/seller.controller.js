@@ -140,3 +140,29 @@ export const createAccoutRequest = async (req, res) => {
         res.status(500).json({ error: "Error creating seller account request" });
     }
 };
+
+export const acceptTerms = async (req, res) => {
+    const userID = req.user.id;
+    console.log("Accept terms and conditions request received with ID:", userID);
+
+    try {
+        // Find the seller by ID and update the acceptedTermsAndConditions field
+        const updatedSeller = await sellerModel.findByIdAndUpdate(
+            userID,
+            { $set: { acceptedTermsAndConditions: true } },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedSeller) {
+            return res.status(404).json({ message: "Seller not found" });
+        }
+
+        res.status(200).json({
+            message: "Terms and conditions accepted successfully",
+            profile: updatedSeller,
+        });
+    } catch (error) {
+        console.error("Error accepting terms and conditions:", error);
+        res.status(500).json({ error: "Error accepting terms and conditions" });
+    }
+};
