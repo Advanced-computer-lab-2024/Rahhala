@@ -89,7 +89,7 @@ function AdminDashboard() {
         e.preventDefault();
         
         try {
-            await axiosInstance.post('/api/admin/addAdmin', adminData); 
+            await axiosInstance.post('/api/admin/', adminData); 
             setMessage('Admin added successfully!');
             setAdminData({ username: '', password: '' }); 
             setIsAdminFormVisible(false); 

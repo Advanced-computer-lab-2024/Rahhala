@@ -41,7 +41,7 @@ const Products = () => {
     const filterProducts = () => {
         return products.filter(product => {
             return (
-                (price ? product.price <= price : true) &&
+                (price ? product.price.toString().startsWith(price) : true) &&
                 (rating ? product.averageRating >= rating : true) &&
                 (searchQuery ? product.name.toLowerCase().includes(searchQuery.toLowerCase()) : true)
             );
