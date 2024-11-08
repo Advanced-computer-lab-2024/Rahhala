@@ -24,6 +24,8 @@ const SellerAccount = () => {
                     delete response.data.profile.createdAt;
                     delete response.data.profile.__v;
                     delete response.data.profile.updatedAt;
+                    delete response.data.profile.acceptedTermsAndConditions;
+                    console.log("profile is ",profile);
                     setProfile(response.data.profile);
                 } catch (err) {
                     setError('Failed to load Seller profile.');
