@@ -3,7 +3,6 @@ import sellerRequestModel from "../models/sellerRequest.model.js";
 
 // Add Seller to the Database
 export const getSeller = async (req, res) => {
-  console.log("entered getSeller");
 
   const id = req.user.id;
 
@@ -23,8 +22,8 @@ export const getSeller = async (req, res) => {
 // Edit Seller Information
 export const editSeller = async (req, res) => {
   const  id  = req.user.id;
-  console.log(req.user.id);
-  const { name, description, email, username } = req.body;
+  console.log("entered edit seller with id ", req.user.id);
+  const { name, description, email, username, logo } = req.body;
 
 
   try {
@@ -37,6 +36,7 @@ export const editSeller = async (req, res) => {
           description,
           email,
           username,
+          logo
         }
       },
       { new: true, runValidators: true }

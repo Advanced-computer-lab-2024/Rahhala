@@ -42,6 +42,7 @@ const UpdateSellerAccount = () => {
         email: '',
         name: '',
         description: '',
+        logo: '',
     });
 
     useEffect(() => {
@@ -51,6 +52,7 @@ const UpdateSellerAccount = () => {
                 email: profile.email || '',
                 name: profile.name || '',
                 description: profile.description || '',
+                logo: profile.logo || '',
             });
         }
     }, [profile]);
@@ -133,6 +135,14 @@ const UpdateSellerAccount = () => {
                     <textarea
                         name="description"
                         value={formData.description}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div>
+                    <label>Logo:</label>
+                    <input
+                        name="logo"
+                        value={formData.logo}
                         onChange={handleChange}
                     />
                 </div>
