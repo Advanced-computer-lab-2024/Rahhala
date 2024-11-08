@@ -1,13 +1,13 @@
 import express from "express";
 import { verifyToken } from "../middleware/auth.js";
 import {
-
-createComplaint,
-getAllComplaints,
-getComplaintById,
-updateComplaint,
-deleteComplaint,
-getComplaintsByUserId,
+  createComplaint,
+  getAllComplaints,
+  getComplaintById,
+  updateComplaint,
+  deleteComplaint,
+  getComplaintsByUserId,
+  filterComplaintsByStatus,
 } from "../controllers/complaint.controller.js";
 
 const router = express.Router();
@@ -18,5 +18,6 @@ router.get("/:id", verifyToken, getComplaintById);
 router.put("/:id", verifyToken, updateComplaint);
 router.delete("/:id", verifyToken, deleteComplaint);
 router.get("/user", verifyToken, getComplaintsByUserId);
+router.get("/status", verifyToken, filterComplaintsByStatus);
 
 export default router;
