@@ -18,7 +18,7 @@ const SellerAccount = () => {
         if (auth.isAuthenticated && auth.user) {
             const fetchSeller = async () => {
                 try {
-                    const response = await axiosInstance.get('/sellerAccount');
+                    const response = await axiosInstance.get('api/seller/');
                     delete response.data.profile._id;
                     delete response.data.profile.password;
                     delete response.data.profile.createdAt;
