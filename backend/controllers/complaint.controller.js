@@ -1,4 +1,4 @@
-import complaintModel from "../models/complaint.model";
+import complaintModel from "../models/complaint.model.js";
 
 // Create a new complaint, not used
 export const createComplaint = async (req, res) => {
