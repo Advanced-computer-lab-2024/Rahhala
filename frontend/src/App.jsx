@@ -1,3 +1,4 @@
+// App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Register from './components/Auth/Register';
@@ -34,50 +35,139 @@ import SellerAccount from './pages/SellerAccount';
 import SellerDashboard from './pages/SellerDashboard';
 import UpdateSellerAccount from './pages/UpdateSellerAccount';
 import CreateProduct from './pages/CreateProduct';
+
 function App() {
     return (
         <Router>
             <Routes>
                 <Route path="/createProduct" element={<CreateProduct />} />
-                <Route path="/updateSellerAccount" element={<UpdateSellerAccount />} />
-                <Route path="/seller-dashboard" element={<SellerDashboard />} />
-                <Route path="/sellerAccount" element={<SellerAccount />} />
+                <Route
+                    path="/updateSellerAccount"
+                    element={
+                        <ProtectedRoute roles={['seller']}>
+                            <UpdateSellerAccount />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/seller-dashboard"
+                    element={
+                        <ProtectedRoute roles={['seller']}>
+                            <SellerDashboard />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/sellerAccount"
+                    element={
+                        <ProtectedRoute roles={['seller']}>
+                            <SellerAccount />
+                        </ProtectedRoute>
+                    }
+                />
                 <Route path="/products" element={<Products />} />
                 <Route path="/getMyActivities" element={<MyActivities />} />
                 <Route path="/deleteActivity" element={<DeleteActivity />} />
                 <Route path="/updateActivity" element={<UpdateActivity />} />
                 <Route path="/createActivity" element={<CreateActivity />} />
-                <Route path="/updateAdvertiserAccount" element={<UpdateAdvertiserAccount />} />
-                <Route path="/advertiserAccount" element={<AdvertiserAccount />} />
-                <Route path="/advertiser-dashboard" element={<AdvertiserDashboard />} />
-                <Route path="/updateTourguideAccount" element={<UpdateTourguideAccount />} />
-                <Route path="/tourguideAccount" element={<TourguideAccount />} />
+                <Route
+                    path="/updateAdvertiserAccount"
+                    element={
+                        <ProtectedRoute roles={['advertiser']}>
+                            <UpdateAdvertiserAccount />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/advertiserAccount"
+                    element={
+                        <ProtectedRoute roles={['advertiser']}>
+                            <AdvertiserAccount />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/advertiser-dashboard"
+                    element={
+                        <ProtectedRoute roles={['advertiser']}>
+                            <AdvertiserDashboard />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/updateTourguideAccount"
+                    element={
+                        <ProtectedRoute roles={['tourGuide']}>
+                            <UpdateTourguideAccount />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/tourguideAccount"
+                    element={
+                        <ProtectedRoute roles={['tourGuide']}>
+                            <TourguideAccount />
+                        </ProtectedRoute>
+                    }
+                />
                 <Route path="/guest" element={<Guest />} />
                 <Route path="/touristItineraries" element={<TouristItineraries />} />
                 <Route path="/getMuseums" element={<Museums />} />
                 <Route path="/getActivities" element={<Activities />} />
                 <Route path="/viewAll" element={<ViewAll />} />
-                <Route path="/updateTouristAccount" element={<UpdateTouristAccount />} />
+                <Route
+                    path="/updateTouristAccount"
+                    element={
+                        <ProtectedRoute roles={['tourist']}>
+                            <UpdateTouristAccount />
+                        </ProtectedRoute>
+                    }
+                />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/touristAccount" element={<TouristAccount />} />
+                <Route
+                    path="/touristAccount"
+                    element={
+                        <ProtectedRoute roles={['tourist']}>
+                            <TouristAccount />
+                        </ProtectedRoute>
+                    }
+                />
                 <Route path="/toursitUpdateAccount" element={<UpdateTouristAccount />} />
-                <Route path="/tourguide-dashboard" element={<TourGuideDashboard />}/>
+                <Route
+                    path="/tourguide-dashboard"
+                    element={
+                        <ProtectedRoute roles={['tourguide']}>
+                            <TourGuideDashboard />
+                        </ProtectedRoute>
+                    }
+                />
                 <Route path="/createActivityCategory" element={<CreateActivityCategory />} />
                 <Route path="/createTag" element={<CreateTag />} />
                 <Route path="/showItineraries" element={<ItinerariesPage />} />
-                <Route path="/GovernorDashboard" element={<GovernorDashboard />} />
+                <Route
+                    path="/GovernorDashboard"
+                    element={
+                        <ProtectedRoute roles={['governor']}>
+                            <GovernorDashboard />
+                        </ProtectedRoute>
+                    }
+                />
                 <Route path="/showAllMuseums" element={<MuseumsList />} />
-                <Route path="/AdminDashboard" element={<AdminDashboard />} />
+                <Route
+                    path="/AdminDashboard"
+                    element={
+                        <ProtectedRoute roles={['admin']}>
+                            <AdminDashboard />
+                        </ProtectedRoute>
+                    }
+                />
                 <Route path="/ActivityCategories" element={<ActivityCategories />} />
-
-
-
 
                 <Route
                     path="/createItinerary"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute roles={['tourGuide', 'admin']}>
                             <CreateItinerary />
                         </ProtectedRoute>
                     }
@@ -86,8 +176,6 @@ function App() {
                 {/* Redirect unknown routes to login */}
                 <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
-               
-
         </Router>
     );
 }
