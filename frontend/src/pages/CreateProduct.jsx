@@ -23,6 +23,7 @@ const CreateProduct = () => {
     description: '',
     sellerName: '',
     averageRating: 0,
+    quantity: 0,
   });
 
   const handleChange = (e) => {
@@ -36,7 +37,7 @@ const CreateProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosInstance.post('/createProduct', product);
+      const response = await axiosInstance.post('api/product/create', product);
       console.log('Product created:', response.data);
       navigate(homePath);
     } catch (error) {
@@ -65,12 +66,12 @@ const CreateProduct = () => {
           <textarea name="description" value={product.description} onChange={handleChange} />
         </div>
         <div>
-          <label>Seller Name:</label>
-          <input type="text" name="sellerName" value={product.sellerName} onChange={handleChange} required />
-        </div>
-        <div>
           <label>Average Rating:</label>
           <input type="number" name="averageRating" value={product.averageRating} onChange={handleChange} />
+        </div>
+        <div>
+          <label>Quantity:</label>
+          <input type="number" name="quantity" value={product.quantity} onChange={handleChange} />
         </div>
         <button type="submit">Create Product</button>
       </form>

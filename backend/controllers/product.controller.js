@@ -36,19 +36,20 @@ export const viewProductsQuantitiesAndSales = async (req, res) => {
 // Create a new product
 export const createProduct = async (req, res) => {
   console.log("entered createProduct");
+  const id = req.user.id;
 
   const {
-    name,
     description,
     price,
+    name,
     quantity,
-    sellerName,
     averageRating,
     picture,
   } = req.body;
+  console.log("req.body: ", req.body);  // Debugging
 
   // Validate required fields
-  if (!name || !price || !quantity || !sellerName) {
+  if (!price || !quantity || !description || !picture) {
     return res
       .status(400)
       .send("Missing required fields: name, price, quantity, and sellerName.");
@@ -57,11 +58,11 @@ export const createProduct = async (req, res) => {
   try {
     // Create a new product document
     const newProduct = new productModel({
+      sellerId: id,
+      name,
       picture,
       price,
-      name,
       description,
-      sellerName,
       quantity,
       sales: 0, // Set sales to 0 by default
       averageRating: averageRating || 0, // Default to 0 if not provided
