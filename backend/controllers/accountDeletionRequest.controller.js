@@ -2,6 +2,7 @@ import AccountDeletionRequestModel from "../models/accountDeletionRequest.model.
 
 // Create a new account deletion request
 export const createAccountDeletionRequest = async (req, res) => {
+    console.log("entered createAccountDeletionRequest");
     const userId = req.user.id;
     const userType = req.user.userType;
     try {
@@ -12,6 +13,7 @@ export const createAccountDeletionRequest = async (req, res) => {
         await newRequest.save();
         res.status(201).json(newRequest);
     } catch (error) {
+        console.log("Error creating account deletion request:", error); 
         res.status(500).json({ error: error.message });
     }
 };
