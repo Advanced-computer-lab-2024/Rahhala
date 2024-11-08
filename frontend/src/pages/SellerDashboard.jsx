@@ -56,6 +56,7 @@ const SellerDashboard = () => {
         <>
           <NavigateButton path='/sellerAccount' text='View Account'/>{'\u00A0'} 
           <NavigateButton path='/createProduct' text='Create New Product'/>{'\u00A0'} 
+          
           <br/><br/>
         </>
       )}
