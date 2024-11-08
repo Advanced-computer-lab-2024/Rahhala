@@ -8,7 +8,7 @@ import {
 
 const router = express.Router();
 
-router.put("/", verifyToken, editSeller);
+router.put("/edit", verifyToken, editSeller);
 router.get("/", verifyToken, getSeller);
 router.put("/changePassword", verifyToken, changePassword);
 router.post("/submitDocuments", verifyToken, submitDocuments);

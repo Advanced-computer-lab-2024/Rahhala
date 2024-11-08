@@ -25,6 +25,16 @@ const complaintSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    userType: {
+        type: String,
+        enum: ['Tourist', 'Tour Guide', 'Advertiser', 'Tourism Governor', 'Seller'],
+        required: true
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        refPath: 'userType',
+        required: true
+    }
 }, { timestamps: true }); // Adds createdAt and updatedAt timestamps
 
 // Create the Complaint model

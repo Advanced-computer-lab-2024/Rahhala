@@ -96,7 +96,7 @@ export const login = async (req, res) => {
 // Registration Controller (Optional for each user type)
 export const register = async (req, res) => {
   console.log("entered register");
-  const { userType, ...userData } = req.body;
+  const { userType, username, email, ...userData } = req.body;
   console.log("userType is ", userType);
   console.log("userData is ", userData);
 
@@ -124,17 +124,23 @@ export const register = async (req, res) => {
   }
 
   try {
-    const user = new model(userData);
+    // Check if username or email already exists in seller, tourist, or tourguide tables
+    const existingUser = await Promise.all([
+      models.sellerModel.findOne({ $or: [{ username }, { email }] }),
+      models.tourGuideModel.findOne({ $or: [{ username }, { email }] }),
+      models.advertiserModel.findOne({ $or: [{ username }, { email }] })
+    ]);
+
+    if (existingUser.some(user => user)) {
+      return res.status(400).json({ message: "Username or email already exists." });
+    }
+
+    const user = new model({ username, email, ...userData });
     await user.save();
-    if(model == models.touristModel){
-    const token = generateToken(user, userType);
-    res.status(201).json({ token });
-    console.log(token);
-    }
-    else{
-      res.status(201).json({ message: "your account creation request was submitted succesfully you will be admitted to the system once an admin apporves", user });
-    }
+
+    res.status(201).json({ message: "User registered successfully." });
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.error("Error registering user:", err);
+    res.status(500).json({ message: "Internal server error." });
   }
 };
