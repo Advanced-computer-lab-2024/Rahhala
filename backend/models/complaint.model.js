@@ -13,13 +13,11 @@ const complaintSchema = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now,
-        required: true
     },
     status: {
         type: String,
         enum: ['resolved', 'pending'],
         default: 'pending',
-        required: true
     },
     reply: {
         type: String,
@@ -27,7 +25,7 @@ const complaintSchema = new mongoose.Schema({
     },
     userType: {
         type: String,
-        enum: ['Tourist', 'Tour Guide', 'Advertiser', 'Tourism Governor', 'Seller'],
+        enum: ['Tourist', 'Tour Guide', 'Advertiser', 'Governor', 'Seller'],
         required: true
     },
     userId: {

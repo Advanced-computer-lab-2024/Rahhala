@@ -1,13 +1,12 @@
 import express from "express";
 import { verifyToken } from "../middleware/auth.js";
 import {
-
-createComplaint,
-getAllComplaints,
-getComplaintById,
-updateComplaint,
-deleteComplaint,
-getComplaintsByUserId,
+    createComplaint,
+    getAllComplaints,
+    getComplaintById,
+    updateComplaint,
+    deleteComplaint,
+    getComplaintsByUserId,
 } from "../controllers/complaint.controller.js";
 
 const router = express.Router();

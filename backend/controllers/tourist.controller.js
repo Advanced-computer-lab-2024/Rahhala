@@ -50,7 +50,7 @@ export const getTouristByID = async (req, res) => {
 export const editTourist = async (req, res) => {
   console.log("entered editTourist");
   const id = req.user.id; // Get the user ID from the verified JWT payload
-  const { email, mobileNumber, nationality, dob, occupation, profilePicture, currency } = req.body;
+  const { email, mobileNumber, nationality, dob, occupation, profilePicture, currency, preferences } = req.body;
 
   try {
     const tourist = await touristModel.findById(id);
@@ -67,6 +67,7 @@ export const editTourist = async (req, res) => {
     tourist.occupation = occupation || tourist.occupation;
     tourist.profilePicture = profilePicture || tourist.profilePicture;
     tourist.currency = currency || tourist.currency;
+    tourist.preferences = preferences || tourist.preferences;
 
     await tourist.save();
     res.status(200).json({
@@ -100,30 +101,6 @@ export const getTourists = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-
-// File a Complaint
-export const fileComplaint = async (req, res) => {
-  console.log("Filing a complaint");
-  const { title, body } = req.body; // Get title and body from the request body
-  const touristId = req.user.id; // Get the user ID from the verified JWT payload
-
-  try {
-    // Create a new complaint
-    const complaint = new complaintModel({
-      title,
-      body,
-      touristId,
-    });
-
-    await complaint.save(); // Save the complaint to the database
-    res.status(201).json({ message: "Complaint filed successfully.", complaint });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error filing complaint." });
-  }
-};
-
-
 
 
 // Request Account Deletion

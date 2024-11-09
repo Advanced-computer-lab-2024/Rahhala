@@ -34,6 +34,10 @@ import SellerAccount from './pages/SellerAccount';
 import SellerDashboard from './pages/SellerDashboard';
 import UpdateSellerAccount from './pages/UpdateSellerAccount';
 import CreateProduct from './pages/CreateProduct';
+import SubmitComplaint from './pages/submitComplaint';
+import ViewTouristAccount from './pages/ViewTouristAccount';
+import TouristDeleteAccount from './pages/TouristDeleteAccount';
+
 function App() {
     return (
         <Router>
@@ -70,6 +74,9 @@ function App() {
                 <Route path="/showAllMuseums" element={<MuseumsList />} />
                 <Route path="/AdminDashboard" element={<AdminDashboard />} />
                 <Route path="/ActivityCategories" element={<ActivityCategories />} />
+                <Route path="/submitComplaint" element={<SubmitComplaint />} />
+                <Route path="/viewTouristAccount" element={<ViewTouristAccount />} />
+                <Route path="/touristDeleteAccount" element={<TouristDeleteAccount />} />
 
 
 

@@ -1,10 +1,12 @@
-import complaintModel from "../models/complaint.model";
+import complaintModel from "../models/complaint.model.js";
 
 // Create a new complaint, not used
 export const createComplaint = async (req, res) => {
+    console.log("entered createComplaint");
     try {
         const userId = req.user.id;
-        const userType = req.user.userType;
+        let userType = req.user.userType;
+        userType = userType.charAt(0).toUpperCase() + userType.slice(1).toLowerCase();
         const { title, body } = req.body;
         const newComplaint = new complaintModel({
             title,
@@ -13,8 +15,10 @@ export const createComplaint = async (req, res) => {
             userType
         });
         await newComplaint.save();
+        console.log(newComplaint);
         res.status(201).json(newComplaint);
     } catch (error) {
+        console.log("error:", error);
         res.status(400).json({ message: error.message });
     }
 };

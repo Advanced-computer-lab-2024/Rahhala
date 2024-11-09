@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import axiosInstance from '../utils/axiosConfig';
-import NavigateButton from '../components/UpdateProfileButton';
 import { useNavigate } from 'react-router-dom';
 import Logout from '../components/Auth/Logout';
-const TouristAccount = () => {
+import NavigateButton from '../components/UpdateProfileButton';
+
+const ViewTouristAccount = () => {
     const navigate = useNavigate();
     const { auth } = useContext(AuthContext); // Get auth context
     if (!auth.isAuthenticated) {
@@ -12,6 +13,7 @@ const TouristAccount = () => {
     }
     const [profile, setProfile] = useState(null); // State to hold the tourist profile
     const [error, setError] = useState(null); // State to handle errors
+
     useEffect(() => {
         // Only fetch profile if the user is authenticated
         if (auth.isAuthenticated && auth.user) {
@@ -22,8 +24,20 @@ const TouristAccount = () => {
                     delete response.data.profile.createdAt;
                     delete response.data.profile.__v;
                     delete response.data.profile.updatedAt;
+
+                    delete response.data.profile.bookedActivities;
+                    delete response.data.profile.bookedItineraries;
+                    delete response.data.profile.bookedMuseums;
+                    delete response.data.profile.complaints;
+                    delete response.data.profile.purchasedProducts;
+
+                    const preferenceTagsResponse = await axiosInstance.get('/api/preferenceTag');
+                    const preferenceTags = preferenceTagsResponse.data;
+                    response.data.profile.preferences = response.data.profile.preferences.map((preferenceId) => {
+                        const tag = preferenceTags.find((tag) => tag._id === preferenceId);
+                        return tag ? tag.name : preferenceId;
+                    }).join(', ');
                     setProfile(response.data.profile);
-                    console.log(response.data.profile);
                 } catch (err) {
                     setError('Failed to load tourist profile.');
                 }
@@ -31,12 +45,7 @@ const TouristAccount = () => {
 
             fetchTourist();
         }
-        
-
     }, [auth]);
-
-    
-
 
     // Loading state while fetching the user data
     if (auth.loading) {
@@ -47,19 +56,28 @@ const TouristAccount = () => {
     if (!auth.isAuthenticated) {
         return <div>You are not authenticated.</div>;
     }
-    
 
     return (
         <div>
-            <NavigateButton path={"/viewAll"} text={"View All"}/>{'\u00A0'}
-            <NavigateButton path={"/products"} text={"View Products"}/>{'\u00A0'}
-            <NavigateButton path={"/submitComplaint"} text={"Submit Complaint"}/>{'\u00A0'}
-            <NavigateButton path={"/viewTouristAccount"} text={"My profile"}/>{'\u00A0'}
+            <NavigateButton path={"/touristAccount"} text={"Back"}/>{'\u00A0'}
 
-            <Logout />
-           
+            <h2>Tourist Profile</h2>
+            {profile ? (
+                <div>
+                    {Object.keys(profile).map((key) => (
+                        <div key={key}>
+                            <strong>{key}:</strong> {profile[key]}
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div>Loading profile...</div>
+            )}
+            <NavigateButton path={"/toursitUpdateAccount"} text={"Update Account"}/>{'\u00A0'}
+            <NavigateButton path={"/touristDeleteAccount"} text={"Request Account Deletion"}/>{'\u00A0'}
+
         </div>
     );
 };
 
-export default TouristAccount;
+export default ViewTouristAccount;

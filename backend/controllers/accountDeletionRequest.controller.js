@@ -2,9 +2,14 @@ import AccountDeletionRequestModel from "../models/accountDeletionRequest.model.
 
 // Create a new account deletion request
 export const createAccountDeletionRequest = async (req, res) => {
+    console.log("entered createAccountDeletionRequest");
     const userId = req.user.id;
-    const userType = req.user.userType;
+    const userType = req.user.userType.charAt(0).toUpperCase() + req.user.userType.slice(1).toLowerCase();
     try {
+        const existingRequest = await AccountDeletionRequestModel.findOne({ userId });
+        if (existingRequest) {
+            return res.status(409).json({ error: "Account already made an account deletion request" });
+        }
         const newRequest = new AccountDeletionRequestModel({
             userId,
             userType,
@@ -12,6 +17,7 @@ export const createAccountDeletionRequest = async (req, res) => {
         await newRequest.save();
         res.status(201).json(newRequest);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ error: error.message });
     }
 };
