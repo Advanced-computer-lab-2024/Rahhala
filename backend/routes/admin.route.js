@@ -18,7 +18,7 @@ import {
 const router = express.Router();
 
 router.post("/", addAdmin);
-router.delete("/:id/:entityType", deleteEntity);
+router.delete("/:entityType/:id", deleteEntity);
 router.put("/changePassword", verifyToken, changePassword);
 router.get("/viewPendingAdvertisers", verifyToken, viewPendingAdvertisers);
 router.put("/acceptAdvertiser/:id", verifyToken, acceptAdvertiser);

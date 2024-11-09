@@ -1,4 +1,13 @@
 /* ActivityCategories.css */
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #333333;
+    --background-color: #ffffff;
+    --border-color: #ccc;
+    --error-color: #ff0000;
+    --table-row-alt-color: #f2f2f2;
+}
+
 .activity-categories {
     display: flex;
     flex-direction: column; /* Stack items vertically */
@@ -7,14 +16,14 @@
     height: max-content;
     width: 100vw;
     padding: 50px;
-    background-color: var(--darkreader-neutral-background); /* Off-white for harmony */
+    background-color: var(--background-color); /* Ensure background is white */
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(24, 26, 27, 0.1);
 }
 
 .activity-categories h2 {
     text-align: center;
-    color: #333;
+    color: var(--secondary-color); /* Dark grey for better readability */
     margin-bottom: 20px;
     font-size: 2em;
 }
@@ -23,6 +32,7 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
+    width: 50%;
 }
 
 .activity-categories .controls label {
@@ -30,13 +40,13 @@
     align-items: center;
     gap: 10px;
     font-size: 1em;
-    color: #333;
+    color: var(--secondary-color); /* Dark grey for better readability */
 }
 
 .activity-categories .controls input,
 .activity-categories .controls select {
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 1em;
 }
@@ -45,28 +55,30 @@
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
+    background-color: var(--background-color); /* Ensure table background is white */
 }
 
 .activity-categories .categories-table th,
 .activity-categories .categories-table td {
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     text-align: left;
+    color: var(--secondary-color); /* Dark grey for better readability */
 }
 
 .activity-categories .categories-table th {
-    background-color: #007bff;
-    color: #fff;
+    background-color: var(--primary-color); /* Primary color for table headers */
+    color: #ffffff; /* White text for contrast */
 }
 
 .activity-categories .categories-table tr:nth-child(even) {
-    background-color: #f2f2f2;
+    background-color: var(--table-row-alt-color); /* Light grey for alternate rows */
 }
 
 .activity-categories .loading,
 .activity-categories .error {
     text-align: center;
-    color: #ff0000;
+    color: var(--error-color); /* Red color for error messages */
     font-weight: bold;
     margin-top: 20px;
 }

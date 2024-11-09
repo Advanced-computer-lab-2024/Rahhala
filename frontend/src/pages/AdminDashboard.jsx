@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import NavigateButton from '../components/UpdateProfileButton';
 import Logout from '../components/Auth/Logout';
 import ChangePassword from './ChangePassword';
-import ViewDocuments from '../components/ViewDocuments'; // Add this import
+import ViewDocuments from '../components/ViewDocuments';
+import DeleteAccount from '../components/DeleteAccount'; // Add this import
 import './AdminDashboard.css';
 
 function AdminDashboard() {
@@ -15,13 +16,49 @@ function AdminDashboard() {
     const [updateCategoryData, setUpdateCategoryData] = useState({ id: '', name: '' });
     const [deleteCategoryId, setDeleteCategoryId] = useState('');
     const [message, setMessage] = useState('');
-    const [visibleForm, setVisibleForm] = useState(null);
+    const [isGovernorFormVisible, setIsGovernorFormVisible] = useState(false);
+    const [isAdminFormVisible, setIsAdminFormVisible] = useState(false);
+    const [isCategoryFormVisible, setIsCategoryFormVisible] = useState(false);
+    const [isUpdateCategoryFormVisible, setIsUpdateCategoryFormVisible] = useState(false);
+    const [isDeleteCategoryFormVisible, setIsDeleteCategoryFormVisible] = useState(false);
+    const [isChangePasswordFormVisible, setIsChangePasswordFormVisible] = useState(false);
+    const [isDeleteAccountFormVisible, setIsDeleteAccountFormVisible] = useState(false); // Add this state
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
-    const toggleForm = (formName) => {
-        setVisibleForm(visibleForm === formName ? null : formName);
+    const toggleGovernorForm = () => {
+        setIsGovernorFormVisible(!isGovernorFormVisible);
+        setMessage('');
+    };
+
+    const toggleAdminForm = () => {
+        setIsAdminFormVisible(!isAdminFormVisible);
+        setMessage('');
+    };
+
+    const toggleCategoryForm = () => {
+        setIsCategoryFormVisible(!isCategoryFormVisible);
+        setMessage('');
+    };
+
+    const toggleUpdateCategoryForm = () => {
+        setIsUpdateCategoryFormVisible(!isUpdateCategoryFormVisible);
+        setMessage('');
+    };
+
+    const toggleDeleteCategoryForm = () => {
+        setIsDeleteCategoryFormVisible(!isDeleteCategoryFormVisible);
+        setMessage('');
+    };
+
+    const toggleChangePasswordForm = () => {
+        setIsChangePasswordFormVisible(!isChangePasswordFormVisible);
+        setMessage('');
+    };
+
+    const toggleDeleteAccountForm = () => {
+        setIsDeleteAccountFormVisible(!isDeleteAccountFormVisible);
         setMessage('');
     };
 
@@ -45,7 +82,7 @@ function AdminDashboard() {
             await axiosInstance.post('/api/governor', governorData);
             setMessage('Tourism Governor added successfully!');
             setGovernorData({ username: '', password: '' });
-            setVisibleForm(null);
+            setIsGovernorFormVisible(false);
         } catch (error) {
             setMessage(error.response?.data?.message || 'Failed to add Tourism Governor.');
         }
@@ -57,7 +94,7 @@ function AdminDashboard() {
             await axiosInstance.post('/api/admin/', adminData);
             setMessage('Admin added successfully!');
             setAdminData({ username: '', password: '' });
-            setVisibleForm(null);
+            setIsAdminFormVisible(false);
         } catch (error) {
             setMessage(error.response?.data?.message || 'Failed to add Admin.');
         }
@@ -69,7 +106,7 @@ function AdminDashboard() {
             await axiosInstance.post('/api/activityCategory', categoryData);
             setMessage('Category added successfully!');
             setCategoryData({ name: '' });
-            setVisibleForm(null);
+            setIsCategoryFormVisible(false);
         } catch (error) {
             setMessage(error.response?.data?.message || 'Failed to add category.');
         }
@@ -81,7 +118,7 @@ function AdminDashboard() {
             await axiosInstance.put(`/api/activityCategory/${updateCategoryData.id}`, { name: updateCategoryData.name });
             setMessage('Category updated successfully!');
             setUpdateCategoryData({ id: '', name: '' });
-            setVisibleForm(null);
+            setIsUpdateCategoryFormVisible(false);
         } catch (error) {
             setMessage(error.response?.data?.message || 'Failed to update category.');
         }
@@ -93,7 +130,7 @@ function AdminDashboard() {
             await axiosInstance.delete(`/api/activityCategory/${deleteCategoryId}`);
             setMessage('Category deleted successfully!');
             setDeleteCategoryId('');
-            setVisibleForm(null);
+            setIsDeleteCategoryFormVisible(false);
         } catch (error) {
             setMessage(error.response?.data?.message || 'Failed to delete category.');
         }
@@ -111,7 +148,7 @@ function AdminDashboard() {
             setCurrentPassword('');
             setNewPassword('');
             setConfirmNewPassword('');
-            setVisibleForm(null);
+            setIsChangePasswordFormVisible(false);
         } catch (error) {
             setMessage(error.response?.data?.message || 'Failed to change password.');
         }
@@ -123,38 +160,32 @@ function AdminDashboard() {
             {message && <p className="message">{message}</p>}
             
             <div className="buttons">
-                <button onClick={() => toggleForm('addCategory')}>
-                    {visibleForm === 'addCategory' ? 'Cancel' : 'Add Category'}
+                <button onClick={toggleCategoryForm}>
+                    {isCategoryFormVisible ? 'Cancel' : 'Add Category'}
                 </button>
-                <button onClick={() => toggleForm('updateCategory')}>
-                    {visibleForm === 'updateCategory' ? 'Cancel' : 'Update Category'}
+                <button onClick={toggleUpdateCategoryForm}>
+                    {isUpdateCategoryFormVisible ? 'Cancel' : 'Update Category'}
                 </button>
-                <button onClick={() => toggleForm('deleteCategory')}>
-                    {visibleForm === 'deleteCategory' ? 'Cancel' : 'Delete Category'}
+                <button onClick={toggleDeleteCategoryForm}>
+                    {isDeleteCategoryFormVisible ? 'Cancel' : 'Delete Category'}
                 </button>
                 <button onClick={handleShowCategories}>Show All Categories</button>
-                <button onClick={() => toggleForm('addGovernor')}>
-                    {visibleForm === 'addGovernor' ? 'Cancel' : 'Add Tourism Governor'}
+                <button onClick={toggleGovernorForm}>
+                    {isGovernorFormVisible ? 'Cancel' : 'Add Tourism Governor'}
                 </button>
-                <button onClick={() => toggleForm('addAdmin')}>
-                    {visibleForm === 'addAdmin' ? 'Cancel' : 'Add Admin'}
+                <button onClick={toggleAdminForm}>
+                    {isAdminFormVisible ? 'Cancel' : 'Add Admin'}
                 </button>
-                <button onClick={() => toggleForm('changePassword')}>
-                    {visibleForm === 'changePassword' ? 'Cancel' : 'Change Password'}
+                <button onClick={toggleChangePasswordForm}>
+                    {isChangePasswordFormVisible ? 'Cancel' : 'Change Password'}
                 </button>
-                <button onClick={() => toggleForm('viewTourGuideDocuments')}>
-                    {visibleForm === 'viewTourGuideDocuments' ? 'Cancel' : 'View Tour Guide Documents'}
-                </button>
-                <button onClick={() => toggleForm('viewAdvertiserDocuments')}>
-                    {visibleForm === 'viewAdvertiserDocuments' ? 'Cancel' : 'View Advertiser Documents'}
-                </button>
-                <button onClick={() => toggleForm('viewSellerDocuments')}>
-                    {visibleForm === 'viewSellerDocuments' ? 'Cancel' : 'View Seller Documents'}
+                <button onClick={toggleDeleteAccountForm}>
+                    {isDeleteAccountFormVisible ? 'Cancel' : 'Delete Account'}
                 </button>
             </div>
 
             <div className="form-container">
-                {visibleForm === 'addCategory' && (
+                {isCategoryFormVisible && (
                     <form onSubmit={handleCategorySubmit}>
                         <div>
                             <label>Category Name:</label>
@@ -170,7 +201,7 @@ function AdminDashboard() {
                     </form>
                 )}
 
-                {visibleForm === 'updateCategory' && (
+                {isUpdateCategoryFormVisible && (
                     <form onSubmit={handleUpdateCategorySubmit}>
                         <div>
                             <label>Category ID:</label>
@@ -196,7 +227,7 @@ function AdminDashboard() {
                     </form>
                 )}
 
-                {visibleForm === 'deleteCategory' && (
+                {isDeleteCategoryFormVisible && (
                     <form onSubmit={handleDeleteCategorySubmit}>
                         <div>
                             <label>Category ID:</label>
@@ -211,7 +242,7 @@ function AdminDashboard() {
                     </form>
                 )}
 
-                {visibleForm === 'addGovernor' && (
+                {isGovernorFormVisible && (
                     <form onSubmit={handleGovernorSubmit}>
                         <div>
                             <label>Username:</label>
@@ -237,7 +268,7 @@ function AdminDashboard() {
                     </form>
                 )}
 
-                {visibleForm === 'addAdmin' && (
+                {isAdminFormVisible && (
                     <form onSubmit={handleAdminSubmit}>
                         <div>
                             <label>Username:</label>
@@ -263,23 +294,15 @@ function AdminDashboard() {
                     </form>
                 )}
 
-                {visibleForm === 'changePassword' && (
+                {isChangePasswordFormVisible && (
                     <ChangePassword
                         userRole="admin"
                         handleChangePassword={handleChangePassword}
                     />
                 )}
 
-                {visibleForm === 'viewTourGuideDocuments' && (
-                    <ViewDocuments userType="tourGuide" />
-                )}
-
-                {visibleForm === 'viewAdvertiserDocuments' && (
-                    <ViewDocuments userType="advertiser" />
-                )}
-
-                {visibleForm === 'viewSellerDocuments' && (
-                    <ViewDocuments userType="seller" />
+                {isDeleteAccountFormVisible && (
+                    <DeleteAccount />
                 )}
             </div>
 

@@ -39,7 +39,7 @@ import SubmitComplaint from './pages/submitComplaint';
 import ViewTouristAccount from './pages/ViewTouristAccount';
 import TouristDeleteAccount from './pages/TouristDeleteAccount';
 import TouristBookings from './pages/TouristBookings';
-
+import DeleteAccount from './components/DeleteAccount';
 function App() {
     return (
         <Router>
@@ -185,7 +185,14 @@ function App() {
                     path="/access-denied"
                     element={<AccessDenied />}
                 />
-
+                <Route
+                    path="/deleteAccount"
+                    element={
+                        <ProtectedRoute roles={['admin']}>
+                            <DeleteAccount />
+                        </ProtectedRoute>
+                    }
+                />
                 {/* Redirect unknown routes to login */}
                 <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>

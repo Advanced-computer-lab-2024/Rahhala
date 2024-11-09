@@ -2,6 +2,8 @@ import adminModel from "../models/admin.model.js";
 import advertiserModel from "../models/advertiser.model.js";
 import sellerModel from "../models/seller.model.js";
 import tourGuideModel from "../models/tourGuide.model.js";
+import governorModel from "../models/governor.model.js";
+import touristModel from "../models/tourist.model.js";
 
 // Add Admin to the Database
 export const addAdmin = async (req, res) => {
@@ -38,25 +40,25 @@ export const deleteEntity = async (req, res) => {
   );
 
   let Model;
-
+console.log("entityType", entityType);    
   switch (entityType) {
     case "admin":
-      Model = models.adminModel;
+      Model = adminModel;
       break;
     case "governor":
-      Model = models.governorModel;
+      Model = governorModel;
       break;
     case "tourist":
-      Model = models.touristModel;
+      Model = touristModel;
       break;
     case "tourGuide":
-      Model = models.tourGuideModel;
+      Model = tourGuideModel;
       break;
     case "advertiser":
-      Model = models.advertiserModel;
+      Model = advertiserModel;
       break;
     case "seller":
-      Model = models.sellerModel;
+      Model = sellerModel;
       break;
     default:
       return res.status(400).json({ message: "Invalid entity type" });
