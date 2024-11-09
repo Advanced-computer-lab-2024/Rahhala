@@ -5,7 +5,8 @@ import {
   getTourGuideByID,
   changePassword,
   submitDocuments,
-  getDocuments // Add this import
+  getDocuments, // Add this import
+  registerTourGuide,
 } from "../controllers/tourGuide.controller.js";
 
 const router = express.Router();
@@ -15,5 +16,6 @@ router.get("/:id", verifyToken, getTourGuideByID);
 router.put("/changePassword", verifyToken, changePassword);
 router.post("/submitDocuments", verifyToken, submitDocuments);
 router.get("/documents", verifyToken, getDocuments); // Add this route
+router.post("/register", registerTourGuide);
 
 export default router;
