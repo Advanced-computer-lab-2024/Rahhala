@@ -332,9 +332,12 @@ function AdminDashboard() {
             </div>
 
             <div className="section">
-                <h3>Users Management</h3>
+                <h3>Management Panel</h3>
                 <div className="buttons">
-                    <NavigateButton path="/viewPendingUsers" text="View Pending Users" />
+                    <NavigateButton path="/viewPendingUsers" text="Pending Users Management" />
+                </div>
+                <div className="buttons">
+                    <NavigateButton path="/preferenceTagManagement" text="Preference Tag Management" />
                 </div>
             </div>
 

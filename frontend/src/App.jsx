@@ -41,7 +41,7 @@ import TouristDeleteAccount from './pages/TouristDeleteAccount';
 import TouristBookings from './pages/TouristBookings';
 import DeleteAccount from './components/DeleteAccount';
 import UserManagement from './pages/UserManagement';    
-
+import PreferenceTagManagement from './pages/PreferenceTagManagement';
 function App() {
     return (
         <Router>
@@ -199,6 +199,13 @@ function App() {
                     element={
                         <ProtectedRoute roles={['admin']}>
                             <UserManagement />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/PreferenceTagManagement" 
+                    element={
+                        <ProtectedRoute roles={['admin']}>
+                            <PreferenceTagManagement />
                         </ProtectedRoute>
                     }
                 />
