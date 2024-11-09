@@ -7,10 +7,6 @@
     --border-color: #ccc;
     --success-color: #28a745;
     --hover-color: #0056b3;
-    --darkreader-neutral-background: #f0f0f0;
-    --darkreader-neutral-text: #ffffff;
-    --darkreader-selection-background: #4a90e2;
-    --darkreader-selection-text: #ffffff;
     color-scheme: dark light;
     scrollbar-color: #a49f98 #d2d0cc;
 }
