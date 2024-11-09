@@ -8,7 +8,7 @@ import {
     deleteAccountDeletionRequestById,
 } from "../controllers/accountDeletionRequest.controller.js";
 
-const router = express.Router();
+const router = express.Router();0
 
 router.post("/", verifyToken, createAccountDeletionRequest);
 router.get("/", verifyToken, getAllAccountDeletionRequests);

@@ -1,5 +1,4 @@
 import advertiserModel from "../models/advertiser.model.js";
-import advertiserRequestModel from "../models/advertiserRequest.model.js";
 
 // Add Advertiser
 export const editAdvertiser = async (req, res) => {
@@ -109,7 +108,15 @@ export const submitDocuments = async (req, res) => {
         res.status(500).json({ error: "Error submitting documents" });
     }
 };
-
+// Add this function to fetch documents
+export const getDocuments = async (req, res) => {
+    try {
+        const documents = await advertiserRequestModel.find({}, 'idCardImage taxationRegistryImage');
+        res.status(200).json({ documents });
+    } catch (error) {
+        res.status(500).json({ error: "Error fetching documents" });
+    }
+};
 export const createAccoutRequest = async (req, res) => {
     const {username, email, password, companyName, website, hotline, companyProfile, idCardImage, taxationRegistryImage, logo } = req.body;
 

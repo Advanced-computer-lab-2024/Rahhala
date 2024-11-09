@@ -1,0 +1,140 @@
+/* AdminDashboard.css */
+:root {
+    --darkreader-neutral-background: #f0f0f0;
+    --darkreader-neutral-text: #333333;
+    --darkreader-selection-background: #4a90e2;
+    --darkreader-selection-text: #ffffff;
+    color-scheme: dark light;
+    scrollbar-color: #a49f98 #d2d0cc;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--darkreader-neutral-background); /* Background color */
+    color: var(--darkreader-neutral-text); /* Neutral text color */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    box-sizing: border-box;
+    line-height: 1.5;
+    font-weight: 400;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit; /* Apply border-box to all elements */
+}
+
+.admin-dashboard {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    justify-content: center; /* Center items vertically */
+    align-items: center; /* Center items horizontally */
+    height: max-content;
+    width: 100vw;
+    padding: 40px; /* Adjusted padding */
+    background-color: var(--darkreader-neutral-background); /* Off-white for harmony */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(24, 26, 27, 0.1);
+}
+
+.admin-dashboard h2 {
+    text-align: center;
+    color: var(--darkreader-neutral-text); /* Improved text contrast */
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+.admin-dashboard .message {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #28a745;
+    font-weight: bold;
+}
+
+.admin-dashboard .section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #ffffff; /* Ensure section contrast */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-dashboard .section h3 {
+    margin-bottom: 15px;
+    color: #007bff;
+    font-size: 1.5em;
+}
+
+.admin-dashboard .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px; /* Adjusted gap */
+    justify-content: center;
+}
+
+.admin-dashboard .buttons button,
+.admin-dashboard .buttons a {
+    flex: 1 1 calc(33.33% - 15px); /* Responsive buttons */
+    min-width: 150px;
+    padding: 12px 24px; /* Adjusted padding */
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    font-size: 1em;
+}
+
+.admin-dashboard .buttons button:hover,
+.admin-dashboard .buttons a:hover {
+    background-color: #0056b3;
+}
+
+.admin-dashboard form {
+    background-color: var(--darkreader-neutral-background);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-dashboard form div {
+    margin-bottom: 15px;
+}
+
+.admin-dashboard form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--darkreader-neutral-text);
+}
+
+.admin-dashboard form input,
+.admin-dashboard form select,
+.admin-dashboard form textarea {
+    width: 100%;
+    padding: 12px; /* Adjusted padding */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.admin-dashboard form button {
+    padding: 12px 24px; /* Adjusted padding */
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1em;
+}
+
+.admin-dashboard form button:hover {
+    background-color: #0056b3;
+}

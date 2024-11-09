@@ -1,10 +1,5 @@
 import adminModel from "../models/admin.model.js";
 import models from "../models/index.model.js";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import advertiserRequest from "../models/advertiserRequest.model.js";
-import sellerRequest from "../models/sellerRequest.model.js";
-import tourGuideRequest from "../models/tourGuideRequest.model.js";
 
 // Add Admin to the Database
 export const addAdmin = async (req, res) => {
@@ -94,11 +89,9 @@ export const changePassword = async (req, res) => {
 
     // Check if the new password is the same as the old password
     if (newPassword === oldPassword) {
-      return res
-        .status(400)
-        .json({
-          message: "New password cannot be the same as the old password",
-        });
+      return res.status(400).json({
+        message: "New password cannot be the same as the old password",
+      });
     }
 
     // Update the password

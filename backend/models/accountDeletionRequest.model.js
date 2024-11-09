@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const accountDeletionRequestSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, required: true, refPath: 'userType' },
-    userType: { type: String, required: true, enum: ['Tourist', 'TourGuide', 'Advertiser', 'TourismGovernor', 'Admin', 'Seller'] },
+    userType: { type: String, required: true, enum: ['tourist', 'tourGuide', 'advertiser', 'tourismGovernor', 'admin', 'seller'] },
     requestDate: { type: Date, default: Date.now },
     status: { type: String, enum: ['Pending', 'Approved', 'Rejected'], default: 'Pending' },
 });

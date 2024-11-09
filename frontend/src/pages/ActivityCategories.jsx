@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axiosInstance from '../utils/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import NavigateButton from '../components/UpdateProfileButton';
-import '../table.css';
+import './ActivityCategories.css';
 
 function ActivityCategories() {
     const [categories, setCategories] = useState([]);
@@ -29,10 +29,9 @@ function ActivityCategories() {
             return searchQuery ? category.name.toLowerCase().includes(searchQuery.toLowerCase()) : true;
         });
     };
-
     const sortCategories = (categories) => {
         return categories.sort((a, b) => {
-            return sortOrder === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+            return sortOrder === 'asc' ? new Date(a.createdAt) - new Date(b.createdAt) : new Date(b.createdAt) - new Date(a.createdAt);
         });
     };
 
@@ -44,11 +43,11 @@ function ActivityCategories() {
     };
 
     return (
-        <div>
+        <div className="activity-categories">
             <h2>Activity Categories</h2>
-            <div>
+            <div className="controls">
                 <label>
-                    Sort by name:
+                    Sort by time:
                     <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
                         <option value="asc">Ascending</option>
                         <option value="desc">Descending</option>
@@ -60,7 +59,7 @@ function ActivityCategories() {
                 </label>
             </div>
             {categories.length > 0 ? (
-                <table>
+                <table className="categories-table">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -79,9 +78,9 @@ function ActivityCategories() {
                     </tbody>
                 </table>
             ) : (
-                <div>Loading categories...</div>
+                <div className="loading">Loading categories...</div>
             )}
-            {error && <div>{error}</div>}
+            {error && <div className="error">{error}</div>}
             <NavigateButton path='/AdminDashboard' text='Back' />
         </div>
     );

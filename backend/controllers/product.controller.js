@@ -5,8 +5,8 @@ export const viewProductsQuantitiesAndSales = async (req, res) => {
   console.log("entered viewProductsQuantitiesAndSales");
 
   const { id: userId, userType } = req.user; // Get user ID and role from the token
-console.log("userId: ", userId);
-console.log("userType: ", userType);
+  console.log("userId: ", userId);
+  console.log("userType: ", userType);
   try {
     let products;
 
@@ -15,7 +15,9 @@ console.log("userType: ", userType);
       products = await productModel.find({}).select("name quantity sales");
     } else if (userType === "seller") {
       // Sellers can view only their own products' quantities and sales
-      products = await productModel.find({ sellerName: userId }).select("name quantity sales");
+      products = await productModel
+        .find({ sellerName: userId })
+        .select("name quantity sales");
     } else {
       return res.status(403).send("Unauthorized access");
     }
@@ -34,25 +36,36 @@ console.log("userType: ", userType);
 // Create a new product
 export const createProduct = async (req, res) => {
   console.log("entered createProduct");
+  const id = req.user.id;
 
-  const { name, description, price, quantity, sellerName, averageRating, picture } = req.body;
+  const {
+    description,
+    price,
+    name,
+    quantity,
+    averageRating,
+    picture,
+  } = req.body;
+  console.log("req.body: ", req.body);  // Debugging
 
   // Validate required fields
-  if (!name || !price || !quantity || !sellerName) {
-    return res.status(400).send("Missing required fields: name, price, quantity, and sellerName.");
+  if (!price || !quantity || !description || !picture) {
+    return res
+      .status(400)
+      .send("Missing required fields: name, price, quantity, and sellerName.");
   }
 
   try {
     // Create a new product document
     const newProduct = new productModel({
+      sellerId: id,
+      name,
       picture,
       price,
-      name,
       description,
-      sellerName,
       quantity,
       sales: 0, // Set sales to 0 by default
-      averageRating: averageRating || 0 // Default to 0 if not provided
+      averageRating: averageRating || 0, // Default to 0 if not provided
     });
 
     // Save the product to the database
@@ -65,7 +78,18 @@ export const createProduct = async (req, res) => {
   }
 };
 
+//Get all products that are not archived
+export const getActiveProducts = async (req, res) => {
+  console.log("entered getActiveProducts");
 
+  try {
+    const products = await productModel.find({ isArchived: false });
+    res.status(200).send(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching products");
+  }
+};
 
 // Get all products from the database
 export const getProducts = async (req, res) => {
@@ -154,5 +178,27 @@ export const editProduct = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Error updating product");
+  }
+};
+
+//upload picture
+export const uploadPicture = async (req, res) => {
+  console.log("entered uploadPicture");
+
+  const { productId } = req.params;
+  const { picture } = req.body;
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return res.status(400).json({ error: "Invalid product ID format" });
+  }
+  try {
+    const product = await productModel.findByIdAndUpdate(
+      productId,
+      { picture },
+      { new: true }
+    );
+    res.status(200).send("Picture uploaded successfully");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error uploading picture");
   }
 };

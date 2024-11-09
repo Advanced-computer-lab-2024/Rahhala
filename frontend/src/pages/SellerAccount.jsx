@@ -13,6 +13,8 @@ const SellerAccount = () => {
     }
     const [profile, setProfile] = useState(null); 
     const [error, setError] = useState(null); // State to handle errors
+    const [message, setMessage] = useState(null); // State to handle success messages
+
     useEffect(() => {
         // Only fetch profile if the user is authenticated
         if (auth.isAuthenticated && auth.user) {
@@ -26,30 +28,44 @@ const SellerAccount = () => {
                     delete response.data.profile.updatedAt;
                     setProfile(response.data.profile);
                 } catch (err) {
-                    setError('Failed to load Seller profile.');
+                    setError('Error fetching seller profile');
                 }
             };
-
             fetchSeller();
         }
-        
-
     }, [auth]);
-  return (
-<div>
-    {error && <p>{error}</p>}
-    {profile ? (
-        <div>
-            {Object.entries(profile).map(([key, value]) => (
-                <p key={key}><strong>{key}:</strong> {value}</p>
-            ))}
-        </div>
-    ) : (
-        <p>Loading profile...</p>
-    )}
-    <NavigateButton path={"/updateSellerAccount"} text={"Update Profile"}/>{'\u00A0'}
-    <NavigateButton path={"/seller-dashboard"} text={"Home"}/>{'\u00A0'}
-</div>  )
-}
 
-export default SellerAccount
+    const handleAccountDeletionRequest = async () => {
+        try {
+            const response = await axiosInstance.post('api/accountDeletionRequest/');
+            setMessage('Account deletion request submitted successfully');
+            setError(null); // Clear any previous errors
+        } catch (err) {
+            setError(err.response?.data?.error || 'Error submitting account deletion request');
+        }
+    };
+
+    return (
+        <div>
+            <h1>Seller Account</h1>
+            {error && <p>{error}</p>}
+            {message && <p>{message}</p>}
+            {profile && (
+                <div>
+                    <p>Username: {profile.username}</p>
+                    <p>Email: {profile.email}</p>
+                    <p>Name: {profile.name}</p>
+                    <p>Description: {profile.description}</p>
+                    <p>Logo: {profile.logo}</p>
+                    <button onClick={handleAccountDeletionRequest}>Request My Account to be Deleted</button>
+                </div>
+            )}
+            <NavigateButton path='/updateSellerAccount' text='Update Account'/>{'\u00A0'} 
+            <NavigateButton path={"/seller-dashboard"} text={"Home"}/>{'\u00A0'}
+
+            <Logout />
+        </div>
+    );
+};
+
+export default SellerAccount;

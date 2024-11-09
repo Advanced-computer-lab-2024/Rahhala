@@ -51,6 +51,11 @@ const tourGuideSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    status: {
+    type: String,
+        enum: ['accepted', 'rejected', 'pending'],
+        default: 'pending'
+    }
 }, { timestamps: true }); // Adds createdAt and updatedAt timestamps
 
 // Create the TourGuide model
