@@ -4,23 +4,24 @@ import advertiserModel from "../models/advertiser.model.js";
 export const editAdvertiser = async (req, res) => {
   console.log("entered  editAdvertiser");
 
-    const { email, companyName, website, hotline, companyProfile, status } = req.body;
-    const userId = req.user.id;
-    try {
-        const advertiser = await advertiserModel.findById(userId);
+  const { email, companyName, website, hotline, companyProfile, status } =
+    req.body;
+  const userId = req.user.id;
+  try {
+    const advertiser = await advertiserModel.findById(userId);
 
     if (!advertiser) {
       return res.status(404).json({ error: "Advertiser not found" });
     }
 
-        // Update advertiser's profile details
-        advertiser.email = email || advertiser.email;
-        advertiser.companyName = companyName || advertiser.companyName;
-        advertiser.website = website || advertiser.website;
-        advertiser.hotline = hotline || advertiser.hotline;
-        advertiser.companyProfile = companyProfile || advertiser.companyProfile;
-        advertiser.profileCreated = true;
-        advertiser.status = status || advertiser.status;
+    // Update advertiser's profile details
+    advertiser.email = email || advertiser.email;
+    advertiser.companyName = companyName || advertiser.companyName;
+    advertiser.website = website || advertiser.website;
+    advertiser.hotline = hotline || advertiser.hotline;
+    advertiser.companyProfile = companyProfile || advertiser.companyProfile;
+    advertiser.profileCreated = true;
+    advertiser.status = status || advertiser.status;
 
     await advertiser.save();
     res.status(200).json({
@@ -68,11 +69,9 @@ export const changePassword = async (req, res) => {
 
     // Check if the new password is the same as the old password
     if (newPassword === oldPassword) {
-      return res
-        .status(400)
-        .json({
-          message: "New password cannot be the same as the old password",
-        });
+      return res.status(400).json({
+        message: "New password cannot be the same as the old password",
+      });
     }
 
     // Update the password
@@ -97,11 +96,9 @@ export const submitDocuments = async (req, res) => {
       return res.status(404).json({ error: "Advertiser not found" });
     }
     if (!idCardImage || !taxationRegistryImage) {
-      return res
-        .status(400)
-        .json({
-          error: "Both ID card image and taxation registry image are required",
-        });
+      return res.status(400).json({
+        error: "Both ID card image and taxation registry image are required",
+      });
     }
     advertiser.idCardImage = idCardImage;
     advertiser.taxationRegistryImage = taxationRegistryImage;
@@ -133,8 +130,17 @@ export const getDocuments = async (req, res) => {
 export const registerAdvertiser = async (req, res) => {
   console.log("entered registerAdvertiser");
 
-  const { email, password, companyName, website, hotline, companyProfile } =
-    req.body;
+  const {
+    username,
+    idCardImage,
+    taxationRegistryImage,
+    email,
+    password,
+    websiteLink,
+    hotline,
+    companyProfile,
+    logo,
+  } = req.body;
 
   try {
     const advertiser = await advertiserModel.create({

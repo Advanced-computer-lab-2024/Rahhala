@@ -3,7 +3,14 @@ import tourGuideModel from "../models/tourGuide.model.js";
 // Edit Tour Guide Information
 export const editTourGuide = async (req, res) => {
   console.log("entered editTourGuide");
-  const { work, yearsOfExperience, certificationImages, email, mobileNumber, status } = req.body;
+  const {
+    work,
+    yearsOfExperience,
+    certificationImages,
+    email,
+    mobileNumber,
+    status,
+  } = req.body;
   const id = req.user.id;
 
   try {
@@ -74,11 +81,9 @@ export const changePassword = async (req, res) => {
 
     // Check if the new password is the same as the old password
     if (newPassword === oldPassword) {
-      return res
-        .status(400)
-        .json({
-          message: "New password cannot be the same as the old password",
-        });
+      return res.status(400).json({
+        message: "New password cannot be the same as the old password",
+      });
     }
 
     // Update the password
@@ -104,11 +109,9 @@ export const submitDocuments = async (req, res) => {
       return res.status(404).json({ error: "Tour guide not found" });
     }
     if (!idCardImage || !certificationImages) {
-      return res
-        .status(400)
-        .json({
-          error: "Both ID card image and certification images are required",
-        });
+      return res.status(400).json({
+        error: "Both ID card image and certification images are required",
+      });
     }
     // Update the tour guide's documents
     user.idCardImage = idCardImage;
@@ -139,7 +142,16 @@ export const getDocuments = async (req, res) => {
 
 //Register Tour Guide
 export const registerTourGuide = async (req, res) => {
-  const { email, password, mobileNumber } = req.body;
+  console.log("entered registerTourGuide");
+  const {
+    username,
+    idCardImage,
+    certificationImages,
+    email,
+    password,
+    mobileNumber,
+    previousWork,
+  } = req.body;
 
   try {
     const user = await tourGuideModel.create({
@@ -149,7 +161,7 @@ export const registerTourGuide = async (req, res) => {
       email,
       password,
       mobileNumber,
-      previousWork: [],
+      previousWork,
     });
 
     res
