@@ -40,7 +40,7 @@ export const deleteEntity = async (req, res) => {
   );
 
   let Model;
-console.log("entityType", entityType);    
+  console.log("entityType", entityType);
   switch (entityType) {
     case "admin":
       Model = adminModel;
@@ -126,9 +126,9 @@ export const viewPendingAdvertisers = async (req, res) => {
 //Accept Advertiser
 export const acceptAdvertiser = async (req, res) => {
   console.log("entered acceptAdvertiser");
-  const { advertiserID } = req.params;
+  const { _id } = req.params;
   try {
-    const advertiser = await advertiserModel.findById(advertiserID);
+    const advertiser = await advertiserModel.findById(_id);
     if (!advertiser) {
       return res.status(404).json({ message: "Advertiser not found" });
     }
@@ -144,7 +144,7 @@ export const acceptAdvertiser = async (req, res) => {
 //Reject Advertiser
 export const rejectAdvertiser = async (req, res) => {
   console.log("entered rejectAdvertiser");
-  const { advertiserID } = req.params;
+  const { advertiserID } = req.params._id;
   try {
     const advertiser = await advertiserModel.findById(advertiserID);
     if (!advertiser) {
@@ -226,9 +226,9 @@ export const viewPendingTourGuides = async (req, res) => {
 //Accept Tour Guide
 export const acceptTourGuide = async (req, res) => {
   console.log("entered acceptTourGuide");
-  const { tourGuideID } = req.params;
+  const { _id } = req.params;
   try {
-    const tourGuide = await tourGuideModel.findById(tourGuideID);
+    const tourGuide = await tourGuideModel.findById(_id);
     if (!tourGuide) {
       return res.status(404).json({ message: "Tour Guide not found" });
     }
