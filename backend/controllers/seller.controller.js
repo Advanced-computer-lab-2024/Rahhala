@@ -123,30 +123,7 @@ export const getDocuments = async (req, res) => {
       res.status(500).json({ error: "Error fetching documents" });
   }
 };
-export const createAccoutRequest = async (req, res) => {
-    const { email, password, name, username, idCardImage, taxationRegistryImage, logo, description } = req.body;
 
-    try {
-        const seller = await sellerRequestModel.create({
-            username,
-            email,
-            password,
-            name,
-            username,
-            idCardImage,
-            taxationRegistryImage,
-            description,
-            logo,
-        });
-
-        res.status(201).json({
-            message: "Seller account request created successfully",
-            profile: seller,
-        });
-    } catch (error) {
-        res.status(500).json({ error: "Error creating seller account request" });
-    }
-};
 
 export const acceptTerms = async (req, res) => {
     const userID = req.user.id;

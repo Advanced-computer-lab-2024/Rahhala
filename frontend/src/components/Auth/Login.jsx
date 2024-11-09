@@ -41,14 +41,15 @@ const Login = () => {
                     : { username: formData.identifier }
                 )
             };
-            console.log(loginData);
+            console.log( "login data", loginData);
             const response = await axiosInstance.post('/api/auth/login', loginData);
             const { token } = response.data;
 
             localStorage.setItem('token', token);
             const decoded = jwtDecode(token);
             const userType = decoded.userType;
-
+            console.log("userType", userType);
+            console.log("decoded", decoded);
             setAuth({
                 token,
                 isAuthenticated: true,
@@ -60,7 +61,6 @@ const Login = () => {
             });
 
             setMessage('Login successful! Redirecting...');
-
             // add your disired routes here //
             const routes = {
                 tourist: '/touristAccount',
@@ -71,9 +71,10 @@ const Login = () => {
                 tourism_governor: '/GovernorDashboard',
 
             };
-
             const targetRoute = routes[userType.toLowerCase()];
+            console.log("targetRoute", targetRoute);    
             if (targetRoute) {
+                console.log('Navigating to:', targetRoute); // Debugging
                 navigate(targetRoute);
             }
 

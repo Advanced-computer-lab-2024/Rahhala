@@ -26,7 +26,7 @@ const handleLogin = async (model, credentials, userType) => {
   if (!user) {
     throw new Error("Invalid credentials.");
   }
-  console.log("userType is ", userType);
+  console.log("backend userType is ", userType);
   // Check if the user is an advertiser, seller, or tour guide and if their status is accepted or rejected
   if (["advertiser", "seller", "tourguide"].includes(userType.toLowerCase())) {
     if (user.status === 'rejected') {
@@ -42,7 +42,7 @@ const handleLogin = async (model, credentials, userType) => {
     throw new Error("Invalid credentials.");
   }
 
-  const token = generateToken(user);
+  const token = generateToken(user, userType);
   return token;
 };
 
