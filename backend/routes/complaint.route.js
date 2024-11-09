@@ -8,6 +8,7 @@ import {
   deleteComplaint,
   getComplaintsByUserId,
   filterComplaintsByStatus,
+  markComplaintResolved,
 } from "../controllers/complaint.controller.js";
 
 const router = express.Router();
@@ -19,5 +20,5 @@ router.put("/:id", verifyToken, updateComplaint);
 router.delete("/:id", verifyToken, deleteComplaint);
 router.get("/user", verifyToken, getComplaintsByUserId);
 router.get("/status", verifyToken, filterComplaintsByStatus);
-
+router.put("/markResolved/:id", verifyToken, markComplaintResolved);
 export default router;

@@ -2,25 +2,26 @@ import complaintModel from "../models/complaint.model.js";
 
 // Create a new complaint, not used
 export const createComplaint = async (req, res) => {
-    console.log("entered createComplaint");
-    try {
-        const userId = req.user.id;
-        let userType = req.user.userType;
-        userType = userType.charAt(0).toUpperCase() + userType.slice(1).toLowerCase();
-        const { title, body } = req.body;
-        const newComplaint = new complaintModel({
-            title,
-            body,
-            userId,
-            userType
-        });
-        await newComplaint.save();
-        console.log(newComplaint);
-        res.status(201).json(newComplaint);
-    } catch (error) {
-        console.log("error:", error);
-        res.status(400).json({ message: error.message });
-    }
+  console.log("entered createComplaint");
+  try {
+    const userId = req.user.id;
+    let userType = req.user.userType;
+    userType =
+      userType.charAt(0).toUpperCase() + userType.slice(1).toLowerCase();
+    const { title, body } = req.body;
+    const newComplaint = new complaintModel({
+      title,
+      body,
+      userId,
+      userType,
+    });
+    await newComplaint.save();
+    console.log(newComplaint);
+    res.status(201).json(newComplaint);
+  } catch (error) {
+    console.log("error:", error);
+    res.status(400).json({ message: error.message });
+  }
 };
 // Get all complaints
 export const getAllComplaints = async (req, res) => {
@@ -93,6 +94,23 @@ export const filterComplaintsByStatus = async (req, res) => {
     const status = req.query.status;
     const complaints = await complaintModel.find({ status });
     res.status(200).json(complaints);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Mark a complaint as resolved
+export const markComplaintResolved = async (req, res) => {
+  try {
+    const complaint = await complaintModel.findByIdAndUpdate(
+      req.params.id,
+      { status: "resolved" },
+      { new: true }
+    );
+    if (!complaint) {
+      return res.status(404).json({ message: "Complaint not found" });
+    }
+    res.status(200).json(complaint);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

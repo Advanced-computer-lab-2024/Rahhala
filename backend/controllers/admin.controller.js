@@ -1,5 +1,7 @@
 import adminModel from "../models/admin.model.js";
-import models from "../models/index.model.js";
+import advertiserModel from "../models/advertiser.model.js";
+import sellerModel from "../models/seller.model.js";
+import tourGuideModel from "../models/tourGuide.model.js";
 
 // Add Admin to the Database
 export const addAdmin = async (req, res) => {
@@ -102,5 +104,155 @@ export const changePassword = async (req, res) => {
   } catch (error) {
     console.error("Error changing password:", error);
     res.status(500).json({ message: "Error changing password" });
+  }
+};
+
+// View Pending Advertisers
+export const viewPendingAdvertisers = async (req, res) => {
+  console.log("entered viewPendingAdvertisers");
+  try {
+    const advertisers = await advertiserModel.find({
+      status: "pending",
+    });
+    res.status(200).json({ advertisers });
+  } catch (error) {
+    console.error("Error viewing pending advertisers:", error);
+    res.status(500).json({ message: "Error viewing pending advertisers" });
+  }
+};
+
+//Accept Advertiser
+export const acceptAdvertiser = async (req, res) => {
+  console.log("entered acceptAdvertiser");
+  const { advertiserID } = req.params;
+  try {
+    const advertiser = await advertiserModel.findById(advertiserID);
+    if (!advertiser) {
+      return res.status(404).json({ message: "Advertiser not found" });
+    }
+    advertiser.status = "accepted";
+    await advertiser.save();
+    res.status(200).json({ message: "Advertiser accepted successfully" });
+  } catch (error) {
+    console.error("Error accepting advertiser:", error);
+    res.status(500).json({ message: "Error accepting advertiser" });
+  }
+};
+
+//Reject Advertiser
+export const rejectAdvertiser = async (req, res) => {
+  console.log("entered rejectAdvertiser");
+  const { advertiserID } = req.params;
+  try {
+    const advertiser = await advertiserModel.findById(advertiserID);
+    if (!advertiser) {
+      return res.status(404).json({ message: "Advertiser not found" });
+    }
+    advertiser.status = "rejected";
+    await advertiser.save();
+    res.status(200).json({ message: "Advertiser rejected successfully" });
+  } catch (error) {
+    console.error("Error rejecting advertiser:", error);
+    res.status(500).json({ message: "Error rejecting advertiser" });
+  }
+};
+
+// View Pending Sellers
+export const viewPendingSellers = async (req, res) => {
+  console.log("entered viewPendingSellers");
+  try {
+    const sellers = await sellerModel.find({
+      status: "pending",
+    });
+    res.status(200).json({ sellers });
+  } catch (error) {
+    console.error("Error viewing pending sellers:", error);
+    res.status(500).json({ message: "Error viewing pending sellers" });
+  }
+};
+
+//Accept Seller
+export const acceptSeller = async (req, res) => {
+  console.log("entered acceptSeller");
+  const { sellerID } = req.params;
+  try {
+    const seller = await sellerModel.findById(sellerID);
+    if (!seller) {
+      return res.status(404).json({ message: "Seller not found" });
+    }
+    seller.status = "accepted";
+    await seller.save();
+    res.status(200).json({ message: "Seller accepted successfully" });
+  } catch (error) {
+    console.error("Error accepting seller:", error);
+    res.status(500).json({ message: "Error accepting seller" });
+  }
+};
+
+//Reject Seller
+export const rejectSeller = async (req, res) => {
+  console.log("entered rejectSeller");
+  const { sellerID } = req.params;
+  try {
+    const seller = await sellerModel.findById(sellerID);
+    if (!seller) {
+      return res.status(404).json({ message: "Seller not found" });
+    }
+    seller.status = "rejected";
+    await seller.save();
+    res.status(200).json({ message: "Seller rejected successfully" });
+  } catch (error) {
+    console.error("Error rejecting seller:", error);
+    res.status(500).json({ message: "Error rejecting seller" });
+  }
+};
+
+// View Pending Tour Guides
+export const viewPendingTourGuides = async (req, res) => {
+  console.log("entered viewPendingTourGuides");
+  try {
+    const tourGuides = await tourGuideModel.find({
+      status: "pending",
+    });
+    res.status(200).json({ tourGuides });
+  } catch (error) {
+    console.error("Error viewing pending tour guides:", error);
+    res.status(500).json({ message: "Error viewing pending tour guides" });
+  }
+};
+
+//Accept Tour Guide
+export const acceptTourGuide = async (req, res) => {
+  console.log("entered acceptTourGuide");
+  const { tourGuideID } = req.params;
+  try {
+    const tourGuide = await tourGuideModel.findById(tourGuideID);
+    if (!tourGuide) {
+      return res.status(404).json({ message: "Tour Guide not found" });
+    }
+    tourGuide.status = "accepted";
+    await tourGuide.save();
+    res.status(200).json({ message: "Tour Guide accepted successfully" });
+  } catch (error) {
+    console.error("Error accepting tour guide:", error);
+    res.status(500).json({ message: "Error accepting tour guide" });
+  }
+};
+
+//Reject Tour Guide
+export const rejectTourGuide = async (req, res) => {
+  console.log("entered rejectTourGuide");
+  const { tourGuideID } = req.params;
+  try {
+    const tourGuide = await tourGuideModel.findById(tourGuideID);
+    if (!tourGuide) {
+      return res.status(404).json({ message: "Tour Guide not found" });
+    }
+    tourGuide.status = "rejected";
+    await tourGuide.save();
+    res.status(200).json({ message: "Tour Guide rejected successfully" });
+  } catch (error) {
+    console.error("Error rejecting tour guide:", error);
+    res.status(500).json({ message: "Error rejecting tour guide" });
   }
 };
