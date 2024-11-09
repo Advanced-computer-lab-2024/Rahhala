@@ -117,29 +117,5 @@ export const getDocuments = async (req, res) => {
         res.status(500).json({ error: "Error fetching documents" });
     }
 };
-export const createAccoutRequest = async (req, res) => {
-    const {username, email, password, companyName, website, hotline, companyProfile, idCardImage, taxationRegistryImage, logo } = req.body;
 
-    try {
-        const advertiser = await advertiserRequestModel.create({
-            username,
-            email,
-            password,
-            companyName,
-            website,
-            hotline,
-            companyProfile,
-            idCardImage,
-            taxationRegistryImage,
-            logo,
-        });
-
-        res.status(201).json({
-            message: "Advertiser account request created successfully",
-            profile: advertiser,
-        });
-    } catch (error) {
-        res.status(500).json({ error: "Error creating advertiser account request" });
-    }
-}
 
