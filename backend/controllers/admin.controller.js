@@ -144,9 +144,9 @@ export const acceptAdvertiser = async (req, res) => {
 //Reject Advertiser
 export const rejectAdvertiser = async (req, res) => {
   console.log("entered rejectAdvertiser");
-  const { advertiserID } = req.params._id;
+  const { _id } = req.params;
   try {
-    const advertiser = await advertiserModel.findById(advertiserID);
+    const advertiser = await advertiserModel.findById(_id);
     if (!advertiser) {
       return res.status(404).json({ message: "Advertiser not found" });
     }
@@ -176,9 +176,9 @@ export const viewPendingSellers = async (req, res) => {
 //Accept Seller
 export const acceptSeller = async (req, res) => {
   console.log("entered acceptSeller");
-  const { sellerID } = req.params;
+  const { _id } = req.params;
   try {
-    const seller = await sellerModel.findById(sellerID);
+    const seller = await sellerModel.findById(_id);
     if (!seller) {
       return res.status(404).json({ message: "Seller not found" });
     }
@@ -194,9 +194,9 @@ export const acceptSeller = async (req, res) => {
 //Reject Seller
 export const rejectSeller = async (req, res) => {
   console.log("entered rejectSeller");
-  const { sellerID } = req.params;
+  const { _id } = req.params;
   try {
-    const seller = await sellerModel.findById(sellerID);
+    const seller = await sellerModel.findById(_id);
     if (!seller) {
       return res.status(404).json({ message: "Seller not found" });
     }
@@ -244,9 +244,9 @@ export const acceptTourGuide = async (req, res) => {
 //Reject Tour Guide
 export const rejectTourGuide = async (req, res) => {
   console.log("entered rejectTourGuide");
-  const { tourGuideID } = req.params;
+  const { _id } = req.params;
   try {
-    const tourGuide = await tourGuideModel.findById(tourGuideID);
+    const tourGuide = await tourGuideModel.findById(_id);
     if (!tourGuide) {
       return res.status(404).json({ message: "Tour Guide not found" });
     }
