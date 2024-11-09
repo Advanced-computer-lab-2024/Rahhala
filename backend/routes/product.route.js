@@ -10,6 +10,8 @@ import {
   editProduct,
   createProduct,
   uploadPicture,
+  archiveProduct,
+  unarchiveProduct,
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
@@ -23,4 +25,6 @@ router.get("/filter-by-price", filterProductsByPrice); // Route to filter produc
 router.get("/search", searchProductByName); // Route to search for a product by name
 router.put("/edit/:id", verifyToken, editProduct); // Route to edit a product
 router.get("uploadPicture/", verifyToken, uploadPicture); // Route to upload a picture for a product
+router.put("/archive/:id", verifyToken, archiveProduct); // Route to archive a product
+router.put("/unarchive/:id", verifyToken, unarchiveProduct); // Route to unarchive a product
 export default router;

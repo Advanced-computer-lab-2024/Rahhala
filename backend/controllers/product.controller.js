@@ -38,15 +38,9 @@ export const createProduct = async (req, res) => {
   console.log("entered createProduct");
   const id = req.user.id;
 
-  const {
-    description,
-    price,
-    name,
-    quantity,
-    averageRating,
-    picture,
-  } = req.body;
-  console.log("req.body: ", req.body);  // Debugging
+  const { description, price, name, quantity, averageRating, picture } =
+    req.body;
+  console.log("req.body: ", req.body); // Debugging
 
   // Validate required fields
   if (!price || !quantity || !description || !picture) {
@@ -200,5 +194,47 @@ export const uploadPicture = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Error uploading picture");
+  }
+};
+
+// Archive a product
+export const archiveProduct = async (req, res) => {
+  console.log("entered archiveProduct");
+
+  const { productId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return res.status(400).json({ error: "Invalid product ID format" });
+  }
+  try {
+    const product = await productModel.findByIdAndUpdate(
+      productId,
+      { isArchived: true },
+      { new: true }
+    );
+    res.status(200).send("Product archived successfully");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error archiving product");
+  }
+};
+
+// Unarchive a product
+export const unarchiveProduct = async (req, res) => {
+  console.log("entered unarchiveProduct");
+
+  const { productId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return res.status(400).json({ error: "Invalid product ID format" });
+  }
+  try {
+    const product = await productModel.findByIdAndUpdate(
+      productId,
+      { isArchived: false },
+      { new: true }
+    );
+    res.status(200).send("Product unarchived successfully");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error unarchiving product");
   }
 };
