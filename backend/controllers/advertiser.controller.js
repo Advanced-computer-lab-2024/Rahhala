@@ -4,7 +4,7 @@ import advertiserModel from "../models/advertiser.model.js";
 export const editAdvertiser = async (req, res) => {
     console.log("entered  editAdvertiser");
 
-    const { email, companyName, website, hotline, companyProfile } = req.body;
+    const { email, companyName, website, hotline, companyProfile, status } = req.body;
     const userId = req.user.id;
     try {
         const advertiser = await advertiserModel.findById(userId);
@@ -20,6 +20,7 @@ export const editAdvertiser = async (req, res) => {
         advertiser.hotline = hotline || advertiser.hotline;
         advertiser.companyProfile = companyProfile || advertiser.companyProfile;
         advertiser.profileCreated = true;
+        advertiser.status = status || advertiser.status;
 
         await advertiser.save();
         res.status(200).json({

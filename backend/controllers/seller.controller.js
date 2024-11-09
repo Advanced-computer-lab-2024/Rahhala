@@ -22,7 +22,7 @@ export const getSeller = async (req, res) => {
 export const editSeller = async (req, res) => {
   const  id  = req.user.id;
   console.log("entered edit seller with id ", req.user.id);
-  const { name, description, email, username, logo } = req.body;
+  const { name, description, email, username, logo, status } = req.body;
 
 
   try {
@@ -35,7 +35,8 @@ export const editSeller = async (req, res) => {
           description,
           email,
           username,
-          logo
+          logo,
+          status
         }
       },
       { new: true, runValidators: true }

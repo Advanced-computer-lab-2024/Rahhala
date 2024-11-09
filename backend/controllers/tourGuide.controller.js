@@ -3,7 +3,7 @@ import tourGuideModel from "../models/tourGuide.model.js";
 // Edit Tour Guide Information
 export const editTourGuide = async (req, res) => {
   console.log("entered editTourGuide");
-  const { work, yearsOfExperience, certificationImages, email, mobileNumber } = req.body;
+  const { work, yearsOfExperience, certificationImages, email, mobileNumber, status } = req.body;
   const id = req.user.id;
 
   try {
@@ -23,6 +23,7 @@ export const editTourGuide = async (req, res) => {
     if (certificationImages && certificationImages.length > 0) {
         user.certificationImages = user.certificationImages.concat(certificationImages);
     }
+    user.status = status || user.status;
 
     await user.save();
     res.status(200).json({
