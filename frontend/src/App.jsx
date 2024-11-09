@@ -38,6 +38,7 @@ import CreateProduct from './pages/CreateProduct';
 import SubmitComplaint from './pages/submitComplaint';
 import ViewTouristAccount from './pages/ViewTouristAccount';
 import TouristDeleteAccount from './pages/TouristDeleteAccount';
+import TouristBookings from './pages/TouristBookings';
 
 function App() {
     return (
@@ -63,6 +64,7 @@ function App() {
                 <Route path="/submitComplaint" element={<SubmitComplaint />} />
                 <Route path="/viewTouristAccount" element={<ViewTouristAccount />} />
                 <Route path="/touristDeleteAccount" element={<TouristDeleteAccount />} />
+                <Route path="/touristBookings" element={<TouristBookings />} />
 
 
 
@@ -144,9 +146,7 @@ function App() {
                 <Route
                     path="/touristAccount"
                     element={
-                        <ProtectedRoute roles={['tourist']}>
                             <TouristAccount />
-                        </ProtectedRoute>
                     }
                 />
                 <Route

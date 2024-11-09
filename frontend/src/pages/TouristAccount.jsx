@@ -55,6 +55,7 @@ const TouristAccount = () => {
             <NavigateButton path={"/products"} text={"View Products"}/>{'\u00A0'}
             <NavigateButton path={"/submitComplaint"} text={"Submit Complaint"}/>{'\u00A0'}
             <NavigateButton path={"/viewTouristAccount"} text={"My profile"}/>{'\u00A0'}
+            <NavigateButton path={"/touristBookings"} text={"My Bookings"}/>{'\u00A0'}
 
             <Logout />
            
