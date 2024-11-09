@@ -75,8 +75,7 @@
 .admin-dashboard .buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px; /* Adjusted gap */
-    justify-content: center;
+    gap: 10px; /* Add space between buttons */
 }
 
 .admin-dashboard .buttons button,
