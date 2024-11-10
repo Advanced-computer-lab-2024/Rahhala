@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axiosInstance from '../utils/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import NavigateButton from '../components/UpdateProfileButton';
 import Logout from '../components/Auth/Logout';
 import ChangePassword from './ChangePassword';
 import DeleteAccount from '../components/DeleteAccount';
+import { AuthContext } from '../context/AuthContext';
 import './AdminDashboard.css';
 
 function AdminDashboard() {
     const navigate = useNavigate();
+    const { auth } = useContext(AuthContext); // Get auth context
     const [message, setMessage] = useState('');
     const [isGovernorFormVisible, setIsGovernorFormVisible] = useState(false);
     const [isAdminFormVisible, setIsAdminFormVisible] = useState(false);
@@ -115,12 +117,6 @@ function AdminDashboard() {
                 <button onClick={toggleAdminForm}>
                     {isAdminFormVisible ? 'Cancel' : 'Add Admin'}
                 </button>
-                <button onClick={toggleChangePasswordForm}>
-                    {isChangePasswordFormVisible ? 'Cancel' : 'Change Password'}
-                </button>
-                <button onClick={toggleDeleteAccountForm}>
-                    {isDeleteAccountFormVisible ? 'Cancel' : 'Delete Account'}
-                </button>
             </div>
 
             <div className="form-container">
@@ -184,7 +180,7 @@ function AdminDashboard() {
                 )}
 
                 {isDeleteAccountFormVisible && (
-                    <DeleteAccount />
+                    <DeleteAccount userType={auth.user.type} userId={auth.user.id} />
                 )}
             </div>
 
@@ -217,6 +213,14 @@ function AdminDashboard() {
 
             <div className="section">
                 <h3>Others</h3>
+                <div className="buttons">
+                    <button onClick={toggleChangePasswordForm}>
+                        {isChangePasswordFormVisible ? 'Cancel' : 'Change Password'}
+                    </button>
+                    <button onClick={toggleDeleteAccountForm}>
+                        {isDeleteAccountFormVisible ? 'Cancel' : 'Delete Account'}
+                    </button>
+                </div>
                 <Logout />
             </div>
         </div>

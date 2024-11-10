@@ -1,55 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axiosInstance from '../utils/axiosConfig';
+import { AuthContext } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-const DeleteAccount = () => {
-    const [userId, setUserId] = useState('');
-    const [userType, setUserType] = useState('');
+const DeleteAccount = ({ userType, userId }) => {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const { setAuth } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const handleDeleteAccount = async (e) => {
         e.preventDefault();
+        const confirmDelete = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
+        if (!confirmDelete) {
+            return;
+        }
+
         try {
             const response = await axiosInstance.delete(`/api/admin/${userType}/${userId}`);
             setMessage(response.data.message);
             setError('');
+            logout();
         } catch (err) {
             setError(err.response?.data?.message || 'Error deleting account');
             setMessage('');
+            logout();
         }
     };
 
+    const logout = () => {
+        localStorage.removeItem('token'); 
+        setAuth({
+            token: null,
+            isAuthenticated: false,
+            loading: false,
+            user: null,
+        });
+        navigate('/login');
+    };
+
     return (
-        <div>
+        <div> 
             <h3>Delete Account</h3>
-            {message && <p>{message}</p>}
-            {error && <p>{error}</p>}
+            {message && <p style={{ color: 'green' }}>{message}</p>}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleDeleteAccount}>
-                <div>
-                    <label>User ID:</label>
-                    <input
-                        type="text"
-                        value={userId}
-                        onChange={(e) => setUserId(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>User Type:</label>
-                    <select
-                        value={userType}
-                        onChange={(e) => setUserType(e.target.value)}
-                        required
-                    >
-                        <option value="">Select User Type</option>
-                        <option value="admin">Admin</option>
-                        <option value="governor">Governor</option>
-                        <option value="tourist">Tourist</option>
-                        <option value="tourGuide">Tour Guide</option>
-                        <option value="advertiser">Advertiser</option>
-                        <option value="seller">Seller</option>
-                    </select>
-                </div>
                 <button type="submit">Delete Account</button>
             </form>
         </div>
