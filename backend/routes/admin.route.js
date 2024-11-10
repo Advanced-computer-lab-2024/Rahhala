@@ -13,7 +13,7 @@ import {
   viewPendingTourGuides,
   acceptTourGuide,
   rejectTourGuide,
-  viewUploadedDocuments
+  viewUsersInfo
 } from "../controllers/admin.controller.js";
 
 const router = express.Router();
@@ -30,6 +30,6 @@ router.put("/rejectSeller/:_id", verifyToken, rejectSeller);
 router.get("/pendingTourGuides", verifyToken, viewPendingTourGuides);
 router.put("/acceptTourGuide/:_id", verifyToken, acceptTourGuide);
 router.put("/rejectTourGuide/:_id", verifyToken, rejectTourGuide);
-router.get("/uploadedDocuments", verifyToken, viewUploadedDocuments);
+router.get("/viewUsersInfo", verifyToken, viewUsersInfo);
 
 export default router;

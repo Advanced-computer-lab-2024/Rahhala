@@ -259,13 +259,12 @@ export const rejectTourGuide = async (req, res) => {
   }
 };
 
-// View Documents Uploaded by Tour Guides, Sellers, and Advertisers
-export const viewUploadedDocuments = async (req, res) => {
+export const viewUsersInfo = async (req, res) => {
   console.log("entered viewUploadedDocuments");
   try {
-    const tourGuideDocuments = await tourGuideModel.find({}, 'documents');
-    const sellerDocuments = await sellerModel.find({}, 'documents');
-    const advertiserDocuments = await advertiserModel.find({}, 'documents');
+    const tourGuideDocuments = await tourGuideModel.find({ status: 'pending' });
+    const sellerDocuments = await sellerModel.find({ status: 'pending' });
+    const advertiserDocuments = await advertiserModel.find({ status: 'pending' });
 
     res.status(200).json({
       tourGuideDocuments,

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import NavigateButton from '../components/UpdateProfileButton';
 import Logout from '../components/Auth/Logout';
 import ChangePassword from './ChangePassword';
-import ViewDocuments from '../components/ViewDocuments';
+import UserManagement from '../pages/UserManagement';
 import DeleteAccount from '../components/DeleteAccount';
 import './AdminDashboard.css';
 
@@ -334,7 +334,7 @@ function AdminDashboard() {
             <div className="section">
                 <h3>Management Panel</h3>
                 <div className="buttons">
-                    <NavigateButton path="/viewPendingUsers" text="Pending Users Management" />
+                    <NavigateButton path="/userManagement" text="Pending Users Management" />
                 </div>
                 <div className="buttons">
                     <NavigateButton path="/preferenceTagManagement" text="Preference Tags Management" />
