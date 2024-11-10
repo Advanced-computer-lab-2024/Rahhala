@@ -9,6 +9,7 @@ export const editTourGuide = async (req, res) => {
     certificationImages,
     email,
     mobileNumber,
+    profilePhoto,
     status,
   } = req.body;
   const id = req.user.id;
@@ -22,30 +23,29 @@ export const editTourGuide = async (req, res) => {
 
     // Update the tour guide's profile details
     user.mobileNumber = mobileNumber || user.mobileNumber;
-    user.profileCreated = true;
     user.email = email || user.email;
+    user.profilePhoto = profilePhoto || user.profilePhoto;
+    user.status = status || user.status;
+
     if (work && yearsOfExperience) {
       user.previousWork.push({ work, yearsOfExperience });
     }
+
     if (certificationImages && certificationImages.length > 0) {
-      user.certificationImages =
-        user.certificationImages.concat(certificationImages);
+      user.certificationImages = certificationImages;
     }
-    user.status = status || user.status;
 
     await user.save();
-    res.status(200).json({
-      message: "Tour guide profile updated successfully",
-      profile: user,
-    });
+
+    res.status(200).json({ message: "Tour guide profile updated successfully", profile: user });
   } catch (error) {
+    console.error("Error updating tour guide profile:", error);
     res.status(500).json({ error: "Error updating tour guide profile" });
   }
 };
 
 // Get Tour Guide by ID
 export const getTourGuideByID = async (req, res) => {
-  console.log("entered  getTourGuideByID");
 
   const id = req.user.id;
 

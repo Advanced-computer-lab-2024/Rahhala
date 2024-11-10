@@ -11,7 +11,7 @@ import {
 
 const router = express.Router();
 
-router.put("/:id", verifyToken, editTourGuide);
+router.put("/edit", verifyToken, editTourGuide);
 router.get("/", verifyToken, getTourGuideByID);
 router.put("/edit/changePassword", verifyToken, changePassword);
 router.post("/submitDocuments", verifyToken, submitDocuments);
