@@ -4,25 +4,18 @@ import { useNavigate } from 'react-router-dom';
 import NavigateButton from '../components/UpdateProfileButton';
 import Logout from '../components/Auth/Logout';
 import ChangePassword from './ChangePassword';
-import UserManagement from '../pages/UserManagement';
 import DeleteAccount from '../components/DeleteAccount';
 import './AdminDashboard.css';
 
 function AdminDashboard() {
     const navigate = useNavigate();
-    const [governorData, setGovernorData] = useState({ username: '', password: '' });
-    const [adminData, setAdminData] = useState({ username: '', password: '' });
-    const [categoryData, setCategoryData] = useState({ name: '' });
-    const [updateCategoryData, setUpdateCategoryData] = useState({ id: '', name: '' });
-    const [deleteCategoryId, setDeleteCategoryId] = useState('');
     const [message, setMessage] = useState('');
     const [isGovernorFormVisible, setIsGovernorFormVisible] = useState(false);
     const [isAdminFormVisible, setIsAdminFormVisible] = useState(false);
-    const [isCategoryFormVisible, setIsCategoryFormVisible] = useState(false);
-    const [isUpdateCategoryFormVisible, setIsUpdateCategoryFormVisible] = useState(false);
-    const [isDeleteCategoryFormVisible, setIsDeleteCategoryFormVisible] = useState(false);
     const [isChangePasswordFormVisible, setIsChangePasswordFormVisible] = useState(false);
     const [isDeleteAccountFormVisible, setIsDeleteAccountFormVisible] = useState(false);
+    const [governorData, setGovernorData] = useState({ username: '', password: '' });
+    const [adminData, setAdminData] = useState({ username: '', password: '' });
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -30,9 +23,6 @@ function AdminDashboard() {
     const hideAllForms = () => {
         setIsGovernorFormVisible(false);
         setIsAdminFormVisible(false);
-        setIsCategoryFormVisible(false);
-        setIsUpdateCategoryFormVisible(false);
-        setIsDeleteCategoryFormVisible(false);
         setIsChangePasswordFormVisible(false);
         setIsDeleteAccountFormVisible(false);
     };
@@ -46,24 +36,6 @@ function AdminDashboard() {
     const toggleAdminForm = () => {
         hideAllForms();
         setIsAdminFormVisible(!isAdminFormVisible);
-        setMessage('');
-    };
-
-    const toggleCategoryForm = () => {
-        hideAllForms();
-        setIsCategoryFormVisible(!isCategoryFormVisible);
-        setMessage('');
-    };
-
-    const toggleUpdateCategoryForm = () => {
-        hideAllForms();
-        setIsUpdateCategoryFormVisible(!isUpdateCategoryFormVisible);
-        setMessage('');
-    };
-
-    const toggleDeleteCategoryForm = () => {
-        hideAllForms();
-        setIsDeleteCategoryFormVisible(!isDeleteCategoryFormVisible);
         setMessage('');
     };
 
@@ -89,10 +61,6 @@ function AdminDashboard() {
         }
     }, [message]);
 
-    const handleShowCategories = () => {
-        navigate('/ActivityCategories');
-    };
-
     const handleGovernorSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -114,42 +82,6 @@ function AdminDashboard() {
             setIsAdminFormVisible(false);
         } catch (error) {
             setMessage(error.response?.data?.message || 'Failed to add Admin.');
-        }
-    };
-
-    const handleCategorySubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await axiosInstance.post('/api/activityCategory', categoryData);
-            setMessage('Category added successfully!');
-            setCategoryData({ name: '' });
-            setIsCategoryFormVisible(false);
-        } catch (error) {
-            setMessage(error.response?.data?.message || 'Failed to add category.');
-        }
-    };
-
-    const handleUpdateCategorySubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await axiosInstance.put(`/api/activityCategory/${updateCategoryData.id}`, { name: updateCategoryData.name });
-            setMessage('Category updated successfully!');
-            setUpdateCategoryData({ id: '', name: '' });
-            setIsUpdateCategoryFormVisible(false);
-        } catch (error) {
-            setMessage(error.response?.data?.message || 'Failed to update category.');
-        }
-    };
-
-    const handleDeleteCategorySubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await axiosInstance.delete(`/api/activityCategory/${deleteCategoryId}`);
-            setMessage('Category deleted successfully!');
-            setDeleteCategoryId('');
-            setIsDeleteCategoryFormVisible(false);
-        } catch (error) {
-            setMessage(error.response?.data?.message || 'Failed to delete category.');
         }
     };
 
@@ -177,16 +109,6 @@ function AdminDashboard() {
             {message && <p className="message">{message}</p>}
             
             <div className="buttons">
-                <button onClick={toggleCategoryForm}>
-                    {isCategoryFormVisible ? 'Cancel' : 'Add Category'}
-                </button>
-                <button onClick={toggleUpdateCategoryForm}>
-                    {isUpdateCategoryFormVisible ? 'Cancel' : 'Update Category'}
-                </button>
-                <button onClick={toggleDeleteCategoryForm}>
-                    {isDeleteCategoryFormVisible ? 'Cancel' : 'Delete Category'}
-                </button>
-                <button onClick={handleShowCategories}>Show All Categories</button>
                 <button onClick={toggleGovernorForm}>
                     {isGovernorFormVisible ? 'Cancel' : 'Add Tourism Governor'}
                 </button>
@@ -202,63 +124,6 @@ function AdminDashboard() {
             </div>
 
             <div className="form-container">
-                {isCategoryFormVisible && (
-                    <form onSubmit={handleCategorySubmit}>
-                        <div>
-                            <label>Category Name:</label>
-                            <input
-                                type="text"
-                                name="name"
-                                value={categoryData.name}
-                                onChange={(e) => setCategoryData({ ...categoryData, name: e.target.value })}
-                                required
-                            />
-                        </div>
-                        <button type="submit">Add Category</button>
-                    </form>
-                )}
-
-                {isUpdateCategoryFormVisible && (
-                    <form onSubmit={handleUpdateCategorySubmit}>
-                        <div>
-                            <label>Category ID:</label>
-                            <input
-                                type="text"
-                                name="id"
-                                value={updateCategoryData.id}
-                                onChange={(e) => setUpdateCategoryData({ ...updateCategoryData, id: e.target.value })}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label>New Category Name:</label>
-                            <input
-                                type="text"
-                                name="name"
-                                value={updateCategoryData.name}
-                                onChange={(e) => setUpdateCategoryData({ ...updateCategoryData, name: e.target.value })}
-                                required
-                            />
-                        </div>
-                        <button type="submit">Update Category</button>
-                    </form>
-                )}
-
-                {isDeleteCategoryFormVisible && (
-                    <form onSubmit={handleDeleteCategorySubmit}>
-                        <div>
-                            <label>Category ID:</label>
-                            <input
-                                type="text"
-                                value={deleteCategoryId}
-                                onChange={(e) => setDeleteCategoryId(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <button type="submit">Delete Category</button>
-                    </form>
-                )}
-
                 {isGovernorFormVisible && (
                     <form onSubmit={handleGovernorSubmit}>
                         <div>
@@ -338,6 +203,9 @@ function AdminDashboard() {
                 </div>
                 <div className="buttons">
                     <NavigateButton path="/preferenceTagManagement" text="Preference Tags Management" />
+                </div>
+                <div className="buttons">
+                    <NavigateButton path="/activityCategories" text="Activity Categories" />
                 </div>
                 <div className="buttons">
                     <NavigateButton path="/complaintManagement" text="Complaint Management" />

@@ -5,25 +5,26 @@
     --background-color: #ffffff;
     --border-color: #ccc;
     --error-color: #ff0000;
+    --success-color: #28a745; /* Green color for success messages */
     --table-row-alt-color: #f2f2f2;
 }
 
 .activity-categories {
     display: flex;
-    flex-direction: column; /* Stack items vertically */
-    justify-content: center; /* Center items vertically */
-    align-items: center; /* Center items horizontally */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     height: max-content;
     width: 100vw;
     padding: 50px;
-    background-color: var(--background-color); /* Ensure background is white */
+    background-color: var(--background-color);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(24, 26, 27, 0.1);
 }
 
 .activity-categories h2 {
     text-align: center;
-    color: var(--secondary-color); /* Dark grey for better readability */
+    color: var(--secondary-color);
     margin-bottom: 20px;
     font-size: 2em;
 }
@@ -40,7 +41,7 @@
     align-items: center;
     gap: 10px;
     font-size: 1em;
-    color: var(--secondary-color); /* Dark grey for better readability */
+    color: var(--secondary-color);
 }
 
 .activity-categories .controls input,
@@ -55,7 +56,7 @@
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
-    background-color: var(--background-color); /* Ensure table background is white */
+    background-color: var(--background-color);
 }
 
 .activity-categories .categories-table th,
@@ -63,22 +64,38 @@
     padding: 10px;
     border: 1px solid var(--border-color);
     text-align: left;
-    color: var(--secondary-color); /* Dark grey for better readability */
+    color: var(--secondary-color);
 }
 
 .activity-categories .categories-table th {
-    background-color: var(--primary-color); /* Primary color for table headers */
-    color: #ffffff; /* White text for contrast */
+    background-color: var(--primary-color);
+    color: #ffffff;
 }
 
 .activity-categories .categories-table tr:nth-child(even) {
-    background-color: var(--table-row-alt-color); /* Light grey for alternate rows */
+    background-color: var(--table-row-alt-color);
+}
+
+.activity-categories .categories-table td button {
+    margin-right: 10px; /* Add margin between buttons */
 }
 
 .activity-categories .loading,
 .activity-categories .error {
     text-align: center;
-    color: var(--error-color); /* Red color for error messages */
+    color: var(--error-color);
     font-weight: bold;
     margin-top: 20px;
+}
+
+.activity-categories .success {
+    text-align: center;
+    color: var(--success-color); /* Green color for success messages */
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.activity-categories .navigation-buttons {
+    display: flex;
+    gap: 10px; /* Add margin between navigation buttons */
 }
