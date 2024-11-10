@@ -2,7 +2,8 @@ import itineraryModel from "../models/itinerary.model.js";
 import tourGuideModel from "../models/tourGuide.model.js";
 import touristModel from "../models/tourist.model.js";
 import reviewModel from "../models/review.model.js";
-// Add Itinerary to the Database
+
+// Create a new itinerary
 export const addItinerary = async (req, res) => {
   console.log("Received request body:", req.body);
 
@@ -120,14 +121,13 @@ if (isNaN(formattedPrice)) {
     res.status(500).json({ error: 'Failed to create itinerary' });
   }
 };
+
 // Get Itineraries from the Database
 export const getItineraries = async (req, res) => {
   console.log("entered getItineraries");
 
   try {
-    const itineraries = await itineraryModel
-      .find()
-      .populate("reviews", "rating title body"); // Populate reviews if needed
+    const itineraries = await itineraryModel.find();
 
     res.status(200).json(itineraries);
   } catch (err) {
@@ -142,9 +142,7 @@ export const getItineraryByID = async (req, res) => {
 
   try {
     const { id } = req.params;
-    const itinerary = await itineraryModel
-      .findById(id)
-      
+    const itinerary = await itineraryModel.findById(id);
 
     if (!itinerary) {
       return res.status(404).json({ error: "Itinerary not found" });
