@@ -18,6 +18,7 @@ const TourguideAccount = () => {
     const [newPassword, setNewPassword] = useState(''); // State for new password
     const [message, setMessage] = useState(null); // State to handle success messages
     const [showChangePasswordForm, setShowChangePasswordForm] = useState(false); // State to show/hide change password form
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false); // State to show/hide delete confirmation
 
     useEffect(() => {
         // Only fetch profile if the user is authenticated
@@ -46,7 +47,7 @@ const TourguideAccount = () => {
     const handleChangePassword = async (e) => {
         e.preventDefault();
         try {
-            const response = await axiosInstance.put('/api/tourguide/edit/changePassword', {
+            const response = await axiosInstance.put('/api/tourguide/changePassword', {
                 oldPassword,
                 newPassword
             });
@@ -57,6 +58,18 @@ const TourguideAccount = () => {
             setShowChangePasswordForm(false); // Hide the form after successful password change
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to change password');
+            setMessage(null); // Clear any previous success messages
+        }
+    };
+
+    const handleAccountDeletionRequest = async () => {
+        try {
+            await axiosInstance.post('/api/accountDeletionRequest');
+            setMessage('Account deletion request submitted successfully');
+            setError(null); // Clear any previous errors
+            setShowDeleteConfirmation(false); // Hide the confirmation message
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to submit account deletion request');
             setMessage(null); // Clear any previous success messages
         }
     };
@@ -95,6 +108,16 @@ const TourguideAccount = () => {
                     </div>
                     <button type="submit">Change Password</button>
                 </form>
+            )}
+            <button onClick={() => setShowDeleteConfirmation(true)}>
+                Request My Account to be Deleted
+            </button>
+            {showDeleteConfirmation && (
+                <div>
+                    <p>Are you sure you want to request your account to be deleted?</p>
+                    <button onClick={handleAccountDeletionRequest}>Yes, Delete My Account</button>
+                    <button onClick={() => setShowDeleteConfirmation(false)}>Cancel</button>
+                </div>
             )}
             <NavigateButton path='/updateTourguideAccount' text='Update Account'/>{'\u00A0'} 
             <NavigateButton path='/tourguide-dashboard' text='Home'/>{'\u00A0'} 

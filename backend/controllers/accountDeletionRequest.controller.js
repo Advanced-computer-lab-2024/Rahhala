@@ -4,7 +4,7 @@ import AccountDeletionRequestModel from "../models/accountDeletionRequest.model.
 export const createAccountDeletionRequest = async (req, res) => {
     console.log("entered createAccountDeletionRequest");
     const userId = req.user.id;
-    const userType = req.user.userType.charAt(0).toUpperCase() + req.user.userType.slice(1).toLowerCase();
+    const userType = req.user.userType
     try {
         const existingRequest = await AccountDeletionRequestModel.findOne({ userId });
         if (existingRequest) {
