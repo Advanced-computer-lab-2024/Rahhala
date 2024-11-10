@@ -37,6 +37,7 @@ export const viewProductsQuantitiesAndSales = async (req, res) => {
 export const createProduct = async (req, res) => {
   console.log("entered createProduct");
   const id = req.user.id;
+  console.log("id: ", id); // Debugging
 
   const { description, price, name, quantity, averageRating, picture } =
     req.body;
@@ -87,7 +88,6 @@ export const getActiveProducts = async (req, res) => {
 
 // Get all products from the database
 export const getProducts = async (req, res) => {
-  console.log("entered getProducts");
 
   try {
     const products = await productModel.find({});
@@ -179,7 +179,7 @@ export const editProduct = async (req, res) => {
 export const uploadPicture = async (req, res) => {
   console.log("entered uploadPicture");
 
-  const { productId } = req.params;
+  const { id: productId } = req.params;
   const { picture } = req.body;
   if (!mongoose.Types.ObjectId.isValid(productId)) {
     return res.status(400).json({ error: "Invalid product ID format" });
@@ -201,7 +201,8 @@ export const uploadPicture = async (req, res) => {
 export const archiveProduct = async (req, res) => {
   console.log("entered archiveProduct");
 
-  const { productId } = req.params;
+  const { id: productId } = req.params;
+  console.log("productId: ", productId);
   if (!mongoose.Types.ObjectId.isValid(productId)) {
     return res.status(400).json({ error: "Invalid product ID format" });
   }
@@ -222,7 +223,7 @@ export const archiveProduct = async (req, res) => {
 export const unarchiveProduct = async (req, res) => {
   console.log("entered unarchiveProduct");
 
-  const { productId } = req.params;
+  const { id: productId } = req.params;
   if (!mongoose.Types.ObjectId.isValid(productId)) {
     return res.status(400).json({ error: "Invalid product ID format" });
   }
