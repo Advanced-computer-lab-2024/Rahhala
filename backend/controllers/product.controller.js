@@ -98,6 +98,20 @@ export const getProducts = async (req, res) => {
   }
 };
 
+// Get products by seller ID
+export const getMyProducts = async (req, res) => {
+  const sellerId = req.user.id;
+  console.log("Fetching products for seller ID:", sellerId);
+
+  try {
+    const products = await productModel.find({ sellerId });
+    res.status(200).send(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching products");
+  }
+};
+
 // Sort products by ratings
 export const sortProductsByRatings = async (req, res) => {
   console.log("entered sortProductsByRatings");

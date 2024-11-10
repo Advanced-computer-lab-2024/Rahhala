@@ -12,6 +12,7 @@ import {
   uploadPicture,
   archiveProduct,
   unarchiveProduct,
+  getMyProducts
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
@@ -19,6 +20,7 @@ const router = express.Router();
 // Define routes
 router.get("/quantities-sales", verifyToken, viewProductsQuantitiesAndSales); // Route to view product quantities and sales
 router.get("/", getProducts); // Route to get all products
+router.get("/myProducts", verifyToken, getMyProducts); // Route to get products by seller ID
 router.get("/active", getActiveProducts); // Route to get all active products
 router.post("/create", verifyToken, createProduct); // Route to create a new product
 router.get("/filter-by-price", filterProductsByPrice); // Route to filter products by price

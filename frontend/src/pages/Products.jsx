@@ -28,15 +28,25 @@ const Products = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axiosInstance.get('/api/product');
+                let userType = auth.user.type;
+                console.log("usertype is ",userType) // Log userType before fetching    
+                let response;
+                if(userType === "seller"){
+                    response = await axiosInstance.get('/api/product/myProducts');
+                }
+                else{
+                    response = await axiosInstance.get('/api/product');
+                }
+                console.log("response is ",response.data) 
                 setProducts(response.data);
-                console.log("Products are", response.data); // Log products after fetching
+                console.log("Products are", response.data);
+                console.log("usertype is ",userType) // Log products after fetching
             } catch (err) {
                 setError('Failed to fetch products');
             }
         };
         fetchProducts();
-    }, []);
+    }, [auth]);
 
     const filterProducts = () => {
         return products.filter(product => {
