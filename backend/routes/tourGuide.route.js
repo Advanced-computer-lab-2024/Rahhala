@@ -5,8 +5,9 @@ import {
   getTourGuideByID,
   changePassword,
   submitDocuments,
-  getDocuments, // Add this import
+  getDocuments, 
   registerTourGuide,
+  acceptTerms, 
 } from "../controllers/tourGuide.controller.js";
 
 const router = express.Router();
@@ -17,5 +18,7 @@ router.put("/edit/changePassword", verifyToken, changePassword);
 router.post("/submitDocuments", verifyToken, submitDocuments);
 router.get("/documents", verifyToken, getDocuments); // Add this route
 router.post("/register", registerTourGuide);
+router.put("/acceptTerms", verifyToken, acceptTerms); // Route to accept terms and conditions
+
 
 export default router;

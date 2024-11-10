@@ -44,6 +44,28 @@ export const editTourGuide = async (req, res) => {
   }
 };
 
+// Accept Terms and Conditions
+export const acceptTerms = async (req, res) => {
+  const id = req.user.id;
+
+  try {
+    const user = await tourGuideModel.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ error: "Tour guide not found" });
+    }
+
+    user.acceptedTermsAndConditions = true;
+
+    await user.save();
+
+    res.status(200).json({ message: "Terms and conditions accepted successfully" });
+  } catch (error) {
+    console.error("Error accepting terms and conditions:", error);
+    res.status(500).json({ error: "Error accepting terms and conditions" });
+  }
+};
+
 // Get Tour Guide by ID
 export const getTourGuideByID = async (req, res) => {
 

@@ -97,6 +97,7 @@ const TourguideAccount = () => {
                 </form>
             )}
             <NavigateButton path='/updateTourguideAccount' text='Update Account'/>{'\u00A0'} 
+            <NavigateButton path='/tourguide-dashboard' text='Home'/>{'\u00A0'} 
             <Logout />
         </div>
     );
