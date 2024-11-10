@@ -23,21 +23,43 @@ const TouristBookings = () => {
                     const { bookedActivities, bookedItineraries, bookedMuseums } = response.data.profile;
 
                     const activities = await Promise.all(bookedActivities.map(async (id) => {
-                        const res = await axiosInstance.get(`/api/activity/${id}`);
+                        const res = await axiosInstance.get(`/api/activity/getActivity/${id}`);
+                        delete res.data._id
+                        delete res.data.bookingOpen
+                        delete res.data.userId
+                        delete res.data.createdAt
+                        delete res.data.updatedAt
+                        delete res.data.__v
+
                         return res.data;
                     }));
 
                     const itineraries = await Promise.all(bookedItineraries.map(async (id) => {
                         const res = await axiosInstance.get(`/api/itinerary/${id}`);
+                        delete res.data._id
+                        delete res.data.createdAt
+                        delete res.data.updatedAt
+                        delete res.data.__v
+
+                        delete res.data.isActive
+                        delete res.data.userId
+                        
                         return res.data;
                     }));
 
                     const museums = await Promise.all(bookedMuseums.map(async (id) => {
                         const res = await axiosInstance.get(`/api/museum/${id}`);
+                        delete res.data._id
+                        delete res.data.createdAt
+                        delete res.data.updatedAt
+                        delete res.data.__v
+
+                        delete res.data.userId
                         return res.data;
                     }));
 
                     setBookings({ activities, itineraries, museums });
+                    console.log("itineraries: ", itineraries);
                 } catch (err) {
                     setError('Failed to load bookings.');
                 }
@@ -46,7 +68,10 @@ const TouristBookings = () => {
             fetchBookings();
         }
     }, [auth]);
-
+    useEffect(() => {
+        // Log the updated bookings state
+        console.log("Updated bookings.itineraries: ", bookings.itineraries);
+    }, [bookings]);
     // Loading state while fetching the user data
     if (auth.loading) {
         return <div>Loading user data...</div>;
@@ -59,16 +84,16 @@ const TouristBookings = () => {
 
     return (
         <div>
-            <NavigateButton path={"/touristAccount"} text={"Back"} />{' '}
-
+            <NavigateButton path={"/touristAccount"} text={"Back"} />
             <h2>Booked Activities</h2>
             {bookings.activities.length > 0 ? (
                 bookings.activities.map((activity) => (
                     <div key={activity._id}>
-                        <strong>{activity.name}</strong>
-                        <p>{activity.date}</p>
-                        <p>{activity.location.join(', ')}</p>
-                        <p>{activity.price}</p>
+                        {Object.entries(activity).map(([key, value]) => (
+                            <div key={key}>
+                                <strong>{key}:</strong> {Array.isArray(value) ? value.join(', ') : value.toString()}
+                            </div>
+                        ))}
                     </div>
                 ))
             ) : (
@@ -79,9 +104,11 @@ const TouristBookings = () => {
             {bookings.itineraries.length > 0 ? (
                 bookings.itineraries.map((itinerary) => (
                     <div key={itinerary._id}>
-                        <strong>{itinerary.name}</strong>
-                        <p>{itinerary.timeline}</p>
-                        <p>{itinerary.price}</p>
+                        {Object.entries(itinerary).map(([key, value]) => (
+                            <div key={key}>
+                                <strong>{key}:</strong> {Array.isArray(value) ? value.join(', ') : value.toString()}
+                            </div>
+                        ))}
                     </div>
                 ))
             ) : (
@@ -92,14 +119,17 @@ const TouristBookings = () => {
             {bookings.museums.length > 0 ? (
                 bookings.museums.map((museum) => (
                     <div key={museum._id}>
-                        <strong>{museum.name}</strong>
-                        <p>{museum.location}</p>
-                        <p>{museum.foreignerPrice}</p>
+                        {Object.entries(museum).map(([key, value]) => (
+                            <div key={key}>
+                                <strong>{key}:</strong> {value}
+                            </div>
+                        ))}
                     </div>
                 ))
             ) : (
                 <div>No booked museums.</div>
             )}
+            
         </div>
     );
 };

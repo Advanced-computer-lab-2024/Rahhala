@@ -8,27 +8,27 @@ const activitySchema = new mongoose.Schema({
         required: true,
         },
     date: {
-    type: Date,
-    required: true, // Date of the activity yyyy/mm/dd
+        type: Date,
+        required: true, // Date of the activity yyyy/mm/dd
     },
     time: {
-    type: String, // Time of the activity in HH:MM format or a time range if needed
-    required: true,
+        type: String, // Time of the activity in HH:MM format or a time range if needed
+        required: true,
     },
     location: {
-    type: [Number],
-    required: true,
+        type: [Number],
+        required: true,
     },
     price: {
-    type: String, // Price or a price range (example: "$50" or "$50 - $100")
-    required: true,
+        type: String, // Price or a price range (example: "$50" or "$50 - $100")
+        required: true,
     },
     category: {
-    type: String, // Category of the activity (e.g., "Sports", "Entertainment")
-    required: true,
+        type: String, // Category of the activity (e.g., "Sports", "Entertainment")
+        required: true,
     },
     tags: {
-    type: [String], // Array of tags (e.g., "outdoor", "family-friendly")
+        type: [String], // Array of tags (e.g., "outdoor", "family-friendly")
     },
     specialDiscounts: {
         type: String, // Details of special discounts, if any (optional field)

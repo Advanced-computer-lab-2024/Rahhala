@@ -136,3 +136,21 @@ export const deleteActivity = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+//Get Activity by ID
+export const getActivityById = async (req, res) => {
+    console.log("entered getActivityById");
+
+    const id = req.params.id;
+    if (!id) return res.status(400).json({ message: "Missing ID" });
+
+    try {
+        const activity = await activityModel.findById(id);
+        if (!activity)
+            return res.status(404).json({ message: "Activity not found" });
+        return res.status(200).json(activity);
+    } catch (error) {
+        console.error("Error fetching activity:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
