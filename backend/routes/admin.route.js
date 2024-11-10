@@ -7,26 +7,29 @@ import {
   viewPendingAdvertisers,
   acceptAdvertiser,
   rejectAdvertiser,
-  viewPendingTourGuides,
-  acceptTourGuide,
-  rejectTourGuide,
   viewPendingSellers,
   acceptSeller,
   rejectSeller,
+  viewPendingTourGuides,
+  acceptTourGuide,
+  rejectTourGuide,
+  viewUploadedDocuments
 } from "../controllers/admin.controller.js";
 
 const router = express.Router();
 
-router.post("/", addAdmin);
-router.delete("/:entityType/:id", deleteEntity);
+router.post("/", verifyToken, addAdmin);
+router.delete("/:entityType/:id", verifyToken, deleteEntity);
 router.put("/changePassword", verifyToken, changePassword);
-router.get("/viewPendingAdvertisers", verifyToken, viewPendingAdvertisers);
+router.get("/pendingAdvertisers", verifyToken, viewPendingAdvertisers);
 router.put("/acceptAdvertiser/:_id", verifyToken, acceptAdvertiser);
 router.put("/rejectAdvertiser/:_id", verifyToken, rejectAdvertiser);
-router.get("/viewPendingTourGuides", verifyToken, viewPendingTourGuides);
-router.put("/acceptTourGuide/:_id", verifyToken, acceptTourGuide);
-router.put("/rejectTourGuide/:_id", verifyToken, rejectTourGuide);
-router.get("/viewPendingSellers", verifyToken, viewPendingSellers);
+router.get("/pendingSellers", verifyToken, viewPendingSellers);
 router.put("/acceptSeller/:_id", verifyToken, acceptSeller);
 router.put("/rejectSeller/:_id", verifyToken, rejectSeller);
+router.get("/pendingTourGuides", verifyToken, viewPendingTourGuides);
+router.put("/acceptTourGuide/:_id", verifyToken, acceptTourGuide);
+router.put("/rejectTourGuide/:_id", verifyToken, rejectTourGuide);
+router.get("/uploadedDocuments", verifyToken, viewUploadedDocuments);
+
 export default router;

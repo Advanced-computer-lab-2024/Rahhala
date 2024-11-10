@@ -258,3 +258,22 @@ export const rejectTourGuide = async (req, res) => {
     res.status(500).json({ message: "Error rejecting tour guide" });
   }
 };
+
+// View Documents Uploaded by Tour Guides, Sellers, and Advertisers
+export const viewUploadedDocuments = async (req, res) => {
+  console.log("entered viewUploadedDocuments");
+  try {
+    const tourGuideDocuments = await tourGuideModel.find({}, 'documents');
+    const sellerDocuments = await sellerModel.find({}, 'documents');
+    const advertiserDocuments = await advertiserModel.find({}, 'documents');
+
+    res.status(200).json({
+      tourGuideDocuments,
+      sellerDocuments,
+      advertiserDocuments
+    });
+  } catch (error) {
+    console.error("Error viewing uploaded documents:", error);
+    res.status(500).json({ message: "Error viewing uploaded documents" });
+  }
+};
