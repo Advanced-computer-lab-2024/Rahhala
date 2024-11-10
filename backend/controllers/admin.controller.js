@@ -31,7 +31,8 @@ export const addAdmin = async (req, res) => {
 
 //Delete Admin from the Database
 export const deleteEntity = async (req, res) => {
-  const { entityType, id } = req.params;
+  let { entityType, id } = req.params;
+  entityType = entityType.toLowerCase();
   console.log(
     "Delete request received for entity:",
     entityType,
@@ -51,7 +52,7 @@ export const deleteEntity = async (req, res) => {
     case "tourist":
       Model = touristModel;
       break;
-    case "tourGuide":
+    case "tourguide":
       Model = tourGuideModel;
       break;
     case "advertiser":

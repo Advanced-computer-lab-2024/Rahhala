@@ -210,6 +210,9 @@ function AdminDashboard() {
                 <div className="buttons">
                     <NavigateButton path="/complaintManagement" text="Complaint Management" />
                 </div>
+                <div className="buttons">
+                    <NavigateButton path="/accountDeletionRequests" text="Account Deletion Requests" />
+                </div>
             </div>
 
             <div className="section">

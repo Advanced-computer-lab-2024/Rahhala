@@ -43,6 +43,7 @@ import DeleteAccount from './components/DeleteAccount';
 import PreferenceTagManagement from './pages/PreferenceTagManagement';
 import ComplaintManagement from './pages/ComplaintManagement';
 import UserManagement from './pages/UserManagement';    
+import AccountDeletionRequests from './pages/AccountDeletionRequests';
 
 function App() {
     return (
@@ -217,6 +218,14 @@ function App() {
                     element={
                         <ProtectedRoute roles={['admin']}>
                             <UserManagement />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/accountDeletionRequests"
+                    element={
+                        <ProtectedRoute roles={['admin']}>
+                            <AccountDeletionRequests />
                         </ProtectedRoute>
                     }
                 />
