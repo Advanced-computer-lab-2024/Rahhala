@@ -337,7 +337,10 @@ function AdminDashboard() {
                     <NavigateButton path="/viewPendingUsers" text="Pending Users Management" />
                 </div>
                 <div className="buttons">
-                    <NavigateButton path="/preferenceTagManagement" text="Preference Tag Management" />
+                    <NavigateButton path="/preferenceTagManagement" text="Preference Tags Management" />
+                </div>
+                <div className="buttons">
+                    <NavigateButton path="/complaintManagement" text="Complaint Management" />
                 </div>
             </div>
 
