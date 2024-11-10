@@ -5,7 +5,7 @@ import NavigateButton from '../components/UpdateProfileButton';
 import Logout from '../components/Auth/Logout';
 import ChangePassword from './ChangePassword';
 import ViewDocuments from '../components/ViewDocuments';
-import DeleteAccount from '../components/DeleteAccount'; // Add this import
+import DeleteAccount from '../components/DeleteAccount';
 import './AdminDashboard.css';
 
 function AdminDashboard() {
@@ -22,42 +22,59 @@ function AdminDashboard() {
     const [isUpdateCategoryFormVisible, setIsUpdateCategoryFormVisible] = useState(false);
     const [isDeleteCategoryFormVisible, setIsDeleteCategoryFormVisible] = useState(false);
     const [isChangePasswordFormVisible, setIsChangePasswordFormVisible] = useState(false);
-    const [isDeleteAccountFormVisible, setIsDeleteAccountFormVisible] = useState(false); // Add this state
+    const [isDeleteAccountFormVisible, setIsDeleteAccountFormVisible] = useState(false);
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
+    const hideAllForms = () => {
+        setIsGovernorFormVisible(false);
+        setIsAdminFormVisible(false);
+        setIsCategoryFormVisible(false);
+        setIsUpdateCategoryFormVisible(false);
+        setIsDeleteCategoryFormVisible(false);
+        setIsChangePasswordFormVisible(false);
+        setIsDeleteAccountFormVisible(false);
+    };
+
     const toggleGovernorForm = () => {
+        hideAllForms();
         setIsGovernorFormVisible(!isGovernorFormVisible);
         setMessage('');
     };
 
     const toggleAdminForm = () => {
+        hideAllForms();
         setIsAdminFormVisible(!isAdminFormVisible);
         setMessage('');
     };
 
     const toggleCategoryForm = () => {
+        hideAllForms();
         setIsCategoryFormVisible(!isCategoryFormVisible);
         setMessage('');
     };
 
     const toggleUpdateCategoryForm = () => {
+        hideAllForms();
         setIsUpdateCategoryFormVisible(!isUpdateCategoryFormVisible);
         setMessage('');
     };
 
     const toggleDeleteCategoryForm = () => {
+        hideAllForms();
         setIsDeleteCategoryFormVisible(!isDeleteCategoryFormVisible);
         setMessage('');
     };
 
     const toggleChangePasswordForm = () => {
+        hideAllForms();
         setIsChangePasswordFormVisible(!isChangePasswordFormVisible);
         setMessage('');
     };
 
     const toggleDeleteAccountForm = () => {
+        hideAllForms();
         setIsDeleteAccountFormVisible(!isDeleteAccountFormVisible);
         setMessage('');
     };
@@ -311,6 +328,19 @@ function AdminDashboard() {
                 <div className="buttons">
                     <NavigateButton path="/products" text="View Products" />
                     <NavigateButton path='/createProduct' text='Create Product'/>
+                </div>
+            </div>
+
+            <div className="section">
+                <h3>Management Panel</h3>
+                <div className="buttons">
+                    <NavigateButton path="/viewPendingUsers" text="Pending Users Management" />
+                </div>
+                <div className="buttons">
+                    <NavigateButton path="/preferenceTagManagement" text="Preference Tags Management" />
+                </div>
+                <div className="buttons">
+                    <NavigateButton path="/complaintManagement" text="Complaint Management" />
                 </div>
             </div>
 

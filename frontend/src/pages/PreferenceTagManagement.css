@@ -1,0 +1,101 @@
+/* PreferenceTagManagement.css */
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #333333;
+    --background-color: #ffffff;
+    --border-color: #ccc;
+    --error-color: #ff0000;
+    --success-color: #28a745; /* Green color for success messages */
+    --table-row-alt-color: #f2f2f2;
+}
+
+.preference-tag-management {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: max-content;
+    width: 100vw;
+    padding: 50px;
+    background-color: var(--background-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(24, 26, 27, 0.1);
+}
+
+.preference-tag-management h2 {
+    text-align: center;
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+.preference-tag-management .controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    width: 50%;
+}
+
+.preference-tag-management .controls label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1em;
+    color: var(--secondary-color);
+}
+
+.preference-tag-management .controls input,
+.preference-tag-management .controls select {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.preference-tag-management .tags-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: var(--background-color);
+}
+
+.preference-tag-management .tags-table th,
+.preference-tag-management .tags-table td {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    text-align: left;
+    color: var(--secondary-color);
+}
+
+.preference-tag-management .tags-table th {
+    background-color: var(--primary-color);
+    color: #ffffff;
+}
+
+.preference-tag-management .tags-table tr:nth-child(even) {
+    background-color: var(--table-row-alt-color);
+}
+
+.preference-tag-management .tags-table td button {
+    margin-right: 10px; /* Add margin between buttons */
+}
+
+.preference-tag-management .loading,
+.preference-tag-management .error {
+    text-align: center;
+    color: var(--error-color);
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.preference-tag-management .success {
+    text-align: center;
+    color: var(--success-color); /* Green color for success messages */
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.preference-tag-management .navigation-buttons {
+    display: flex;
+    gap: 10px; /* Add margin between navigation buttons */
+}

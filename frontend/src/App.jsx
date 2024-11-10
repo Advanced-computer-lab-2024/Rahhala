@@ -40,6 +40,9 @@ import ViewTouristAccount from './pages/ViewTouristAccount';
 import TouristDeleteAccount from './pages/TouristDeleteAccount';
 import TouristBookings from './pages/TouristBookings';
 import DeleteAccount from './components/DeleteAccount';
+import UserManagement from './pages/UserManagement';    
+import PreferenceTagManagement from './pages/PreferenceTagManagement';
+import ComplaintManagement from './pages/ComplaintManagement';
 function App() {
     return (
         <Router>
@@ -190,6 +193,28 @@ function App() {
                     element={
                         <ProtectedRoute roles={['admin']}>
                             <DeleteAccount />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/viewPendingUsers" 
+                    element={
+                        <ProtectedRoute roles={['admin']}>
+                            <UserManagement />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/PreferenceTagManagement" 
+                    element={
+                        <ProtectedRoute roles={['admin']}>
+                            <PreferenceTagManagement />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/complaintManagement"
+                    element={
+                        <ProtectedRoute roles={['admin']}>
+                            <ComplaintManagement />
                         </ProtectedRoute>
                     }
                 />
