@@ -12,8 +12,8 @@ import {
 const router = express.Router();
 
 router.put("/:id", verifyToken, editTourGuide);
-router.get("/:id", verifyToken, getTourGuideByID);
-router.put("/changePassword", verifyToken, changePassword);
+router.get("/", verifyToken, getTourGuideByID);
+router.put("/edit/changePassword", verifyToken, changePassword);
 router.post("/submitDocuments", verifyToken, submitDocuments);
 router.get("/documents", verifyToken, getDocuments); // Add this route
 router.post("/register", registerTourGuide);

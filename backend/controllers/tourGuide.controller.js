@@ -48,16 +48,14 @@ export const getTourGuideByID = async (req, res) => {
   console.log("entered  getTourGuideByID");
 
   const id = req.user.id;
-  console.log("entered");
+
 
   try {
     const user = await tourGuideModel.findById(id);
-    console.log(user);
 
     if (!user) {
       return res.status(404).json({ error: "Tour guide profile not found" });
     }
-
     res.status(200).json({ profile: user });
   } catch (error) {
     res.status(500).json({ error: "Error fetching tour guide profile" });
@@ -65,6 +63,7 @@ export const getTourGuideByID = async (req, res) => {
 };
 
 export const changePassword = async (req, res) => {
+  console.log("entered changePassword");
   const { oldPassword, newPassword } = req.body;
   const userID = req.user.id;
   console.log("Change password request received with ID:", userID);
