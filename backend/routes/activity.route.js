@@ -6,6 +6,7 @@ import {
   editActivity,
   deleteActivity,
   getActivitiesByUserID,
+  getActivityById
 } from "../controllers/activity.controller.js";
 
 const router = express.Router();
@@ -16,5 +17,6 @@ router.get("/", getActivities);
 router.put("/", verifyToken, editActivity);
 router.delete("/", deleteActivity);
 router.get("/:id", verifyToken, getActivitiesByUserID);
+router.get("/getActivity/:id", getActivityById);
 
 export default router;

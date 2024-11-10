@@ -139,3 +139,19 @@ export const editMuseumByName = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+//Get Museum by ID
+export const getMuseumById = async (req, res) => {
+    console.log("entered getMuseumById");
+
+    const { id } = req.params;
+    try {
+        const museum = await museumModel.findById(id);
+        if (!museum) {
+            return res.status(404).json({ message: "Museum not found" });
+        }
+        res.status(200).json(museum);
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+    }
+};

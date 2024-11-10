@@ -144,7 +144,7 @@ export const getItineraryByID = async (req, res) => {
     const { id } = req.params;
     const itinerary = await itineraryModel
       .findById(id)
-      .populate("reviews", "rating title body"); // Populate reviews if needed
+      
 
     if (!itinerary) {
       return res.status(404).json({ error: "Itinerary not found" });

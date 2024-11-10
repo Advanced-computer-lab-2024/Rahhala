@@ -8,6 +8,7 @@ import {
   deleteMuseum,
   editMuseumByName,
   deleteMuseumByName,
+  getMuseumById
 } from "../controllers/museum.controller.js";
 
 const router = express.Router();
@@ -15,10 +16,11 @@ const router = express.Router();
 // Define routes
 router.post("/", verifyToken, addMuseum);
 router.get("/", getMuseums);
-router.get("/:id", getMuseumsByUserID);
+router.get("/", getMuseumsByUserID);
 router.put("/:id", editMuseum);
 router.delete("/:id", deleteMuseum);
 router.put("/:name", editMuseumByName);
 router.delete("/:name", deleteMuseumByName);
+router.get("/:id", getMuseumById);
 
 export default router;
