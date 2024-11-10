@@ -80,31 +80,22 @@ const Products = () => {
         }
     };
 
-    const handleUploadPicture = async (productId, file) => {
-        const formData = new FormData();
-        formData.append('picture', file);
-
+    const handleUploadPicture = async (productId, url) => {
         try {
             console.log("Uploading picture for productId:", productId); // Log productId before uploading picture
-            await axiosInstance.post(`/api/product/uploadPicture/${productId}`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
+            await axiosInstance.post(`/api/product/uploadPicture/${productId}`, { picture: url });
             // Optionally, update the product's picture in the state
             setProducts(products.map(product => 
-                product._id === productId ? { ...product, picture: URL.createObjectURL(file) } : product
+                product._id === productId ? { ...product, picture: url } : product
             ));
         } catch (err) {
             setError('Failed to upload picture');
         }
     };
 
-    const handleFileChange = (productId, event) => {
-        const file = event.target.files[0];
-        if (file) {
-            handleUploadPicture(productId, file);
-        }
+    const handleUrlChange = (productId, event) => {
+        const url = event.target.value;
+        handleUploadPicture(productId, url);
     };
 
     return (
@@ -172,9 +163,9 @@ const Products = () => {
                                 </td>
                                 <td>
                                     <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={(e) => handleFileChange(product._id, e)}
+                                        type="text"
+                                        placeholder="Enter image URL"
+                                        onBlur={(e) => handleUrlChange(product._id, e)}
                                     />
                                 </td>
                             </tr>

@@ -181,6 +181,7 @@ export const uploadPicture = async (req, res) => {
 
   const { id: productId } = req.params;
   const { picture } = req.body;
+
   if (!mongoose.Types.ObjectId.isValid(productId)) {
     return res.status(400).json({ error: "Invalid product ID format" });
   }
