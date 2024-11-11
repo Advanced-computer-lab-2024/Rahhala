@@ -54,6 +54,8 @@ import GetMuseum from './pages/getMuseum';
 import TouristViewTourGuide from './pages/TouristViewTourGuide';
 import GetProduct from './pages/GetProduct';
 import PurchasedProducts from './pages/PurchasedProducts';
+import MuseumTags from './pages/MuseumTags';
+
 function App() {
     return (
         <Router>
@@ -91,6 +93,7 @@ function App() {
                 <Route path="/touristProducts" element={<PurchasedProducts />} />
  
                 <Route path="/createProduct" element={<CreateProduct />} />
+                <Route path="/museum-tags" element={<MuseumTags />} />
 
 
                 <Route
