@@ -89,22 +89,28 @@ const Products = () => {
         }
     };
 
-    const handleUploadPicture = async (productId, url) => {
+    const handleUploadPicture = async (productId, base64String) => {
         try {
             console.log("Uploading picture for productId:", productId); // Log productId before uploading picture
-            await axiosInstance.post(`/api/product/uploadPicture/${productId}`, { picture: url });
+            await axiosInstance.post(`/api/product/uploadPicture/${productId}`, { picture: base64String });
             // Optionally, update the product's picture in the state
             setProducts(products.map(product => 
-                product._id === productId ? { ...product, picture: url } : product
+                product._id === productId ? { ...product, picture: base64String } : product
             ));
+            setError('Picture uploaded successfully.');
         } catch (err) {
             setError('Failed to upload picture');
         }
     };
 
-    const handleUrlChange = (productId, event) => {
-        const url = event.target.value;
-        handleUploadPicture(productId, url);
+    const handleFileChange = (productId, event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
+            handleUploadPicture(productId, base64String);
+        };
+        reader.readAsDataURL(file);
     };
 
     return (
@@ -155,7 +161,7 @@ const Products = () => {
                     <tbody>
                         {sortedProducts.map(product => (
                             <tr key={product._id}>
-                                <td><img src={product.picture} alt={product.name} width="50" /></td>
+                                <td><img src={`data:image/jpeg;base64,${product.picture}`} alt={product.name} width="50" /></td>
                                 <td>{product.name}</td>
                                 <td>{product.price}</td>
                                 <td>{product.quantity}</td>

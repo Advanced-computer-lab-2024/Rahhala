@@ -13,6 +13,7 @@ const AdvertiserAccount = () => {
     }
     const [profile, setProfile] = useState(null); 
     const [error, setError] = useState(null); // State to handle errors
+    const [message, setMessage] = useState(null); // State to handle success messages
 
     useEffect(() => {
         // Only fetch profile if the user is authenticated
@@ -45,6 +46,7 @@ const AdvertiserAccount = () => {
         <div>
             <h2>Advertiser Account</h2>
             {error && <p className="error">{error}</p>}
+            {message && <p>{message}</p>}
             {profile ? (
                 <div className="profile-details">
                     {Object.entries(profile).map(([key, value]) => (

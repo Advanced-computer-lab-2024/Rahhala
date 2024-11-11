@@ -7,7 +7,7 @@ import '../table.css';
 
 const MyActivities = () => {
     const navigate = useNavigate(); // Initialize navigate
-    const [activities, setActivities] = useState(null);
+    const [activities, setActivities] = useState([]);
     const [error, setError] = useState('');
     const [budget, setBudget] = useState('');
     const [date, setDate] = useState('');
@@ -28,7 +28,7 @@ const MyActivities = () => {
     useEffect(() => {
         const fetchActivities = async () => {
             try {
-                const response = await axiosInstance.get('/getMyActivities');
+                const response = await axiosInstance.get('/api/activity/user');
                 console.log(response.data);
                 setActivities(response.data);
             } catch (err) {
@@ -41,9 +41,9 @@ const MyActivities = () => {
     const filterActivities = () => {
         return activities.filter(activity => {
             return (
-                (budget ? activity.price <= budget : true) &&
+                (budget ? parseFloat(activity.price.replace(/[^0-9.-]+/g,"")).toString().startsWith(budget) : true) &&
                 (date ? new Date(activity.date).toDateString() === new Date(date).toDateString() : true) &&
-                (category ? activity.category === category : true) &&
+                (category ? activity.category.toLowerCase().includes(category.toLowerCase()) : true) &&
                 (rating ? activity.rating >= rating : true) &&
                 (tags.length ? tags.every(tag => activity.tags.includes(tag)) : true) &&
                 (searchQuery ? activity.name.toLowerCase().includes(searchQuery.toLowerCase()) : true)
@@ -118,7 +118,7 @@ const MyActivities = () => {
                     <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                 </label>
             </div>
-            {activities ? (
+            {activities.length > 0 ? (
                 <table>
                     <thead>
                         <tr>
@@ -140,7 +140,7 @@ const MyActivities = () => {
                                 <td>{activity.rating}</td>
                                 <td>{activity.tags.join(', ')}</td>
                             </tr>
-                        ))}
+                        ))} 
                     </tbody>
                 </table>
             ) : (
