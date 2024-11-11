@@ -89,7 +89,7 @@ function App() {
                 <Route path="/viewTourGuide/:id" element={<TouristViewTourGuide />} />
                 <Route path="/getProduct/:id" element={<GetProduct />} />
                 <Route path="/touristProducts" element={<PurchasedProducts />} />
-
+ 
                 <Route path="/createProduct" element={<CreateProduct />} />
 
 
