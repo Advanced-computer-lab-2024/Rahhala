@@ -13,7 +13,7 @@ import mongoose from 'mongoose';
 export const getTouristByEmail = async (req, res) => {
   console.log("entered getTouristByEmail");
 
-  const { email } = req.params;
+  const { email } = req.params; 
 
   try {
     const tourist = await touristModel.findOne({ email });
@@ -28,7 +28,7 @@ export const getTouristByEmail = async (req, res) => {
   }
 };
 
-// Get Tourist profile by ID
+// Get Tourist profile by ID 
 export const getTouristByID = async (req, res) => {
   console.log("entered getTouristByID");
   const id = req.user.id; // Get the user ID from the verified JWT payload
