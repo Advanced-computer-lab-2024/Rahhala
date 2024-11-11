@@ -17,6 +17,7 @@ import productRoutes from "./routes/product.route.js";
 import AccountDeletionRequestRoutes from "./routes/accountDeletionRequest.route.js";
 import preferenceTagRoutes from "./routes/preferenceTag.route.js";
 import complaintRoute from "./routes/complaint.route.js";
+import reviewRoute from "./routes/review.route.js";
 import cors from "cors";
 
 dotenv.config({path: "../.env"});
@@ -40,6 +41,7 @@ app.use("/api/product", productRoutes);
 app.use("/api/accountDeletionRequest", AccountDeletionRequestRoutes);
 app.use("/api/preferenceTag", preferenceTagRoutes);
 app.use("/api/complaint", complaintRoute);
+app.use("/api/review", reviewRoute);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

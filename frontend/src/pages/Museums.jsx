@@ -92,6 +92,7 @@ const Museums = () => {
                             <th>Native Price</th>
                             <th>Student Price</th>
                             <th>Tags</th>
+                            <th>More Info</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -105,6 +106,7 @@ const Museums = () => {
                                 <td>${museum.nativePrice}</td>
                                 <td>${museum.studentPrice}</td>
                                 <td>{Array.isArray(museum.tags) ? museum.tags.map(tag => tag.name).join(', ') : ''}</td>
+                                <td><NavigateButton path={`/getMuseum/${museum._id}`} text='More Info'/>{'\u00A0'}</td>
                             </tr>
                         ))}
                     </tbody>
