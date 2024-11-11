@@ -177,7 +177,7 @@ function App() {
                 <Route
                     path="/GovernorDashboard"
                     element={
-                        <ProtectedRoute roles={['governor']}>
+                        <ProtectedRoute roles={['tourism_governor']}>
                             <GovernorDashboard />
                         </ProtectedRoute>
                     }

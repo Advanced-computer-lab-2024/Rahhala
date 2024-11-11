@@ -1,11 +1,17 @@
 import advertiserModel from "../models/advertiser.model.js";
+import path from 'path';
+import multer from 'multer';
+import fs from 'fs';
+
+// Configure multer for file uploads
+const storage = multer.memoryStorage(); // Store files in memory
+const upload = multer({ storage: storage });
 
 // Add Advertiser
 export const editAdvertiser = async (req, res) => {
-  console.log("entered  editAdvertiser");
+  console.log("entered editAdvertiser");
 
-  const { email, companyName, website, hotline, companyProfile, status } =
-    req.body;
+  const { email, companyName, websiteLink, hotline, companyProfile, status, oldPassword, newPassword } = req.body;
   const userId = req.user.id;
   try {
     const advertiser = await advertiserModel.findById(userId);
@@ -17,11 +23,28 @@ export const editAdvertiser = async (req, res) => {
     // Update advertiser's profile details
     advertiser.email = email || advertiser.email;
     advertiser.companyName = companyName || advertiser.companyName;
-    advertiser.website = website || advertiser.website;
+    advertiser.websiteLink = websiteLink || advertiser.websiteLink;
     advertiser.hotline = hotline || advertiser.hotline;
     advertiser.companyProfile = companyProfile || advertiser.companyProfile;
     advertiser.profileCreated = true;
     advertiser.status = status || advertiser.status;
+
+    // Handle password change
+    if (oldPassword && newPassword) {
+      if (oldPassword !== advertiser.password) {
+        return res.status(400).json({ message: "Old password is incorrect" });
+      }
+      if (newPassword === oldPassword) {
+        return res.status(400).json({ message: "New password cannot be the same as the old password" });
+      }
+      advertiser.password = newPassword;
+    }
+
+    // Handle logo upload
+    if (req.file) {
+      const logoBase64 = req.file.buffer.toString('base64');
+      advertiser.logo = logoBase64;
+    }
 
     await advertiser.save();
     res.status(200).json({
@@ -32,6 +55,7 @@ export const editAdvertiser = async (req, res) => {
     res.status(500).json({ error: "Error updating advertiser profile" });
   }
 };
+
 
 // Get Advertiser by ID
 export const getAdvertiserByID = async (req, res) => {
@@ -163,3 +187,5 @@ export const registerAdvertiser = async (req, res) => {
     res.status(500).json({ error: "Error registering advertiser" });
   }
 };
+
+export const uploadMiddleware = upload.single('logo');

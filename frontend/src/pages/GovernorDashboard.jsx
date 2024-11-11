@@ -22,6 +22,9 @@ function GovernorDashboard() {
   const [errorMessage, setErrorMessage] = useState('');
   const [showUpdateMuseumForm, setShowUpdateMuseumForm] = useState(false); // State for update form visibility
   const [showDeleteMuseumForm, setShowDeleteMuseumForm] = useState(false); // State for delete form visibility
+  const [showChangePasswordForm, setShowChangePasswordForm] = useState(false); // State for change password form visibility
+  const [oldPassword, setOldPassword] = useState(''); // State for old password
+  const [newPassword, setNewPassword] = useState(''); // State for new password
 
   const handleShowMuseums = () => {
     navigate('/showAllMuseums'); // Redirect to the museums list page
@@ -83,6 +86,24 @@ function GovernorDashboard() {
     }
   };
 
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axiosInstance.put('/api/governor/changePassword', {
+        oldPassword,
+        newPassword
+      });
+      setSuccessMessage('Password changed successfully');
+      setErrorMessage(null); // Clear any previous errors
+      setOldPassword(''); // Clear the input fields
+      setNewPassword(''); // Clear the input fields
+      setShowChangePasswordForm(false); // Hide the form after successful password change
+    } catch (err) {
+      setErrorMessage(err.response?.data?.message || 'Failed to change password');
+      setSuccessMessage(null); // Clear any previous success messages
+    }
+  };
+
   return (
     <div>
       <h2>Governor Dashboard</h2>
@@ -93,6 +114,32 @@ function GovernorDashboard() {
       <button onClick={() => setShowCreateMuseumForm(true)}>Create New Museum</button>
       <button onClick={() => setShowUpdateMuseumForm(true)}>Update Museum</button>
       <button onClick={() => setShowDeleteMuseumForm(true)}>Delete Museum</button> {/* Button to toggle delete form */}
+      <button onClick={() => setShowChangePasswordForm(!showChangePasswordForm)}>
+        {showChangePasswordForm ? 'Cancel' : 'Change My Password'}
+      </button>
+      {showChangePasswordForm && (
+        <form onSubmit={handleChangePassword}>
+          <div>
+            <label>Old Password:</label>
+            <input
+              type="password"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label>New Password:</label>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit">Change Password</button>
+        </form>
+      )}
 
       {/* Create Museum Modal form */}
       {showCreateMuseumForm && (

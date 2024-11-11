@@ -35,7 +35,7 @@ const advertiserSchema = new mongoose.Schema({
         required: true
     },
     logo: {
-        type: String,
+        type: String, // Store the logo as a Base64 string
         required: true
     },
     acceptedTermsAndConditions: {
