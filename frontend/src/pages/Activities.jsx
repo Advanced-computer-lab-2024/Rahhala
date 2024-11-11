@@ -14,7 +14,7 @@ const Activities = () => {
     const [category, setCategory] = useState('');
     const [sortCriteria, setSortCriteria] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
-    const [tags, setTags] = useState([]);
+    const [tags, setTags] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const { auth } = useContext(AuthContext); // Get auth context
     let homePath;
@@ -40,10 +40,10 @@ const Activities = () => {
     const filterActivities = () => {
         return activities.filter(activity => {
             return (
-                (budget ? parseFloat(activity.price.replace(/[^0-9.-]+/g,"")) <= parseFloat(budget) : true) &&
-                (date ? new Date(activity.date).toDateString() === new Date(date).toDateString() : true) &&
-                (category ? activity.category === category : true) &&
-                (tags.length ? tags.every(tag => activity.tags.includes(tag)) : true) &&
+                (budget ? parseFloat(activity.price.replace(/[^0-9.-]+/g,"")).toString().startsWith(budget) : true) &&
+                (date ? new Date(activity.date).toDateString().startsWith(new Date(date).toDateString()) : true) &&
+                (category ? activity.category.toLowerCase().startsWith(category.toLowerCase()) : true) &&
+                (tags ? tags.split(',').every(tag => activity.tags.some(activityTag => activityTag.toLowerCase().includes(tag.trim().toLowerCase()))) : true) &&
                 (searchQuery ? activity.name.toLowerCase().includes(searchQuery.toLowerCase()) : true)
             );
         });
@@ -54,14 +54,15 @@ const Activities = () => {
         return activities.sort((a, b) => {
             if (sortCriteria === 'price') {
                 return sortOrder === 'asc' ? parseFloat(a.price.replace(/[^0-9.-]+/g,"")) - parseFloat(b.price.replace(/[^0-9.-]+/g,"")) : parseFloat(b.price.replace(/[^0-9.-]+/g,"")) - parseFloat(a.price.replace(/[^0-9.-]+/g,""));
+            } else if (sortCriteria === 'date') {
+                return sortOrder === 'asc' ? new Date(a.date) - new Date(b.date) : new Date(b.date) - new Date(a.date);
             }
             return 0;
         });
     };
 
     const handleTagsChange = (e) => {
-        const tagsArray = e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag);
-        setTags(tagsArray);
+        setTags(e.target.value);
     };
 
     const filteredActivities = activities ? filterActivities() : [];
@@ -84,13 +85,14 @@ const Activities = () => {
                 </label>
                 <label>
                     Tags (comma separated):
-                    <input type="text" value={tags.join(', ')} onChange={handleTagsChange} />
+                    <input type="text" value={tags} onChange={handleTagsChange} />
                 </label>
                 <label>
                     Sort by:
                     <select value={sortCriteria} onChange={(e) => setSortCriteria(e.target.value)}>
                         <option value="">None</option>
                         <option value="price">Price</option>
+                        <option value="date">Date</option>
                     </select>
                 </label>
                 <label>
