@@ -69,10 +69,8 @@ const AdvertiserDashboard = () => {
             {message && <p>{message}</p>}
             <NavigateButton path="/advertiserAccount" text="View Account" />{' '}
             <NavigateButton path="/updateAdvertiserAccount" text="Update Account" />{' '}
-            <NavigateButton path="/getActivities" text="View Activities" />{' '}
+            <NavigateButton path="/getActivities" text="Manage Activities" />{' '}
             <NavigateButton path="/createActivity" text="Create Activity" />{' '}
-            <NavigateButton path="/updateActivity" text="Update Activity" />{' '}
-            <NavigateButton path="/deleteActivity" text="Delete Activity" />{' '}
             <NavigateButton path="/getMyActivities" text="View My Activities" />{' '}
             {deletionRequested ? (
                 <button onClick={handleCancelDeletionRequest}>Cancel Account Deletion Request</button>
