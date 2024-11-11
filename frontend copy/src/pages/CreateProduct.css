@@ -1,0 +1,75 @@
+/* CreateProduct.css */
+.create-product {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: max-content;
+    width: 100vw;
+    padding: 50px;
+    background-color: var(--background-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(24, 26, 27, 0.1);
+}
+
+.create-product h2 {
+    text-align: center;
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+.create-product form {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.create-product form div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.create-product form label {
+    font-size: 1em;
+    color: var(--secondary-color);
+}
+
+.create-product form input,
+.create-product form textarea {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.create-product form button {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.create-product form button:hover {
+    background-color: #033231; /* Dark green color */
+    color: #000000; /* Ensure the text is visible on hover */
+}
+
+.create-product .navigation-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.success {
+    color: green;
+}
+
+.error {
+    color: red;
+}
