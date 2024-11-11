@@ -49,6 +49,8 @@ import Wallet from './pages/wallet';
 import RedeemLoyaltyPoints from './pages/RedeemLoyaltyPoints';
 import TouristComplaints from './pages/TouristComplaints';
 import GetActivity from './pages/GetActivity';
+import GetItinerary from './pages/getItinerary';
+import GetMuseum from './pages/getMuseum';
 function App() {
     return (
         <Router>
@@ -79,7 +81,8 @@ function App() {
                 <Route path="/redeem" element={<RedeemLoyaltyPoints />} />
                 <Route path="/myComplaints" element={<TouristComplaints />} />
                 <Route path="/getActivity/:id" element={<GetActivity />} />
-
+                <Route path="/getItinerary/:id" element={<GetItinerary />} />
+                <Route path="/getMuseum/:id" element={<GetMuseum />} />
 
 
 
@@ -174,7 +177,7 @@ function App() {
                 <Route
                     path="/GovernorDashboard"
                     element={
-                        <ProtectedRoute roles={['governor']}>
+                        <ProtectedRoute roles={['tourism_governor']}>
                             <GovernorDashboard />
                         </ProtectedRoute>
                     }

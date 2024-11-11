@@ -5,54 +5,43 @@ import axiosInstance from '../utils/axiosConfig';
 import NavigateButton from '../components/UpdateProfileButton';
 import '../table.css';
 
-const GetActivity = () => {
-    const { id } = useParams(); // Get the activity ID from the URL parameters
-    const [activity, setActivity] = useState(null);
+const GetMuseum = () => {
+    const { id } = useParams(); // Get the museum ID from the URL parameters
+    const [museum, setMuseum] = useState(null);
     const [reviews, setReviews] = useState([]);
     const [error, setError] = useState('');
-    const [bookingMessage, setBookingMessage] = useState('');
     const { auth } = useContext(AuthContext); // Get auth context
     let homePath;
     if (auth.user && auth.user.type === 'tourist') {
-        homePath = '/getActivities';
+        homePath = '/getMuseums';
     }
     else {
         homePath = '/advertiser-dashboard';
     }
 
     useEffect(() => {
-        const fetchActivity = async () => {
+        const fetchMuseum = async () => {
             try {
-                const response = await axiosInstance.get(`/api/activity/getActivity/${id}`);
-                console.log(response.data);
-                setActivity(response.data);
+                const response = await axiosInstance.get(`/api/museum/${id}`);
+                setMuseum(response.data);
             } catch (err) {
-                setError('Failed to fetch activity');
+                setError('Failed to fetch museum');
             }
         };
 
-        // Fetch activity reviews
+        // Fetch museum reviews
         const fetchReviews = async () => {
             try {
-                const response = await axiosInstance.get(`/api/review/entity/Activity/${id}`);
+                const response = await axiosInstance.get(`/api/review/entity/Museum/${id}`);
                 setReviews(response.data);
             } catch (err) {
                 setError(err.response.data.message);
             }
         };
 
-        fetchActivity();
+        fetchMuseum();
         fetchReviews();
     }, [id]);
-
-    const handleBookActivity = async () => {
-        try {
-            const response = await axiosInstance.post('/api/tourist/bookActivity', { activityId: id });
-            setBookingMessage('Activity booked successfully!');
-        } catch (err) {
-            setBookingMessage(err.response.data.error);
-        }
-    };
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(window.location.href)
@@ -66,22 +55,24 @@ const GetActivity = () => {
 
     return (
         <div>
-            {activity ? (
+            {museum ? (
                 <div>
-                    <h1>{activity.name}</h1>
-                    <p><strong>Price:</strong> {activity.price}</p>
-                    <p><strong>Date:</strong> {new Date(activity.date).toLocaleDateString()}</p>
-                    <p><strong>Time:</strong> {activity.time}</p>
-                    <p><strong>Location:</strong> {activity.location.join(', ')}</p>
-                    <p><strong>Category:</strong> {activity.category}</p>
-                    <p><strong>Tags:</strong> {activity.tags.join(', ')}</p>
-                    <p><strong>Special Discounts:</strong> {activity.specialDiscounts}</p>
-                    <p><strong>Booking Open:</strong> {activity.bookingOpen ? 'Yes' : 'No'}</p>
-                    <button onClick={handleBookActivity}>Book Activity</button>
-                    {bookingMessage && <p>{bookingMessage}</p>}
+                    <h1>{museum.name}</h1>
+                    <p><strong>Description:</strong> {museum.description}</p>
+                    <p><strong>Location:</strong> {museum.location}</p>
+                    <p><strong>Opening Hours:</strong> {museum.openingHours}</p>
+                    <p><strong>Foreigner Price:</strong> {museum.foreignerPrice}</p>
+                    <p><strong>Native Price:</strong> {museum.nativePrice}</p>
+                    <p><strong>Student Price:</strong> {museum.studentPrice}</p>
+                    <div>
+                        <strong>Pictures:</strong>
+                        {museum.pictures.map((picture, index) => (
+                            <img key={index} src={picture} alt={`Museum ${index}`} style={{ width: '200px', height: 'auto' }} />
+                        ))}
+                    </div>
                 </div>
             ) : (
-                <div>Loading activity...</div>
+                <div>Loading museum...</div>
             )}
             {error && <div>{error}</div>}
             <NavigateButton path={homePath} text='Back'/>{'\u00A0'}
@@ -106,4 +97,4 @@ const GetActivity = () => {
     );
 };
 
-export default GetActivity;
+export default GetMuseum;

@@ -24,56 +24,53 @@ const TouristItineraries = () => {
         }
     }, [auth]);
 
-    useEffect(() => {
-        filterItineraries();
-    }, [minPrice, maxPrice, selectedDate, selectedTags, selectedLanguage, searchQuery, itineraries]);
-
     const fetchItineraries = async () => {
         try {
             const response = await axiosInstance.get('/api/itinerary');
             setItineraries(response.data);
         } catch (err) {
-            setError('Failed to fetch itineraries.');
-            console.error(err);
+            setError('Failed to fetch itineraries');
         }
     };
 
     const filterItineraries = () => {
         return itineraries.filter(itinerary => {
             return (
-                (!minPrice || itinerary.price >= minPrice) &&
-                (!maxPrice || itinerary.price <= maxPrice) &&
-                (!selectedDate || itinerary.availableDates.some(date => new Date(date).toDateString() === new Date(selectedDate).toDateString())) &&
-                (!selectedTags.length || selectedTags.every(tag => itinerary.tags.includes(tag))) &&
-                (!selectedLanguage || itinerary.language === selectedLanguage) &&
-                (!searchQuery || itinerary.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                (minPrice ? parseFloat(itinerary.price.replace(/[^0-9.-]+/g,"")) >= parseFloat(minPrice) : true) &&
+                (maxPrice ? parseFloat(itinerary.price.replace(/[^0-9.-]+/g,"")) <= parseFloat(maxPrice) : true) &&
+                (selectedDate ? new Date(itinerary.date).toDateString() === new Date(selectedDate).toDateString() : true) &&
+                (selectedTags.length ? selectedTags.every(tag => itinerary.tags.includes(tag)) : true) &&
+                (selectedLanguage ? itinerary.language === selectedLanguage : true) &&
+                (searchQuery ? itinerary.name.toLowerCase().includes(searchQuery.toLowerCase()) : true)
             );
         });
     };
 
-    const filteredItineraries = itineraries ? filterItineraries() : [];
+    const handleTagsChange = (e) => {
+        const tagsArray = e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag);
+        setSelectedTags(tagsArray);
+    };
+
+    const filteredItineraries = filterItineraries();
 
     return (
         <div>
-            <h2>Your Itineraries</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-
             <div>
                 <label>
                     Min Price:
-                    <input type="number" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} />
+                    <input min="0" type="number" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} />
                 </label>
                 <label>
                     Max Price:
-                    <input type="number" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} />
+                    <input min="0" type="number" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} />
                 </label>
                 <label>
                     Date:
                     <input type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
                 </label>
                 <label>
-                    Tags:
-                    <input type="text" value={selectedTags.join(', ')} onChange={(e) => setSelectedTags(e.target.value.split(',').map(tag => tag.trim()))} />
+                    Tags (comma separated):
+                    <input type="text" value={selectedTags.join(', ')} onChange={handleTagsChange} />
                 </label>
                 <label>
                     Language:
@@ -84,50 +81,38 @@ const TouristItineraries = () => {
                     <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                 </label>
             </div>
-
-            {filteredItineraries.length === 0 ? (
-                <p>No itineraries available.</p>
-            ) : (
-                <table className="itinerary-table">
+            {itineraries.length > 0 ? (
+                <table>
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Timeline</th>
-                            <th>Language</th>
                             <th>Price</th>
-                            <th>Pickup Location</th>
-                            <th>Dropoff Location</th>
-                            <th>Available Dates</th>
+                            <th>Date</th>
                             <th>Tags</th>
-                            <th>Activities</th>
+                            <th>Language</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredItineraries.map(itinerary => (
                             <tr key={itinerary._id}>
                                 <td>{itinerary.name}</td>
-                                <td>{itinerary.timeline}</td>
-                                <td>{itinerary.language}</td>
-                                <td>${itinerary.price}</td>
-                                <td>{itinerary.pickupLocation}</td>
-                                <td>{itinerary.dropoffLocation}</td>
-                                <td>{itinerary.availableDates.map(date => new Date(date).toLocaleDateString()).join(', ')}</td>
+                                <td>{itinerary.price}</td>
+                                <td>{new Date(itinerary.date).toLocaleDateString()}</td>
                                 <td>{itinerary.tags.join(', ')}</td>
+                                <td>{itinerary.language}</td>
                                 <td>
-                                    <ul>
-                                        {itinerary.activityDetails.map(activity => (
-                                            <li key={activity._id}>
-                                                <strong>{activity.name}</strong> - Duration: {activity.duration}, Location: ({activity.location.join(', ')}), Time: {activity.time}
-                                            </li>
-                                        ))}
-                                    </ul>
+                                    <NavigateButton path={`/getItinerary/${itinerary._id}`} text='More Info' />
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
+            ) : (
+                <div>Loading itineraries...</div>
             )}
-            <NavigateButton path='/viewAll' text='Back'/>{'\u00A0'}
+            {error && <div>{error}</div>}
+            <NavigateButton path='/viewAll' text='Back' />
         </div>
     );
 };

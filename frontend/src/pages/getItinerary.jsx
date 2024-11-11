@@ -5,50 +5,49 @@ import axiosInstance from '../utils/axiosConfig';
 import NavigateButton from '../components/UpdateProfileButton';
 import '../table.css';
 
-const GetActivity = () => {
-    const { id } = useParams(); // Get the activity ID from the URL parameters
-    const [activity, setActivity] = useState(null);
+const GetItinerary = () => {
+    const { id } = useParams(); // Get the itinerary ID from the URL parameters
+    const [itinerary, setItinerary] = useState(null);
     const [reviews, setReviews] = useState([]);
     const [error, setError] = useState('');
     const [bookingMessage, setBookingMessage] = useState('');
     const { auth } = useContext(AuthContext); // Get auth context
     let homePath;
     if (auth.user && auth.user.type === 'tourist') {
-        homePath = '/getActivities';
+        homePath = '/touristItineraries';
     }
     else {
         homePath = '/advertiser-dashboard';
     }
 
     useEffect(() => {
-        const fetchActivity = async () => {
+        const fetchItinerary = async () => {
             try {
-                const response = await axiosInstance.get(`/api/activity/getActivity/${id}`);
-                console.log(response.data);
-                setActivity(response.data);
+                const response = await axiosInstance.get(`/api/itinerary/${id}`);
+                setItinerary(response.data);
             } catch (err) {
-                setError('Failed to fetch activity');
+                setError('Failed to fetch itinerary');
             }
         };
 
-        // Fetch activity reviews
+        // Fetch itinerary reviews
         const fetchReviews = async () => {
             try {
-                const response = await axiosInstance.get(`/api/review/entity/Activity/${id}`);
+                const response = await axiosInstance.get(`/api/review/entity/Itinerary/${id}`);
                 setReviews(response.data);
             } catch (err) {
                 setError(err.response.data.message);
             }
         };
 
-        fetchActivity();
+        fetchItinerary();
         fetchReviews();
     }, [id]);
 
-    const handleBookActivity = async () => {
+    const handleBookItinerary = async () => {
         try {
-            const response = await axiosInstance.post('/api/tourist/bookActivity', { activityId: id });
-            setBookingMessage('Activity booked successfully!');
+            const response = await axiosInstance.post('/api/tourist/bookItinerary', { itineraryId: id });
+            setBookingMessage('Itinerary booked successfully!');
         } catch (err) {
             setBookingMessage(err.response.data.error);
         }
@@ -66,22 +65,33 @@ const GetActivity = () => {
 
     return (
         <div>
-            {activity ? (
+            {itinerary ? (
                 <div>
-                    <h1>{activity.name}</h1>
-                    <p><strong>Price:</strong> {activity.price}</p>
-                    <p><strong>Date:</strong> {new Date(activity.date).toLocaleDateString()}</p>
-                    <p><strong>Time:</strong> {activity.time}</p>
-                    <p><strong>Location:</strong> {activity.location.join(', ')}</p>
-                    <p><strong>Category:</strong> {activity.category}</p>
-                    <p><strong>Tags:</strong> {activity.tags.join(', ')}</p>
-                    <p><strong>Special Discounts:</strong> {activity.specialDiscounts}</p>
-                    <p><strong>Booking Open:</strong> {activity.bookingOpen ? 'Yes' : 'No'}</p>
-                    <button onClick={handleBookActivity}>Book Activity</button>
+                    <h1>{itinerary.name}</h1>
+                    <p><strong>Price:</strong> {itinerary.price}</p>
+                    <p><strong>Timeline:</strong> {itinerary.timeline}</p>
+                    <p><strong>Language:</strong> {itinerary.language}</p>
+                    <p><strong>Pickup Location:</strong> {itinerary.pickupLocation}</p>
+                    <p><strong>Dropoff Location:</strong> {itinerary.dropoffLocation}</p>
+                    <p><strong>Tags:</strong> {itinerary.tags.join(', ')}</p>
+                    <p><strong>Accessibility:</strong> {itinerary.accessibility.join(', ')}</p>
+                    <p><strong>Available Dates:</strong> {itinerary.availableDates.map(date => new Date(date).toLocaleDateString()).join(', ')}</p>
+                    <p><strong>Activity Details:</strong></p>
+                    <ul>
+                        {itinerary.activityDetails.map((activity, index) => (
+                            <li key={index}>
+                                <p><strong>Name:</strong> {activity.name}</p>
+                                <p><strong>Location:</strong> {activity.location.join(', ')}</p>
+                                <p><strong>Duration:</strong> {activity.duration}</p>
+                                <p><strong>Time:</strong> {activity.time}</p>
+                            </li>
+                        ))}
+                    </ul>
+                    <button onClick={handleBookItinerary}>Book Itinerary</button>
                     {bookingMessage && <p>{bookingMessage}</p>}
                 </div>
             ) : (
-                <div>Loading activity...</div>
+                <div>Loading itinerary...</div>
             )}
             {error && <div>{error}</div>}
             <NavigateButton path={homePath} text='Back'/>{'\u00A0'}
@@ -106,4 +116,4 @@ const GetActivity = () => {
     );
 };
 
-export default GetActivity;
+export default GetItinerary;
