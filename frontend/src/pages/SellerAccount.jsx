@@ -56,7 +56,16 @@ const SellerAccount = () => {
                     <p>Email: {profile.email}</p>
                     <p>Name: {profile.name}</p>
                     <p>Description: {profile.description}</p>
-                    <p>Logo: {profile.logo}</p>
+                    {profile.logo && (
+                        <div>
+                            <p>Logo:</p>
+                            <img
+                                src={`data:image/jpeg;base64,${profile.logo}`}
+                                alt="Logo"
+                                style={{ width: '100px', height: '100px' }}
+                            />
+                        </div>
+                    )}
                     <button onClick={handleAccountDeletionRequest}>Request My Account to be Deleted</button>
                 </div>
             )}

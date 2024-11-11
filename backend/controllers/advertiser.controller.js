@@ -5,7 +5,7 @@ import advertiserModel from "../models/advertiser.model.js";
 export const editAdvertiser = async (req, res) => {
   console.log("entered editAdvertiser");
 
-  const { email, companyName, websiteLink, hotline, companyProfile, status, oldPassword, newPassword } = req.body;
+  const { email, companyName, websiteLink, hotline, companyProfile, status, oldPassword, newPassword, logo } = req.body;
   const userId = req.user.id;
   try {
     const advertiser = await advertiserModel.findById(userId);
@@ -22,6 +22,7 @@ export const editAdvertiser = async (req, res) => {
     advertiser.companyProfile = companyProfile || advertiser.companyProfile;
     advertiser.profileCreated = true;
     advertiser.status = status || advertiser.status;
+    advertiser.logo = logo || advertiser.logo;
 
     // Handle password change
     if (oldPassword && newPassword) {

@@ -68,30 +68,31 @@ const UpdateAdvertiserAccount = () => {
     };
 
     const handleFileChange = (e) => {
-        setFormData({
-            ...formData,
-            logo: e.target.files[0],
-        });
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
+            setFormData({
+                ...formData,
+                logo: base64String,
+            });
+        };
+        reader.readAsDataURL(file);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (auth.isAuthenticated && auth.user) {
-            const formDataToSend = new FormData();
-            formDataToSend.append('email', formData.email);
-            formDataToSend.append('websiteLink', formData.websiteLink);
-            formDataToSend.append('hotline', formData.hotline);
-            formDataToSend.append('companyProfile', formData.companyProfile);
-            if (formData.logo) {
-                formDataToSend.append('logo', formData.logo);
-            }
+            const formDataToSend = {
+                email: formData.email,
+                websiteLink: formData.websiteLink,
+                hotline: formData.hotline,
+                companyProfile: formData.companyProfile,
+                logo: formData.logo,
+            };
 
             try {
-                await axiosInstance.put(`/api/advertiser/${auth.user.id}`, formDataToSend, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
+                await axiosInstance.put(`/api/advertiser/${auth.user.id}`, formDataToSend);
                 navigate('/advertiserAccount');
             } catch (err) {
                 setError('Failed to update Advertiser profile.');
@@ -171,6 +172,13 @@ const UpdateAdvertiserAccount = () => {
                         name="logo"
                         onChange={handleFileChange}
                     />
+                    {formData.logo && (
+                        <img
+                            src={`data:image/jpeg;base64,${formData.logo}`}
+                            alt="Logo"
+                            style={{ width: '100px', height: '100px' }}
+                        />
+                    )}
                 </div>
                 <button type="submit">Update Account</button>
             </form>
@@ -201,7 +209,6 @@ const UpdateAdvertiserAccount = () => {
                 </form>
             )}
             <NavigateButton path={'/advertiser-dashboard'} text={'Home'} />
-
         </div>
     );
 };

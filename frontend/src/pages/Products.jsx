@@ -155,7 +155,7 @@ const Products = () => {
                             {auth.user.type !== 'tourist' && <th>Archived</th>} {/* Conditionally display archived column */}
                             {auth.user.type !== 'tourist' && <th>Actions</th>} {/* New column for actions */}
                             {auth.user.type !== 'tourist' && <th>Upload Picture</th>} {/* New column for upload picture */}
-                            <th>More Info</th> {/* New column for more info button */}
+                            {auth.user.type === 'tourist' && <th>More Info</th>} {/* Conditionally display more info column */}
                         </tr>
                     </thead>
                     <tbody>
@@ -188,9 +188,11 @@ const Products = () => {
                                         />
                                     </td>
                                 )}
-                                <td>
-                                    <NavigateButton path={`/getProduct/${product._id}`} text='More Info'/>{'\u00A0'}
-                                </td>
+                                {auth.user.type === 'tourist' && (
+                                    <td>
+                                        <NavigateButton path={`/getProduct/${product._id}`} text='More Info'/>{'\u00A0'}
+                                    </td>
+                                )}
                             </tr>
                         ))}
                     </tbody>

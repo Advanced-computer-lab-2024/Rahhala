@@ -41,16 +41,6 @@ const SellerForm = ({ formData, handleChange }) => (
                 required
             />
         </div>
-        <div>
-            <label>Logo URL:</label>
-            <input
-                type="text"
-                name="logo"
-                value={formData.logo}
-                onChange={handleChange}
-                required
-            />
-        </div>
     </>
 );
 

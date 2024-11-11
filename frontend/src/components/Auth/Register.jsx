@@ -7,6 +7,7 @@ import TourGuideForm from './RegisterForms/TourGuideForm';
 import SellerForm from './RegisterForms/SellerForm';
 import AdvertiserForm from './RegisterForms/AdvertiserForm';
 import { jwtDecode } from 'jwt-decode';
+import NavigateButton from '../UpdateProfileButton';
 
 
 
@@ -274,6 +275,8 @@ const Register = () => {
                 {userType === 'seller' && <SellerForm formData={formData} handleChange={handleChange} />}
                 {userType === 'advertiser' && <AdvertiserForm formData={formData} handleChange={handleChange} />}
                 <button type="submit">Register</button>
+                <NavigateButton path={"/login"} text='Login Instead'/>{'\u00A0'}
+
             </form>
         </div>
     );

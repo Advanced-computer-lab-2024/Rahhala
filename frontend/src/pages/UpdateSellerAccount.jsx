@@ -42,7 +42,7 @@ const UpdateSellerAccount = () => {
         email: '',
         name: '',
         description: '',
-        logo: '',
+        logo: null,
     });
 
     useEffect(() => {
@@ -52,7 +52,7 @@ const UpdateSellerAccount = () => {
                 email: profile.email || '',
                 name: profile.name || '',
                 description: profile.description || '',
-                logo: profile.logo || '',
+                logo: profile.logo || null,
             });
         }
     }, [profile]);
@@ -65,11 +65,32 @@ const UpdateSellerAccount = () => {
         });
     };
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
+            setFormData({
+                ...formData,
+                logo: base64String,
+            });
+        };
+        reader.readAsDataURL(file);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (auth.isAuthenticated && auth.user) {
+            const formDataToSend = {
+                username: formData.username,
+                email: formData.email,
+                name: formData.name,
+                description: formData.description,
+                logo: formData.logo,
+            };
+
             try {
-                await axiosInstance.put('api/seller/edit', formData);
+                await axiosInstance.put('api/seller/edit', formDataToSend);
                 navigate('/sellerAccount');
             } catch (err) {
                 setError('Failed to update Seller profile.');
@@ -141,9 +162,9 @@ const UpdateSellerAccount = () => {
                 <div>
                     <label>Logo:</label>
                     <input
+                        type="file"
                         name="logo"
-                        value={formData.logo}
-                        onChange={handleChange}
+                        onChange={handleFileChange}
                     />
                 </div>
                 <button type="submit">Update Account</button>

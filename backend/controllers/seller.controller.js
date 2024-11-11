@@ -22,6 +22,7 @@ export const editSeller = async (req, res) => {
   const id = req.user.id;
   console.log("entered edit seller with id ", req.user.id);
   const { name, description, email, username, logo, status } = req.body;
+  console.log(logo);
 
 
   try {

@@ -34,7 +34,7 @@ const UpdateTourguideAccount = () => {
                         email: profile.email || '',
                         mobileNumber: profile.mobileNumber || '',
                         profilePhoto: profile.profilePhoto || '',
-                        yearsOfExperience: '',
+                        yearsOfExperience: profile.yearsOfExperience || '',
                         certificationImages: profile.certificationImages || []
                     });
                 } catch (err) {
@@ -52,6 +52,19 @@ const UpdateTourguideAccount = () => {
             ...formData,
             [name]: value
         });
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
+            setFormData({
+                ...formData,
+                profilePhoto: base64String,
+            });
+        };
+        reader.readAsDataURL(file);
     };
 
     const handleCertificationImagesChange = (e) => {
@@ -98,15 +111,20 @@ const UpdateTourguideAccount = () => {
                     />
                 </div>
                 <div>
-                    <label>Profile Photo URL:</label>
+                    <label>Profile Photo:</label>
                     <input
-                        type="text"
+                        type="file"
                         name="profilePhoto"
-                        value={formData.profilePhoto}
-                        onChange={handleChange}
+                        onChange={handleFileChange}
                     />
+                    {formData.profilePhoto && (
+                        <img
+                            src={`data:image/jpeg;base64,${formData.profilePhoto}`}
+                            alt="Profile"
+                            style={{ width: '100px', height: '100px' }}
+                        />
+                    )}
                 </div>
-                
                 <div>
                     <label>Years of Experience:</label>
                     <input
