@@ -15,7 +15,7 @@ const router = express.Router();
 
 router.post("/", verifyToken, createComplaint);
 router.get("/", getAllComplaints);
-router.get("/:id", verifyToken, getComplaintById);
+router.get("/get/:id", verifyToken, getComplaintById);
 router.put("/:id", verifyToken, updateComplaint);
 router.delete("/:id", verifyToken, deleteComplaint);
 router.get("/user", verifyToken, getComplaintsByUserId);

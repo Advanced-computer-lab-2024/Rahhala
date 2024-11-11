@@ -75,6 +75,8 @@ const ViewTouristAccount = () => {
             )}
             <NavigateButton path={"/updateTouristAccount"} text={"Update Account"}/>{'\u00A0'}
             <NavigateButton path={"/touristDeleteAccount"} text={"Request Account Deletion"}/>{'\u00A0'}
+            <NavigateButton path={"/touristChangePassword"} text={"Change My Password"}/>{'\u00A0'}
+
 
         </div>
     );

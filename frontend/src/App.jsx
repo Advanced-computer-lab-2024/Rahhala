@@ -44,7 +44,11 @@ import PreferenceTagManagement from './pages/PreferenceTagManagement';
 import ComplaintManagement from './pages/ComplaintManagement';
 import UserManagement from './pages/UserManagement';    
 import AccountDeletionRequests from './pages/AccountDeletionRequests';
-
+import TouristChangePassword from './pages/TouristChangePassword';
+import Wallet from './pages/wallet';
+import RedeemLoyaltyPoints from './pages/RedeemLoyaltyPoints';
+import TouristComplaints from './pages/TouristComplaints';
+import GetActivity from './pages/GetActivity';
 function App() {
     return (
         <Router>
@@ -70,6 +74,11 @@ function App() {
                 <Route path="/viewTouristAccount" element={<ViewTouristAccount />} />
                 <Route path="/touristDeleteAccount" element={<TouristDeleteAccount />} />
                 <Route path="/touristBookings" element={<TouristBookings />} />
+                <Route path="/touristChangePassword" element={<TouristChangePassword />} />
+                <Route path="/wallet" element={<Wallet />} />
+                <Route path="/redeem" element={<RedeemLoyaltyPoints />} />
+                <Route path="/myComplaints" element={<TouristComplaints />} />
+                <Route path="/getActivity/:id" element={<GetActivity />} />
 
 
 

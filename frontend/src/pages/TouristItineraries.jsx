@@ -30,7 +30,7 @@ const TouristItineraries = () => {
 
     const fetchItineraries = async () => {
         try {
-            const response = await axiosInstance.get('/getItineraries');
+            const response = await axiosInstance.get('/api/itinerary');
             setItineraries(response.data);
         } catch (err) {
             setError('Failed to fetch itineraries.');
@@ -93,7 +93,6 @@ const TouristItineraries = () => {
                         <tr>
                             <th>Name</th>
                             <th>Timeline</th>
-                            <th>Locations</th>
                             <th>Language</th>
                             <th>Price</th>
                             <th>Pickup Location</th>
@@ -108,18 +107,17 @@ const TouristItineraries = () => {
                             <tr key={itinerary._id}>
                                 <td>{itinerary.name}</td>
                                 <td>{itinerary.timeline}</td>
-                                <td>{itinerary.location.map(loc => `(${loc[0]}, ${loc[1]})`).join(', ')}</td>
                                 <td>{itinerary.language}</td>
                                 <td>${itinerary.price}</td>
                                 <td>{itinerary.pickupLocation}</td>
                                 <td>{itinerary.dropoffLocation}</td>
-                                <td>{itinerary.availableDates.join(', ')}</td>
+                                <td>{itinerary.availableDates.map(date => new Date(date).toLocaleDateString()).join(', ')}</td>
                                 <td>{itinerary.tags.join(', ')}</td>
                                 <td>
                                     <ul>
                                         {itinerary.activityDetails.map(activity => (
-                                            <li key={activity.activityId}>
-                                                <strong>{activity.name}</strong> - Duration: {activity.duration}
+                                            <li key={activity._id}>
+                                                <strong>{activity.name}</strong> - Duration: {activity.duration}, Location: ({activity.location.join(', ')}), Time: {activity.time}
                                             </li>
                                         ))}
                                     </ul>
