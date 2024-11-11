@@ -53,6 +53,7 @@ const TouristAccount = () => {
         <div>
             <NavigateButton path={"/viewAll"} text={"View All"}/>{'\u00A0'}
             <NavigateButton path={"/products"} text={"View Products"}/>{'\u00A0'}
+            <NavigateButton path={"/touristProducts"} text={"Purchased Products"}/>{'\u00A0'}
             <NavigateButton path={"/submitComplaint"} text={"Submit Complaint"}/>{'\u00A0'}
             <NavigateButton path={"/viewTouristAccount"} text={"My profile"}/>{'\u00A0'}
             <NavigateButton path={"/touristBookings"} text={"My Bookings"}/>{'\u00A0'}

@@ -14,8 +14,7 @@ const GetMuseum = () => {
     let homePath;
     if (auth.user && auth.user.type === 'tourist') {
         homePath = '/getMuseums';
-    }
-    else {
+    } else {
         homePath = '/advertiser-dashboard';
     }
 

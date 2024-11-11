@@ -8,6 +8,7 @@ import {
   getDocuments, 
   registerTourGuide,
   acceptTerms, 
+  getTourGuideByIDFromParams
 } from "../controllers/tourGuide.controller.js";
 
 const router = express.Router();
@@ -19,6 +20,7 @@ router.post("/submitDocuments", verifyToken, submitDocuments);
 router.get("/documents", verifyToken, getDocuments); // Add this route
 router.post("/register", registerTourGuide);
 router.put("/acceptTerms", verifyToken, acceptTerms); // Route to accept terms and conditions
+router.get("/:id", getTourGuideByIDFromParams);
 
 
 export default router;

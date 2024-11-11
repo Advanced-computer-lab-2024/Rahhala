@@ -68,10 +68,6 @@ const touristSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Itinerary'
     }],
-    bookedMuseums: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Museum'
-    }],
     totalLoyaltyPoints: {
         type: Number,
         default: 0
@@ -85,8 +81,15 @@ const touristSchema = new mongoose.Schema({
         ref: 'Complaint'
     }],
     purchasedProducts: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product'
+        productId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product'
+        },
+        quantity: {
+            type: Number,
+            required: true,
+            default: 1
+        }
     }]
 }, { timestamps: true }); // Adds createdAt and updatedAt timestamps
 

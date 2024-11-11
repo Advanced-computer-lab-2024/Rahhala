@@ -178,6 +178,9 @@ export const bookItinerary = async (req, res) => {
         if (!itinerary) {
             return res.status(404).json({ error: "Itinerary not found" });
         }
+        if (tourist.bookedItineraries.includes(itineraryId)) {
+            return res.status(400).json({ error: "Itinerary already booked" });
+        }
 
         if (tourist.wallet < itinerary.price) {
             return res.status(400).json({ error: "Insufficient funds in wallet" });
@@ -238,47 +241,59 @@ export const bookActivity = async (req, res) => {
     }
 };
 
-export const bookMuseum = async (req, res) => {
-    console.log("Booking a museum");
+export const purchaseProduct = async (req, res) => {
+    console.log("Purchasing a product");
     const touristId = req.user.id; // Get the user ID from the verified JWT payload
-    const { museumId } = req.body; // Get the museum ID from the request body
-
+    const { productId, quantity } = req.body; // Get the product ID and quantity from the request body
     try {
         const tourist = await touristModel.findById(touristId);
-        const museum = await museumModel.findById(museumId);
+        const product = await productModel.findById(productId);
 
         if (!tourist) {
             return res.status(404).json({ error: "Tourist not found" });
         }
 
-        if (!museum) {
-            return res.status(404).json({ error: "Museum not found" });
+        if (!product) {
+            return res.status(404).json({ error: "Product not found" });
         }
 
-        let price;
-        if (tourist.occupation.toLowerCase() === 'student') {
-            price = museum.studentPrice;
-        } else {
-            const locationFirstWord = museum.location.split(' ')[0];
-            price = tourist.nationality.toLowerCase() === locationFirstWord.toLowerCase() ? museum.nativePrice : museum.foreignerPrice;
+        if (product.quantity < quantity) {
+            return res.status(400).json({ error: "Insufficient product quantity available" });
         }
 
-        if (tourist.wallet < price) {
+        const totalPrice = product.price * quantity;
+
+        if (tourist.wallet < totalPrice) {
             return res.status(400).json({ error: "Insufficient funds in wallet" });
         }
 
-        // Deduct the price from the tourist's wallet
-        tourist.wallet -= price;
+        // Deduct the total price from the tourist's wallet
+        tourist.wallet -= totalPrice;
 
-        // Add the museum to the tourist's bookedMuseums
-        tourist.bookedMuseums.push(museumId);
+        // Reduce the product quantity
+        product.quantity -= quantity;
+
+        // Increase the product sales
+        product.sales += quantity;
+
+        // Check if the product is already in the purchasedProducts array
+        const existingProductIndex = tourist.purchasedProducts.findIndex(p => p.productId.toString() === productId);
+
+        if (existingProductIndex !== -1) {
+            // If the product is already in the array, update the quantity
+            tourist.purchasedProducts[existingProductIndex].quantity += quantity;
+        } else {
+            // If the product is not in the array, add it with the specified quantity
+            tourist.purchasedProducts.push({ productId, quantity });
+        }
 
         await tourist.save();
+        await product.save();
 
-        res.status(200).json({ message: "Museum booked successfully", museum });
+        res.status(200).json({ message: "Product purchased successfully", product });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Error booking museum." });
+        res.status(500).json({ error: "Error purchasing product." });
     }
 };
 
@@ -354,49 +369,6 @@ export const cancelItineraryBooking = async (req, res) => {
     }
 };
 
-export const cancelMuseumBooking = async (req, res) => {
-    console.log("Cancelling a museum booking");
-    const touristId = req.user.id;
-    const { museumId } = req.body;
-
-    try {
-        const tourist = await touristModel.findById(touristId);
-        const museum = await museumModel.findById(museumId);
-
-        if (!tourist) {
-            return res.status(404).json({ error: "Tourist not found" });
-        }
-
-        if (!museum) {
-            return res.status(404).json({ error: "Museum not found" });
-        }
-
-        const currentTime = new Date();
-        const museumTime = new Date(museum.openingHours);
-
-        if ((museumTime - currentTime) < 48 * 60 * 60 * 1000) {
-            return res.status(400).json({ error: "Cannot cancel booking within 48 hours of the museum visit" });
-        }
-
-        let price;
-        if (tourist.occupation.toLowerCase() === 'student') {
-            price = museum.studentPrice;
-        } else {
-            const locationFirstWord = museum.location.split(' ')[0];
-            price = tourist.nationality.toLowerCase() === locationFirstWord.toLowerCase() ? museum.nativePrice : museum.foreignerPrice;
-        }
-
-        tourist.wallet += price;
-        tourist.bookedMuseums = tourist.bookedMuseums.filter(id => id.toString() !== museumId);
-
-        await tourist.save();
-
-        res.status(200).json({ message: "Museum booking cancelled and refunded successfully" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Error cancelling museum booking" });
-    }
-};
 
 export const changePassword = async (req, res) => {
     console.log("Changing password");

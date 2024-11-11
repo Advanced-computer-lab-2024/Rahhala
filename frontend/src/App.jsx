@@ -51,6 +51,9 @@ import TouristComplaints from './pages/TouristComplaints';
 import GetActivity from './pages/GetActivity';
 import GetItinerary from './pages/getItinerary';
 import GetMuseum from './pages/getMuseum';
+import TouristViewTourGuide from './pages/TouristViewTourGuide';
+import GetProduct from './pages/GetProduct';
+import PurchasedProducts from './pages/PurchasedProducts';
 function App() {
     return (
         <Router>
@@ -83,10 +86,12 @@ function App() {
                 <Route path="/getActivity/:id" element={<GetActivity />} />
                 <Route path="/getItinerary/:id" element={<GetItinerary />} />
                 <Route path="/getMuseum/:id" element={<GetMuseum />} />
-
-
+                <Route path="/viewTourGuide/:id" element={<TouristViewTourGuide />} />
+                <Route path="/getProduct/:id" element={<GetProduct />} />
+                <Route path="/touristProducts" element={<PurchasedProducts />} />
 
                 <Route path="/createProduct" element={<CreateProduct />} />
+
 
                 <Route
                     path="/updateSellerAccount"

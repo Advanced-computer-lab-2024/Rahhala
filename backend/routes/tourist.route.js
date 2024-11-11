@@ -9,14 +9,13 @@ import {
   getComplaints,
   bookItinerary,
   bookActivity,
-  bookMuseum,
   cancelActivityBooking,
   cancelItineraryBooking,
-  cancelMuseumBooking,
   changePassword,
   addReview,
   addMoneyToWallet,
-  redeemLoyaltyPoints
+  redeemLoyaltyPoints,
+  purchaseProduct
 } from "../controllers/tourist.controller.js";
 
 const router = express.Router();
@@ -29,12 +28,11 @@ router.post("/profile/request-delete", verifyToken, requestAccountDeletion);
 router.get("/viewComplaints", verifyToken, getComplaints);
 router.post("/bookItinerary", verifyToken, bookItinerary);
 router.post("/bookActivity", verifyToken, bookActivity);
-router.post("/bookMuseum", verifyToken, bookMuseum);
 router.put("/cancelActivityBooking", verifyToken, cancelActivityBooking);
 router.put("/cancelItineraryBooking", verifyToken, cancelItineraryBooking);
-router.put("/cancelMuseumBooking", verifyToken, cancelMuseumBooking);
 router.put("/changePassword", verifyToken, changePassword);
 router.post('/reviews', verifyToken, addReview);
 router.put('/addMoneyToWallet', verifyToken, addMoneyToWallet);
 router.post('/redeemLoyaltyPoints', verifyToken, redeemLoyaltyPoints);
+router.post('/purchaseProduct', verifyToken, purchaseProduct);
 export default router;

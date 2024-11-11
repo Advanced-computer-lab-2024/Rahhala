@@ -12,7 +12,8 @@ import {
   uploadPicture,
   archiveProduct,
   unarchiveProduct,
-  getMyProducts
+  getMyProducts,
+  getProductById
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
@@ -29,4 +30,6 @@ router.put("/edit/:id", verifyToken, editProduct); // Route to edit a product
 router.post("/uploadPicture/:id", verifyToken, uploadPicture); // Route to upload a picture for a product
 router.put("/archive/:id", verifyToken, archiveProduct); // Route to archive a product
 router.put("/unarchive/:id", verifyToken, unarchiveProduct); // Route to unarchive a product
+router.get("/byId/:id", getProductById); // Route to get a product by ID
+
 export default router;

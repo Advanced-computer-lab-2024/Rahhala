@@ -192,3 +192,22 @@ export const registerTourGuide = async (req, res) => {
     res.status(500).json({ error: "Error creating tour guide" });
   }
 };
+
+// Get Tour Guide by ID from Params
+export const getTourGuideByIDFromParams = async (req, res) => {
+    console.log("entered getTourGuideByIDFromParams");
+    const { id } = req.params;
+    console.log("Tour guide ID:", id);
+
+    try {
+        const user = await tourGuideModel.findById(id);
+        console.log("Tour guide profile:", user); // Log the profile data
+
+        if (!user) {
+            return res.status(404).json({ error: "Tour guide profile not found" });
+        }
+        res.status(200).json({ profile: user });
+    } catch (error) {
+        res.status(500).json({ error: "Error fetching tour guide profile" });
+    }
+};

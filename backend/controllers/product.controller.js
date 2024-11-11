@@ -254,3 +254,24 @@ export const unarchiveProduct = async (req, res) => {
     res.status(500).send("Error unarchiving product");
   }
 };
+
+// Get product by ID
+export const getProductById = async (req, res) => {
+    console.log("entered getProductById");
+
+    const { id: productId } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+        return res.status(400).json({ error: "Invalid product ID format" });
+    }
+    try {
+        const product = await productModel.findById(productId);
+        if (!product) {
+            return res.status(404).json({ error: "Product not found" });
+        }
+        res.status(200).send(product);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error fetching product");
+    }
+};
+

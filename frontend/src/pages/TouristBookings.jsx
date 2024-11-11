@@ -87,6 +87,46 @@ const TouristBookings = () => {
         return new Date(date) < new Date();
     };
 
+    const handleSubmitReview = async (e, entityId, entityType) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const rating = formData.get('rating');
+        const title = formData.get('title');
+        const body = formData.get('body');
+
+        try {
+            await axiosInstance.post('/api/review', {
+                rating,
+                title,
+                body,
+                reviewedEntity: entityId,
+                reviewedEntityType: entityType
+            });
+            alert('Review submitted successfully');
+            window.location.reload();
+        } catch (err) {
+            setError('Failed to submit review.');
+        }
+    };
+
+    const renderReviewForm = (entityId, entityType) => (
+        <form onSubmit={(e) => handleSubmitReview(e, entityId, entityType)}>
+            <div>
+                <label>Rating:</label>
+                <input type="number" name="rating" min="0" max="5" required />
+            </div>
+            <div>
+                <label>Title:</label>
+                <input type="text" name="title" />
+            </div>
+            <div>
+                <label>Body:</label>
+                <textarea name="body"></textarea>
+            </div>
+            <button type="submit">Submit Review</button>
+        </form>
+    );
+
     return (
         <div>
             <NavigateButton path={"/touristAccount"} text={"Back"} />
@@ -100,7 +140,10 @@ const TouristBookings = () => {
                             </div>
                         ))}
                         {isPastDate(activity.date) ? (
-                            <div style={{ color: 'green', fontWeight: 'bold' }}>Done</div>
+                            <div>
+                                <div style={{ color: 'green', fontWeight: 'bold' }}>Done</div>
+                                {renderReviewForm(activity._id, 'Activity')}
+                            </div>
                         ) : (
                             <button onClick={() => handleUnbookActivity(activity._id)} style={{ backgroundColor: 'red', color: 'white' }}>Unbook</button>
                         )}
@@ -117,13 +160,21 @@ const TouristBookings = () => {
                         {Object.entries(itinerary).map(([key, value]) => (
                             <div key={key}>
                                 <strong>{key}:</strong> {Array.isArray(value) ? value.join(', ') : value.toString()}
+
                             </div>
+                            
                         ))}
                         {isPastDate(itinerary.availableDates[itinerary.availableDates.length - 1]) ? (
-                            <div style={{ color: 'green', fontWeight: 'bold' }}>Done</div>
+                            <div>
+                                <div style={{ color: 'green', fontWeight: 'bold' }}>Done</div>
+                                {renderReviewForm(itinerary._id, 'Itinerary')}
+                                <NavigateButton path={"/viewTourGuide/"+itinerary.userId} text={"View Tour Guide"} />
+
+                            </div>
                         ) : (
                             <button onClick={() => handleUnbookItinerary(itinerary._id)} style={{ backgroundColor: 'red', color: 'white' }}>Unbook</button>
                         )}
+
                     </div>
                 ))
             ) : (
@@ -140,7 +191,10 @@ const TouristBookings = () => {
                             </div>
                         ))}
                         {isPastDate(museum.openingHours) ? (
-                            <div style={{ color: 'green', fontWeight: 'bold' }}>Done</div>
+                            <div>
+                                <div style={{ color: 'green', fontWeight: 'bold' }}>Done</div>
+                                {renderReviewForm(museum._id, 'Museum')}
+                            </div>
                         ) : (
                             <button onClick={() => handleUnbookMuseum(museum._id)} style={{ backgroundColor: 'red', color: 'white' }}>Unbook</button>
                         )}

@@ -17,7 +17,7 @@ const Products = () => {
     
     let homePath;
     if (auth.user && auth.user.type === 'tourist') {
-        homePath = '/toursitAccount';
+        homePath = '/touristAccount';
     }
     else if(auth.user && auth.user.type === 'seller'){
         homePath = '/seller-dashboard';
@@ -29,7 +29,6 @@ const Products = () => {
         const fetchProducts = async () => {
             try {
                 let userType = auth.user.type;
-                console.log("usertype is ",userType) // Log userType before fetching    
                 let response;
                 if(userType === "seller"){
                     response = await axiosInstance.get('/api/product/myProducts');
@@ -37,11 +36,10 @@ const Products = () => {
                 else{
                     response = await axiosInstance.get('/api/product');
                 }
-                console.log("response is ",response.data) 
                 setProducts(response.data);
-                console.log("Products are", response.data);
-                console.log("usertype is ",userType) // Log products after fetching
+                setError(null);
             } catch (err) {
+                console.log("Error is", err); // Log error if fetching fails
                 setError('Failed to fetch products');
             }
         };
@@ -53,7 +51,8 @@ const Products = () => {
             return (
                 (price ? product.price.toString().startsWith(price) : true) &&
                 (rating ? product.averageRating >= rating : true) &&
-                (searchQuery ? product.name.toLowerCase().includes(searchQuery.toLowerCase()) : true)
+                (searchQuery ? product.name.toLowerCase().includes(searchQuery.toLowerCase()) : true) &&
+                (auth.user.type !== 'tourist' || !product.isArchived) // Exclude archived products for tourists
             );
         });
     };
@@ -147,9 +146,10 @@ const Products = () => {
                             <th>Seller</th>
                             <th>Rating</th>
                             <th>ID</th>
-                            <th>Archived</th>
-                            <th>Actions</th> {/* New column for actions */}
-                            <th>Upload Picture</th> {/* New column for upload picture */}
+                            {auth.user.type !== 'tourist' && <th>Archived</th>} {/* Conditionally display archived column */}
+                            {auth.user.type !== 'tourist' && <th>Actions</th>} {/* New column for actions */}
+                            {auth.user.type !== 'tourist' && <th>Upload Picture</th>} {/* New column for upload picture */}
+                            <th>More Info</th> {/* New column for more info button */}
                         </tr>
                     </thead>
                     <tbody>
@@ -163,20 +163,27 @@ const Products = () => {
                                 <td>{product.sellerId}</td>
                                 <td>{product.averageRating}</td>
                                 <td>{product._id}</td>
-                                <td>{product.isArchived ? 'Yes' : 'No'}</td> {/* Display isArchived */}
+                                {auth.user.type !== 'tourist' && <td>{product.isArchived ? 'Yes' : 'No'}</td>} {/* Conditionally display isArchived */}
+                                {auth.user.type !== 'tourist' && (
+                                    <td>
+                                        {!product.isArchived ? (
+                                            <button onClick={() => handleArchive(product._id)}>Archive</button>
+                                        ) : (
+                                            <button onClick={() => handleUnarchive(product._id)}>Unarchive</button>
+                                        )}
+                                    </td>
+                                )}
+                                {auth.user.type !== 'tourist' && (
+                                    <td>
+                                        <input
+                                            type="text"
+                                            placeholder="Enter image URL"
+                                            onBlur={(e) => handleUrlChange(product._id, e)}
+                                        />
+                                    </td>
+                                )}
                                 <td>
-                                    {!product.isArchived ? (
-                                        <button onClick={() => handleArchive(product._id)}>Archive</button>
-                                    ) : (
-                                        <button onClick={() => handleUnarchive(product._id)}>Unarchive</button>
-                                    )}
-                                </td>
-                                <td>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter image URL"
-                                        onBlur={(e) => handleUrlChange(product._id, e)}
-                                    />
+                                    <NavigateButton path={`/getProduct/${product._id}`} text='More Info'/>{'\u00A0'}
                                 </td>
                             </tr>
                         ))}
