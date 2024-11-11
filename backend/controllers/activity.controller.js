@@ -1,4 +1,6 @@
 import activityModel from "../models/activity.model.js";
+import reviewModel from "../models/review.model.js";
+import touristModel from "../models/tourist.model.js";
 
 //Add Activity to the Database
 export const addActivity = async (req, res) => {
@@ -153,4 +155,52 @@ export const getActivityById = async (req, res) => {
         console.error("Error fetching activity:", error);
         return res.status(500).json({ message: "Internal server error" });
     }
+};
+
+// Add Review to Activity
+export const addReviewToActivity = async (req, res) => {
+  console.log("entered addReviewToActivity");
+
+  try {
+    const userId = req.user.id;
+    const { id } = req.params; // Get the activity ID from the route parameters
+    const { title, body, rating } = req.body; // Get the review from the request body
+
+    // Find the activity by ID
+    const activity = await activityModel.findById(id);
+    const tourist = await touristModel.findById(userId);
+
+    if (!activity) {
+      return res.status(404).json({ message: "Activity not found" });
+    }
+
+    if (!tourist) {
+      return res.status(404).json({ message: "Tourist not found" });
+    }
+
+    // Create a new review
+    const review = new reviewModel({
+      tourist: userId,
+      title,
+      body,
+      rating,
+    });
+
+    // Save the review to the database
+    await review.save();
+
+    // Add the review to the activity
+    activity.reviews.push(review);
+
+    // Save the updated activity
+    await activity.save();
+
+    res.status(200).json({
+      message: "Review added successfully",
+      activity,
+    });
+  } catch (err) {
+    console.error("Error adding review:", err);
+    res.status(500).json({ message: "An error occurred while adding the review" });
+  }
 };

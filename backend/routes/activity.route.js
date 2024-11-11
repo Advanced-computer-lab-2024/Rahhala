@@ -6,11 +6,12 @@ import {
   editActivity,
   deleteActivity,
   getActivitiesByUserID,
-  getActivityById
+  getActivityById,
+  addReview
 } from "../controllers/activity.controller.js";
 
 const router = express.Router();
-
+router.post("/addReview:id", verifyToken, addReview);
 router.post("/", verifyToken, addActivity);
 router.post("/createActivity", addActivity);
 router.get("/", getActivities);
