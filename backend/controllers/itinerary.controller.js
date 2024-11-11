@@ -127,7 +127,6 @@ export const getItineraries = async (req, res) => {
   try {
     const itineraries = await itineraryModel
       .find()
-      .populate("reviews", "rating title body"); // Populate reviews if needed
 
     res.status(200).json(itineraries);
   } catch (err) {

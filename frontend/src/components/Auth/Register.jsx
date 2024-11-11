@@ -114,6 +114,9 @@ const Register = () => {
         else if (userType === 'advertiser') {
             navigate('/advertiser-dashboard');
         }
+        else if(userType === 'tourist'){
+            navigate('/touristAccount');
+        }
         else {
             navigate('/'); // Default path if userType is not recognized
         }

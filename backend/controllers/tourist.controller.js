@@ -211,6 +211,9 @@ export const bookActivity = async (req, res) => {
         if (!tourist) {
             return res.status(404).json({ error: "Tourist not found" });
         }
+        if (tourist.bookedActivities.includes(activityId)) {
+            return res.status(400).json({ error: "Activity already booked" });
+        }
 
         if (!activity) {
             return res.status(404).json({ error: "Activity not found" });
@@ -396,6 +399,7 @@ export const cancelMuseumBooking = async (req, res) => {
 };
 
 export const changePassword = async (req, res) => {
+    console.log("Changing password");
     const { oldPassword, newPassword } = req.body;
     const userID = req.user.id;
     console.log("Change password request received with ID:", userID);

@@ -72,7 +72,7 @@ const UpdateTouristAccount = () => {
         e.preventDefault();
         try {
             console.log(profile)
-            await axiosInstance.put(`/api/tourist/${auth.user._id}`, profile);
+            await axiosInstance.put(`/api/tourist/edit/${auth.user._id}`, profile);
             navigate('/viewTouristAccount');
         } catch (err) {
             setError('Failed to update profile.');

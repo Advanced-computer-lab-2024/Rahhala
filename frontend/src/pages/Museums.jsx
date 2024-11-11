@@ -6,75 +6,113 @@ import NavigateButton from '../components/UpdateProfileButton';
 import '../table.css';
 
 const Museums = () => {
-    const navigate = useNavigate(); // Initialize navigate
-    const [museums, setMuseums] = useState(null);
+    const [museums, setMuseums] = useState([]);
     const [error, setError] = useState('');
-    const [tags, setTags] = useState([]);
+    const { auth } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const [minPrice, setMinPrice] = useState('');
+    const [maxPrice, setMaxPrice] = useState('');
+    const [selectedTags, setSelectedTags] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
-        const fetchMuseums = async () => {
-            const response = await axiosInstance.get('/museums');
-            setMuseums(response.data);
+        if (auth.isAuthenticated && auth.user) {
+            fetchMuseums();
         }
-        fetchMuseums();
-    }, []);
+    }, [auth]);
+
+    useEffect(() => {
+        filterMuseums();
+    }, [minPrice, maxPrice, selectedTags, searchQuery, museums]);
+
+    const fetchMuseums = async () => {
+        try {
+            const response = await axiosInstance.get('/api/museum');
+            setMuseums(response.data);
+        } catch (err) {
+            setError('Failed to fetch museums.');
+            console.error(err);
+        }
+    };
 
     const filterMuseums = () => {
         return museums.filter(museum => {
             return (
-                (tags.length ? tags.every(tag => museum.tags.includes(tag)) : true) &&
-                (searchQuery ? museum.name.toLowerCase().includes(searchQuery.toLowerCase()) : true)
+                (!minPrice || museum.foreignerPrice >= minPrice) &&
+                (!maxPrice || museum.foreignerPrice <= maxPrice) &&
+                (!selectedTags.length || selectedTags.every(tag => museum.tags.includes(tag))) &&
+                (!searchQuery || museum.name.toLowerCase().includes(searchQuery.toLowerCase()))
             );
         });
     };
 
     const handleTagsChange = (e) => {
         const tagsArray = e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag);
-        setTags(tagsArray);
+        setSelectedTags(tagsArray);
     };
 
     const filteredMuseums = museums ? filterMuseums() : [];
 
     return (
         <div>
+            <h2>Museums</h2>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+
             <div>
                 <label>
+                    Min Price:
+                    <input type="number" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} />
+                </label>
+                <label>
+                    Max Price:
+                    <input type="number" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} />
+                </label>
+                <label>
                     Tags (comma separated):
-                    <input type="text" value={tags.join(', ')} onChange={handleTagsChange} />
+                    <input type="text" value={selectedTags.join(', ')} onChange={handleTagsChange} />
                 </label>
                 <label>
                     Search by name:
                     <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                 </label>
             </div>
-            <h1>Museums</h1>
-            {museums ? (
-                <table>
+
+            {filteredMuseums.length === 0 ? (
+                <p>No museums available.</p>
+            ) : (
+                <table className="itinerary-table">
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Description</th>
                             <th>Location</th>
+                            <th>Opening Hours</th>
+                            <th>Foreigner Price</th>
+                            <th>Native Price</th>
+                            <th>Student Price</th>
                             <th>Tags</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredMuseums.map((museum, index) => (
-                            <tr key={index}>
+                        {filteredMuseums.map(museum => (
+                            <tr key={museum._id}>
                                 <td>{museum.name}</td>
+                                <td>{museum.description}</td>
                                 <td>{museum.location}</td>
-                                <td>{museum.tags.join(', ')}</td>
+                                <td>{museum.openingHours}</td>
+                                <td>${museum.foreignerPrice}</td>
+                                <td>${museum.nativePrice}</td>
+                                <td>${museum.studentPrice}</td>
+                                <td>{Array.isArray(museum.tags) ? museum.tags.map(tag => tag.name).join(', ') : ''}</td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-            ) : (
-                <div>Loading profile...</div>
             )}
-            <br/>
             <NavigateButton path='/viewAll' text='Back'/>{'\u00A0'}
         </div>
-    )
-}
+    );
+};
 
 export default Museums;

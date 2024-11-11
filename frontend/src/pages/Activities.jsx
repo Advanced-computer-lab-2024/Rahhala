@@ -3,7 +3,7 @@ import { AuthContext } from '../context/AuthContext';
 import axiosInstance from '../utils/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import NavigateButton from '../components/UpdateProfileButton';
-import '../table.css'; 
+import '../table.css';
 
 const Activities = () => {
     const navigate = useNavigate(); // Initialize navigate
@@ -12,7 +12,6 @@ const Activities = () => {
     const [budget, setBudget] = useState('');
     const [date, setDate] = useState('');
     const [category, setCategory] = useState('');
-    const [rating, setRating] = useState('');
     const [sortCriteria, setSortCriteria] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
     const [tags, setTags] = useState([]);
@@ -28,7 +27,7 @@ const Activities = () => {
     useEffect(() => {
         const fetchActivities = async () => {
             try {
-                const response = await axiosInstance.get('/activities');
+                const response = await axiosInstance.get('/api/activity');
                 console.log(response.data);
                 setActivities(response.data);
             } catch (err) {
@@ -41,10 +40,9 @@ const Activities = () => {
     const filterActivities = () => {
         return activities.filter(activity => {
             return (
-                (budget ? activity.price <= budget : true) &&
+                (budget ? parseFloat(activity.price.replace(/[^0-9.-]+/g,"")) <= parseFloat(budget) : true) &&
                 (date ? new Date(activity.date).toDateString() === new Date(date).toDateString() : true) &&
                 (category ? activity.category === category : true) &&
-                (rating ? activity.rating >= rating : true) &&
                 (tags.length ? tags.every(tag => activity.tags.includes(tag)) : true) &&
                 (searchQuery ? activity.name.toLowerCase().includes(searchQuery.toLowerCase()) : true)
             );
@@ -55,9 +53,7 @@ const Activities = () => {
         if (!sortCriteria) return activities;
         return activities.sort((a, b) => {
             if (sortCriteria === 'price') {
-                return sortOrder === 'asc' ? a.price - b.price : b.price - a.price;
-            } else if (sortCriteria === 'rating') {
-                return sortOrder === 'asc' ? a.rating - b.rating : b.rating - a.rating;
+                return sortOrder === 'asc' ? parseFloat(a.price.replace(/[^0-9.-]+/g,"")) - parseFloat(b.price.replace(/[^0-9.-]+/g,"")) : parseFloat(b.price.replace(/[^0-9.-]+/g,"")) - parseFloat(a.price.replace(/[^0-9.-]+/g,""));
             }
             return 0;
         });
@@ -87,14 +83,6 @@ const Activities = () => {
                     <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} />
                 </label>
                 <label>
-                    Rating:
-                    <input type="number"
-                        value={rating}
-                        onChange={(e) => setRating(e.target.value)} 
-                        min="0"
-                        max="5"/>
-                </label>
-                <label>
                     Tags (comma separated):
                     <input type="text" value={tags.join(', ')} onChange={handleTagsChange} />
                 </label>
@@ -103,7 +91,6 @@ const Activities = () => {
                     <select value={sortCriteria} onChange={(e) => setSortCriteria(e.target.value)}>
                         <option value="">None</option>
                         <option value="price">Price</option>
-                        <option value="rating">Rating</option>
                     </select>
                 </label>
                 <label>
@@ -126,19 +113,18 @@ const Activities = () => {
                             <th>Price</th>
                             <th>Date</th>
                             <th>Category</th>
-                            <th>Rating</th>
                             <th>Tags</th>
                         </tr>
                     </thead>
                     <tbody>
                         {sortedActivities.map(activity => (
-                            <tr key={activity.id}>
+                            <tr key={activity._id}>
                                 <td>{activity.name}</td>
                                 <td>{activity.price}</td>
                                 <td>{new Date(activity.date).toLocaleDateString()}</td>
                                 <td>{activity.category}</td>
-                                <td>{activity.rating}</td>
                                 <td>{activity.tags.join(', ')}</td>
+                                <NavigateButton path={`/getActivity/${activity._id}`} text='More Info'/>{'\u00A0'}
                             </tr>
                         ))}
                     </tbody>

@@ -24,42 +24,20 @@ const TouristBookings = () => {
 
                     const activities = await Promise.all(bookedActivities.map(async (id) => {
                         const res = await axiosInstance.get(`/api/activity/getActivity/${id}`);
-                        delete res.data._id
-                        delete res.data.bookingOpen
-                        delete res.data.userId
-                        delete res.data.createdAt
-                        delete res.data.updatedAt
-                        delete res.data.__v
-
                         return res.data;
                     }));
 
                     const itineraries = await Promise.all(bookedItineraries.map(async (id) => {
                         const res = await axiosInstance.get(`/api/itinerary/${id}`);
-                        delete res.data._id
-                        delete res.data.createdAt
-                        delete res.data.updatedAt
-                        delete res.data.__v
-
-                        delete res.data.isActive
-                        delete res.data.userId
-                        
                         return res.data;
                     }));
 
                     const museums = await Promise.all(bookedMuseums.map(async (id) => {
                         const res = await axiosInstance.get(`/api/museum/${id}`);
-                        delete res.data._id
-                        delete res.data.createdAt
-                        delete res.data.updatedAt
-                        delete res.data.__v
-
-                        delete res.data.userId
                         return res.data;
                     }));
 
                     setBookings({ activities, itineraries, museums });
-                    console.log("itineraries: ", itineraries);
                 } catch (err) {
                     setError('Failed to load bookings.');
                 }
@@ -68,19 +46,46 @@ const TouristBookings = () => {
             fetchBookings();
         }
     }, [auth]);
-    useEffect(() => {
-        // Log the updated bookings state
-        console.log("Updated bookings.itineraries: ", bookings.itineraries);
-    }, [bookings]);
-    // Loading state while fetching the user data
-    if (auth.loading) {
-        return <div>Loading user data...</div>;
-    }
 
-    // Check if the user is authenticated
-    if (!auth.isAuthenticated) {
-        return <div>You are not authenticated.</div>;
-    }
+    const handleUnbookActivity = async (activityId) => {
+        try {
+            await axiosInstance.put('/api/tourist/cancelActivityBooking', { activityId });
+            setBookings((prevBookings) => ({
+                ...prevBookings,
+                activities: prevBookings.activities.filter(activity => activity._id !== activityId)
+            }));
+        } catch (err) {
+            setError(err.response.data.error);
+        }
+    };
+
+    const handleUnbookItinerary = async (itineraryId) => {
+        try {
+            await axiosInstance.put('/api/tourist/cancelItineraryBooking', { itineraryId });
+            setBookings((prevBookings) => ({
+                ...prevBookings,
+                itineraries: prevBookings.itineraries.filter(itinerary => itinerary._id !== itineraryId)
+            }));
+        } catch (err) {
+            setError(err.response.data.error);
+        }
+    };
+
+    const handleUnbookMuseum = async (museumId) => {
+        try {
+            await axiosInstance.put('/api/tourist/cancelMuseumBooking', { museumId });
+            setBookings((prevBookings) => ({
+                ...prevBookings,
+                museums: prevBookings.museums.filter(museum => museum._id !== museumId)
+            }));
+        } catch (err) {
+            setError(err.response.data.error);
+        }
+    };
+
+    const isPastDate = (date) => {
+        return new Date(date) < new Date();
+    };
 
     return (
         <div>
@@ -88,12 +93,17 @@ const TouristBookings = () => {
             <h2>Booked Activities</h2>
             {bookings.activities.length > 0 ? (
                 bookings.activities.map((activity) => (
-                    <div key={activity._id}>
+                    <div key={activity._id} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
                         {Object.entries(activity).map(([key, value]) => (
                             <div key={key}>
                                 <strong>{key}:</strong> {Array.isArray(value) ? value.join(', ') : value.toString()}
                             </div>
                         ))}
+                        {isPastDate(activity.date) ? (
+                            <div style={{ color: 'green', fontWeight: 'bold' }}>Done</div>
+                        ) : (
+                            <button onClick={() => handleUnbookActivity(activity._id)} style={{ backgroundColor: 'red', color: 'white' }}>Unbook</button>
+                        )}
                     </div>
                 ))
             ) : (
@@ -103,12 +113,17 @@ const TouristBookings = () => {
             <h2>Booked Itineraries</h2>
             {bookings.itineraries.length > 0 ? (
                 bookings.itineraries.map((itinerary) => (
-                    <div key={itinerary._id}>
+                    <div key={itinerary._id} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
                         {Object.entries(itinerary).map(([key, value]) => (
                             <div key={key}>
                                 <strong>{key}:</strong> {Array.isArray(value) ? value.join(', ') : value.toString()}
                             </div>
                         ))}
+                        {isPastDate(itinerary.availableDates[itinerary.availableDates.length - 1]) ? (
+                            <div style={{ color: 'green', fontWeight: 'bold' }}>Done</div>
+                        ) : (
+                            <button onClick={() => handleUnbookItinerary(itinerary._id)} style={{ backgroundColor: 'red', color: 'white' }}>Unbook</button>
+                        )}
                     </div>
                 ))
             ) : (
@@ -118,18 +133,23 @@ const TouristBookings = () => {
             <h2>Booked Museums</h2>
             {bookings.museums.length > 0 ? (
                 bookings.museums.map((museum) => (
-                    <div key={museum._id}>
+                    <div key={museum._id} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
                         {Object.entries(museum).map(([key, value]) => (
                             <div key={key}>
-                                <strong>{key}:</strong> {value}
+                                <strong>{key}:</strong> {Array.isArray(value) ? value.join(', ') : value.toString()}
                             </div>
                         ))}
+                        {isPastDate(museum.openingHours) ? (
+                            <div style={{ color: 'green', fontWeight: 'bold' }}>Done</div>
+                        ) : (
+                            <button onClick={() => handleUnbookMuseum(museum._id)} style={{ backgroundColor: 'red', color: 'white' }}>Unbook</button>
+                        )}
                     </div>
                 ))
             ) : (
                 <div>No booked museums.</div>
             )}
-            
+            {error && <div style={{ color: 'red', fontWeight: 'bold' }}>{error}</div>}
         </div>
     );
 };
