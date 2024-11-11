@@ -1,11 +1,5 @@
 import advertiserModel from "../models/advertiser.model.js";
-import path from 'path';
-import multer from 'multer';
-import fs from 'fs';
 
-// Configure multer for file uploads
-const storage = multer.memoryStorage(); // Store files in memory
-const upload = multer({ storage: storage });
 
 // Add Advertiser
 export const editAdvertiser = async (req, res) => {
@@ -187,5 +181,3 @@ export const registerAdvertiser = async (req, res) => {
     res.status(500).json({ error: "Error registering advertiser" });
   }
 };
-
-export const uploadMiddleware = upload.single('logo');
