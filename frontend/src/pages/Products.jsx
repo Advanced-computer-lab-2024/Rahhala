@@ -37,8 +37,10 @@ const Products = () => {
                 else{
                     response = await axiosInstance.get('/api/product');
                 }
-                console.log("response is ",response.data) 
+                console.log("response is ",response.data)
+
                 setProducts(response.data);
+                setError(null); // Clear any errors
                 console.log("Products are", response.data);
                 console.log("usertype is ",userType) // Log products after fetching
             } catch (err) {
@@ -98,6 +100,8 @@ const Products = () => {
             setProducts(products.map(product => 
                 product._id === productId ? { ...product, picture: url } : product
             ));
+            setError(
+                'Picture uploaded successfully.')
         } catch (err) {
             setError('Failed to upload picture');
         }
