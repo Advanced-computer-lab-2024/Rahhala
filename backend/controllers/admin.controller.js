@@ -31,7 +31,8 @@ export const addAdmin = async (req, res) => {
 
 //Delete Admin from the Database
 export const deleteEntity = async (req, res) => {
-  const { entityType, id } = req.params;
+  let { entityType, id } = req.params;
+  entityType = entityType.toLowerCase();
   console.log(
     "Delete request received for entity:",
     entityType,
@@ -51,7 +52,7 @@ export const deleteEntity = async (req, res) => {
     case "tourist":
       Model = touristModel;
       break;
-    case "tourGuide":
+    case "tourguide":
       Model = tourGuideModel;
       break;
     case "advertiser":
@@ -259,13 +260,12 @@ export const rejectTourGuide = async (req, res) => {
   }
 };
 
-// View Documents Uploaded by Tour Guides, Sellers, and Advertisers
-export const viewUploadedDocuments = async (req, res) => {
+export const viewUsersInfo = async (req, res) => {
   console.log("entered viewUploadedDocuments");
   try {
-    const tourGuideDocuments = await tourGuideModel.find({}, 'documents');
-    const sellerDocuments = await sellerModel.find({}, 'documents');
-    const advertiserDocuments = await advertiserModel.find({}, 'documents');
+    const tourGuideDocuments = await tourGuideModel.find({ status: 'pending' });
+    const sellerDocuments = await sellerModel.find({ status: 'pending' });
+    const advertiserDocuments = await advertiserModel.find({ status: 'pending' });
 
     res.status(200).json({
       tourGuideDocuments,

@@ -1,4 +1,4 @@
-/* ActivityCategories.css */
+/* AccountDeletionRequests.css */
 :root {
     --primary-color: #007bff;
     --secondary-color: #333333;
@@ -9,7 +9,7 @@
     --table-row-alt-color: #f2f2f2;
 }
 
-.activity-categories {
+.account-deletion-requests {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -22,21 +22,21 @@
     box-shadow: 0 4px 8px rgba(24, 26, 27, 0.1);
 }
 
-.activity-categories h2 {
+.account-deletion-requests h2 {
     text-align: center;
     color: var(--secondary-color);
     margin-bottom: 20px;
     font-size: 2em;
 }
 
-.activity-categories .controls {
+.account-deletion-requests .controls {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
     width: 50%;
 }
 
-.activity-categories .controls label {
+.account-deletion-requests .controls label {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -44,58 +44,58 @@
     color: var(--secondary-color);
 }
 
-.activity-categories .controls input,
-.activity-categories .controls select {
+.account-deletion-requests .controls input,
+.account-deletion-requests .controls select {
     padding: 10px;
     border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 1em;
 }
 
-.activity-categories .categories-table {
+.account-deletion-requests .requests-table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
     background-color: var(--background-color);
 }
 
-.activity-categories .categories-table th,
-.activity-categories .categories-table td {
+.account-deletion-requests .requests-table th,
+.account-deletion-requests .requests-table td {
     padding: 10px;
     border: 1px solid var(--border-color);
     text-align: left;
     color: var(--secondary-color);
 }
 
-.activity-categories .categories-table th {
+.account-deletion-requests .requests-table th {
     background-color: var(--primary-color);
     color: #ffffff;
 }
 
-.activity-categories .categories-table tr:nth-child(even) {
+.account-deletion-requests .requests-table tr:nth-child(even) {
     background-color: var(--table-row-alt-color);
 }
 
-.activity-categories .categories-table td button {
+.account-deletion-requests .requests-table td button {
     margin-right: 10px; /* Add margin between buttons */
 }
 
-.activity-categories .loading,
-.activity-categories .error {
+.account-deletion-requests .loading,
+.account-deletion-requests .error {
     text-align: center;
     color: var(--error-color);
     font-weight: bold;
     margin-top: 20px;
 }
 
-.activity-categories .success {
+.account-deletion-requests .success {
     text-align: center;
     color: var(--success-color); /* Green color for success messages */
     font-weight: bold;
     margin-top: 20px;
 }
 
-.activity-categories .navigation-buttons {
+.account-deletion-requests .navigation-buttons {
     display: flex;
     gap: 10px; /* Add margin between navigation buttons */
 }

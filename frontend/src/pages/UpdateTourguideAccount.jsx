@@ -1,30 +1,42 @@
+import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import axiosInstance from '../utils/axiosConfig';
-import { useNavigate } from 'react-router-dom';
-import React, { useContext, useEffect, useState } from 'react';
 import NavigateButton from '../components/UpdateProfileButton';
+import { useNavigate } from 'react-router-dom';
+import Logout from '../components/Auth/Logout';
+
 const UpdateTourguideAccount = () => {
     const navigate = useNavigate();
     const { auth } = useContext(AuthContext); // Get auth context
     if (!auth.isAuthenticated) {
         navigate('/login');
     }
-
+    const [formData, setFormData] = useState({
+        email: '',
+        mobileNumber: '',
+        profilePhoto: '',
+        status: '',
+        work: '',
+        yearsOfExperience: '',
+        certificationImages: []
+    });
     const [error, setError] = useState(null); // State to handle errors
-    const [profile, setProfile] = useState(null); // State to hold the tour guide profile
+    const [message, setMessage] = useState(null); // State to handle success messages
 
     useEffect(() => {
         // Only fetch profile if the user is authenticated
         if (auth.isAuthenticated && auth.user) {
             const fetchTourguide = async () => {
                 try {
-                    const response = await axiosInstance.get('/tourguideAccount');
-                    delete response.data.profile._id;
-                    delete response.data.profile.password;
-                    delete response.data.profile.createdAt;
-                    delete response.data.profile.__v;
-                    delete response.data.profile.updatedAt;
-                    setProfile(response.data.profile);
+                    const response = await axiosInstance.get('api/tourguide/');
+                    const profile = response.data.profile;
+                    setFormData({
+                        email: profile.email || '',
+                        mobileNumber: profile.mobileNumber || '',
+                        profilePhoto: profile.profilePhoto || '',
+                        yearsOfExperience: '',
+                        certificationImages: profile.certificationImages || []
+                    });
                 } catch (err) {
                     setError('Failed to load Tourguide profile.');
                 }
@@ -34,48 +46,38 @@ const UpdateTourguideAccount = () => {
         }
     }, [auth]);
 
-    const [formData, setFormData] = useState({
-        email: '',
-        mobileNumber: '',
-        yearsOfExperience: '',
-        previousWork: '',
-    });
-
-    useEffect(() => {
-        if (profile) {
-            setFormData({
-                email: profile.email || '',
-                mobileNumber: profile.mobileNumber || '',
-                yearsOfExperience: profile.yearsOfExperience || '',
-                previousWork: profile.previousWork || '',
-            });
-        }
-    }, [profile]);
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
             ...formData,
-            [name]: value,
+            [name]: value
+        });
+    };
+
+    const handleCertificationImagesChange = (e) => {
+        const { value } = e.target;
+        setFormData({
+            ...formData,
+            certificationImages: value.split(',').map(img => img.trim())
         });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (auth.isAuthenticated && auth.user) {
-            try {
-                await axiosInstance.patch('/updateTourguide', formData);
-                navigate('/tourguideAccount');
-            } catch (err) {
-                setError('Failed to update Tourguide profile.');
-            }
+        try {
+            const response = await axiosInstance.put('/api/tourguide/edit', formData);
+            setMessage('Account updated successfully');
+            setError(null); // Clear any previous errors
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to update account');
+            setMessage(null); // Clear any previous success messages
         }
     };
 
     return (
         <div>
-            <h2>Update Tourguide Account</h2>
             {error && <p>{error}</p>}
+            {message && <p>{message}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Email:</label>
@@ -96,6 +98,16 @@ const UpdateTourguideAccount = () => {
                     />
                 </div>
                 <div>
+                    <label>Profile Photo URL:</label>
+                    <input
+                        type="text"
+                        name="profilePhoto"
+                        value={formData.profilePhoto}
+                        onChange={handleChange}
+                    />
+                </div>
+                
+                <div>
                     <label>Years of Experience:</label>
                     <input
                         type="number"
@@ -105,17 +117,18 @@ const UpdateTourguideAccount = () => {
                     />
                 </div>
                 <div>
-                    <label>Previous Work:</label>
+                    <label>Certification Images (comma separated URLs):</label>
                     <input
                         type="text"
-                        name="previousWork"
-                        value={formData.previousWork}
-                        onChange={handleChange}
+                        name="certificationImages"
+                        value={formData.certificationImages.join(', ')}
+                        onChange={handleCertificationImagesChange}
                     />
                 </div>
                 <button type="submit">Update Account</button>
             </form>
             <NavigateButton path={'/tourguide-dashboard'} text={'Home'} />
+            <Logout />
         </div>
     );
 };

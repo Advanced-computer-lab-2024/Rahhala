@@ -4,14 +4,43 @@ import axiosInstance from '../utils/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import NavigateButton from '../components/UpdateProfileButton';
 import Logout from '../components/Auth/Logout';
+
 const TourGuideDashboard = () => {
     const { auth } = useContext(AuthContext);
     const navigate = useNavigate();
+    const [profile, setProfile] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-    const [errorMessage, setErrorMessage] = useState(''); // Fixed typo from errorMesage to errorMessage
-    const [showForm, setShowForm] = useState(false); // Control create form visibility
-    const [showUpdateForm, setShowUpdateForm] = useState(false); // Control update form visibility
-    const [showDeleteForm, setShowDeleteForm] = useState(false); // Control delete form visibility
+    const [showForm, setShowForm] = useState(false);
+    const [showUpdateForm, setShowUpdateForm] = useState(false);
+    const [showDeleteForm, setShowDeleteForm] = useState(false);
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const response = await axiosInstance.get('/api/tourguide/');
+                setProfile(response.data.profile);
+            } catch (err) {
+                setErrorMessage('Failed to fetch profile.');
+                setTimeout(() => setErrorMessage(''), 3000);
+            }
+        };
+
+        fetchProfile();
+    }, [auth]);
+
+    const handleAcceptTerms = async () => {
+        try {
+            await axiosInstance.put('/api/tourguide/acceptTerms');
+            setProfile({ ...profile, acceptedTermsAndConditions: true });
+            setSuccessMessage('Terms and conditions accepted successfully.');
+            setTimeout(() => setSuccessMessage(''), 3000);
+        } catch (err) {
+            setErrorMessage('Failed to accept terms and conditions.');
+            setTimeout(() => setErrorMessage(''), 3000);
+        }
+    };
+
     const [formData, setFormData] = useState({
         name: '',
         activityDetails: [], // Initialized 
@@ -119,12 +148,21 @@ const TourGuideDashboard = () => {
             {successMessage && <div className="success-message">{successMessage}</div>}
             {errorMessage && <div className="error-message">{errorMessage}</div>}
 
-            <button onClick={() => setShowForm(true)}>Create New Itinerary</button>
-            <button onClick={() => setShowUpdateForm(true)}>Update Itinerary</button> {/* Update button */}
-            <button onClick={() => navigate('/showItineraries')}>Show Itineraries</button>
-            <button onClick={() => setShowDeleteForm(true)}>Delete Itinerary</button>
-            <NavigateButton path={"/tourguideAccount"} text={"View Account"}/>{'\u00A0'}
-            <Logout />
+            {profile && profile.acceptedTermsAndConditions ? (
+                <>
+                    <button onClick={() => setShowForm(true)}>Create New Itinerary</button>
+                    <button onClick={() => setShowUpdateForm(true)}>Update Itinerary</button>
+                    <button onClick={() => navigate('/showItineraries')}>Show Itineraries</button>
+                    <button onClick={() => setShowDeleteForm(true)}>Delete Itinerary</button>
+                    <NavigateButton path={"/tourguideAccount"} text={"View Account"}/>{'\u00A0'}
+                    <Logout />
+                </>
+            ) : (
+                <div>
+                    <p>You must accept the terms and conditions to use the dashboard.</p>
+                    <button onClick={handleAcceptTerms}>Accept Terms and Conditions</button>
+                </div>
+            )}
 
             {/* Create Itinerary Modal form */}
             {showForm && (

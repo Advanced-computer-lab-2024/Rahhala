@@ -7,8 +7,8 @@ import '../table.css';
 
 const Products = () => {
     const navigate = useNavigate(); // Initialize navigate
-    const [products, setProducts] = useState(null);
-    const [error, setError] = useState('');
+    const [products, setProducts] = useState([]); // State to hold products
+    const [error, setError] = useState(null);
     const [price, setPrice] = useState('');
     const [rating, setRating] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
@@ -28,15 +28,25 @@ const Products = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axiosInstance.get('/api/product');
-                console.log(response.data);
+                let userType = auth.user.type;
+                console.log("usertype is ",userType) // Log userType before fetching    
+                let response;
+                if(userType === "seller"){
+                    response = await axiosInstance.get('/api/product/myProducts');
+                }
+                else{
+                    response = await axiosInstance.get('/api/product');
+                }
+                console.log("response is ",response.data) 
                 setProducts(response.data);
+                console.log("Products are", response.data);
+                console.log("usertype is ",userType) // Log products after fetching
             } catch (err) {
                 setError('Failed to fetch products');
             }
         };
         fetchProducts();
-    }, []);
+    }, [auth]);
 
     const filterProducts = () => {
         return products.filter(product => {
@@ -48,14 +58,55 @@ const Products = () => {
         });
     };
 
-    const sortProducts = (products) => {
-        return products.sort((a, b) => {
-            return sortOrder === 'asc' ? a.averageRating - b.averageRating : b.averageRating - a.averageRating;
-        });
+    const sortedProducts = filterProducts().sort((a, b) => {
+        if (sortOrder === 'asc') {
+            return a.rating - b.rating;
+        } else {
+            return b.rating - a.rating;
+        }
+    });
+
+    const handleArchive = async (productId) => {
+        try {
+            console.log("productId is", productId); // Log productId before archiving
+            await axiosInstance.put(`/api/product/archive/${productId}`);
+            setProducts(products.map(product => 
+                product._id === productId ? { ...product, isArchived: true } : product
+            ));
+        } catch (err) {
+            setError('Failed to archive product');
+        }
     };
 
-    const filteredProducts = products ? filterProducts() : [];
-    const sortedProducts = sortProducts(filteredProducts);
+    const handleUnarchive = async (productId) => {
+        try {
+            console.log("productId is", productId); // Log productId before unarchiving
+            await axiosInstance.put(`/api/product/unarchive/${productId}`);
+            setProducts(products.map(product => 
+                product._id === productId ? { ...product, isArchived: false } : product
+            ));
+        } catch (err) {
+            setError('Failed to unarchive product');
+        }
+    };
+
+    const handleUploadPicture = async (productId, url) => {
+        try {
+            console.log("Uploading picture for productId:", productId); // Log productId before uploading picture
+            await axiosInstance.post(`/api/product/uploadPicture/${productId}`, { picture: url });
+            // Optionally, update the product's picture in the state
+            setProducts(products.map(product => 
+                product._id === productId ? { ...product, picture: url } : product
+            ));
+        } catch (err) {
+            setError('Failed to upload picture');
+        }
+    };
+
+    const handleUrlChange = (productId, event) => {
+        const url = event.target.value;
+        handleUploadPicture(productId, url);
+    };
 
     return (
         <div>
@@ -84,7 +135,7 @@ const Products = () => {
                     <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                 </label>
             </div>
-            {products ? (
+            {products.length > 0 ? (
                 <table>
                     <thead>
                         <tr>
@@ -96,7 +147,9 @@ const Products = () => {
                             <th>Seller</th>
                             <th>Rating</th>
                             <th>ID</th>
-
+                            <th>Archived</th>
+                            <th>Actions</th> {/* New column for actions */}
+                            <th>Upload Picture</th> {/* New column for upload picture */}
                         </tr>
                     </thead>
                     <tbody>
@@ -107,10 +160,24 @@ const Products = () => {
                                 <td>{product.price}</td>
                                 <td>{product.quantity}</td>
                                 <td>{product.description}</td>
-                                <td>{product.sellerName}</td>
+                                <td>{product.sellerId}</td>
                                 <td>{product.averageRating}</td>
                                 <td>{product._id}</td>
-
+                                <td>{product.isArchived ? 'Yes' : 'No'}</td> {/* Display isArchived */}
+                                <td>
+                                    {!product.isArchived ? (
+                                        <button onClick={() => handleArchive(product._id)}>Archive</button>
+                                    ) : (
+                                        <button onClick={() => handleUnarchive(product._id)}>Unarchive</button>
+                                    )}
+                                </td>
+                                <td>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter image URL"
+                                        onBlur={(e) => handleUrlChange(product._id, e)}
+                                    />
+                                </td>
                             </tr>
                         ))}
                     </tbody>

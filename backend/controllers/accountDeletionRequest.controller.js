@@ -1,10 +1,36 @@
 import AccountDeletionRequestModel from "../models/accountDeletionRequest.model.js";
+import accountDeletionRequestModel from '../models/accountDeletionRequest.model.js';
+import activityModel from '../models/activity.model.js';
+import itineraryModel from '../models/itinerary.model.js';
 
+export const getAllAccountDeletionRequests = async (req, res) => {
+    try {
+        const requests = await accountDeletionRequestModel.find();
+        const requestsWithDeletionInfo = await Promise.all(requests.map(async (request) => {
+            const hasUpcomingActivities = await activityModel.exists({ userId: request.userId, date: { $gte: new Date() }, bookings: { $elemMatch: { status: 'paid' } } });
+            const hasUpcomingItineraries = await itineraryModel.exists({ userId: request.userId, date: { $gte: new Date() }, bookings: { $elemMatch: { status: 'paid' } } });
+            // booking open(activity model) , itinerary false(isactive),
+            const canBeDeleted = !(hasUpcomingActivities || hasUpcomingItineraries);
+
+            return {
+                ...request.toObject(),
+                canBeDeleted,
+                hasUpcomingActivities,
+                hasUpcomingItineraries,
+            };
+        }));
+
+        res.status(200).json(requestsWithDeletionInfo);
+    } catch (error) {
+        console.error('Error fetching account deletion requests:', error);
+        res.status(500).json({ message: 'Error fetching account deletion requests' });
+    }
+};
 // Create a new account deletion request
 export const createAccountDeletionRequest = async (req, res) => {
     console.log("entered createAccountDeletionRequest");
     const userId = req.user.id;
-    const userType = req.user.userType.charAt(0).toUpperCase() + req.user.userType.slice(1).toLowerCase();
+    const userType = req.user.userType
     try {
         const existingRequest = await AccountDeletionRequestModel.findOne({ userId });
         if (existingRequest) {
@@ -22,15 +48,7 @@ export const createAccountDeletionRequest = async (req, res) => {
     }
 };
 
-// Get all account deletion requests
-export const getAllAccountDeletionRequests = async (req, res) => {
-    try {
-        const requests = await AccountDeletionRequestModel.find();
-        res.status(200).json(requests);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
+
 
 // Get a single account deletion request by ID
 export const getAccountDeletionRequestById = async (req, res) => {
