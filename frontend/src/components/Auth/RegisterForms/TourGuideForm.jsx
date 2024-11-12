@@ -13,16 +13,6 @@ const TourGuideForm = ({ formData, handleChange, handlePreviousWorkChange, addPr
             />
         </div>
         <div>
-            <label>Years of Experience:</label>
-            <input
-                type="number"
-                name="yearsOfExperience"
-                value={formData.yearsOfExperience}
-                onChange={handleChange}
-                required
-            />
-        </div>
-        <div>
             <label>Previous Work:</label>
             {formData.previousWork.map((work, index) => (
                 <div key={index}>
