@@ -67,14 +67,6 @@ const TourGuideForm = ({ formData, handleChange, handlePreviousWorkChange, addPr
                     required
                 />
             </div>
-            <div>
-                <label>Profile Photo:</label>
-                <input
-                    type="file"
-                    name="profilePhoto"
-                    onChange={handleFileChange}
-                />
-            </div>
         </div>
     );
 };
