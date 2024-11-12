@@ -1,78 +1,82 @@
 import React from 'react';
 
-const TourGuideForm = ({ formData, handleChange, handlePreviousWorkChange, addPreviousWork, removePreviousWork }) => (
-    <>
+const TourGuideForm = ({ formData, handleChange, handlePreviousWorkChange, addPreviousWork, removePreviousWork, handleFileChange }) => {
+    return (
         <div>
-            <label>Mobile Number:</label>
-            <input
-                type="text"
-                name="mobileNumber"
-                value={formData.mobileNumber}
-                onChange={handleChange}
-                required
-            />
+            <div>
+                <label>Mobile Number:</label>
+                <input
+                    type="text"
+                    name="mobileNumber"
+                    value={formData.mobileNumber}
+                    onChange={handleChange}
+                    required
+                />
+            </div>
+            <div>
+                <label>Years of Experience:</label>
+                <input
+                    type="number"
+                    name="yearsOfExperience"
+                    value={formData.yearsOfExperience}
+                    onChange={handleChange}
+                    required
+                />
+            </div>
+            <div>
+                <label>Previous Work:</label>
+                {formData.previousWork.map((work, index) => (
+                    <div key={index}>
+                        <input
+                            type="number"
+                            name="yearsOfExperience"
+                            value={work.yearsOfExperience}
+                            onChange={(e) => handlePreviousWorkChange(index, e)}
+                            placeholder="Years of Experience"
+                            required
+                        />
+                        <input
+                            type="text"
+                            name="work"
+                            value={work.work}
+                            onChange={(e) => handlePreviousWorkChange(index, e)}
+                            placeholder="Work Description"
+                            required
+                        />
+                        <button type="button" onClick={() => removePreviousWork(index)}>Remove</button>
+                    </div>
+                ))}
+                <button type="button" onClick={addPreviousWork}>Add Previous Work</button>
+            </div>
+            <div>
+                <label>Certification Images:</label>
+                <input
+                    type="file"
+                    name="certificationImages"
+                    onChange={handleFileChange}
+                    multiple
+                    required
+                />
+            </div>
+            <div>
+                <label>ID Card Image:</label>
+                <input
+                    type="file"
+                    name="idCardImage"
+                    onChange={handleFileChange}
+                    required
+                />
+            </div>
+            <div>
+                <label>Profile Photo:</label>
+                <input
+                    type="file"
+                    name="profilePhoto"
+                    onChange={handleFileChange}
+                />
+            </div>
         </div>
-        <div>
-            <label>Years of Experience:</label>
-            <input
-                type="number"
-                name="yearsOfExperience"
-                value={formData.yearsOfExperience}
-                onChange={handleChange}
-                required
-            />
-        </div>
-        <div>
-            <label>Previous Work:</label>
-            {formData.previousWork.map((work, index) => (
-                <div key={index}>
-                    <input
-                        type="number"
-                        name="yearsOfExperience"
-                        placeholder="Years of Experience"
-                        value={work.yearsOfExperience}
-                        onChange={(e) => handlePreviousWorkChange(index, e)}
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="work"
-                        placeholder="Work"
-                        value={work.work}
-                        onChange={(e) => handlePreviousWorkChange(index, e)}
-                        required
-                    />
-                    <button type="button" onClick={() => removePreviousWork(index)}>Remove</button>
-                </div>
-            ))}
-            <button type="button" onClick={addPreviousWork}>Add Previous Work</button>
-        </div>
-        <div>
-            <label>Certification Images (comma separated URLs):</label>
-            <input
-                type="text"
-                name="certificationImages"
-                value={formData.certificationImages}
-                onChange={(e) => handleChange({
-                    target: {
-                        name: 'certificationImages',
-                        value: e.target.value.split(',').map(img => img.trim())
-                    }
-                })}
-                required
-            />
-        </div>
-        <div>
-            <label>ID Card Image URL:</label>
-            <input
-                type="text"
-                name="idCardImage"
-                value={formData.idCardImage}
-                onChange={handleChange}
-                required
-            />
-        </div>
-    </>
-);
+    );
+};
 
 export default TourGuideForm;

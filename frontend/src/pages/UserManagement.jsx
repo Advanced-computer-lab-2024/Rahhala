@@ -51,6 +51,10 @@ const UserManagement = () => {
         }
     };
 
+    const getBase64ImageSrc = (base64String, format = 'jpeg') => {
+        return `data:image/${format};base64,${base64String}`;
+    };
+
     return (
         <div className="user-management">
             <h2>User Management</h2>
@@ -59,6 +63,7 @@ const UserManagement = () => {
                 <NavigateButton path="/AdminDashboard" text="Back to Dashboard" />
                 <Logout />
             </div>
+
             <h3>Pending Advertisers</h3>
             <p>Below is the list of pending advertisers:</p>
             <table className="users-table">
@@ -69,6 +74,8 @@ const UserManagement = () => {
                         <th>Website Link</th>
                         <th>Hotline</th>
                         <th>Company Profile</th>
+                        <th>ID Card Image</th>
+                        <th>Taxation Registry Image</th>
                         <th>Logo</th>
                         <th>Actions</th>
                     </tr>
@@ -80,8 +87,10 @@ const UserManagement = () => {
                             <td>{advertiser.email}</td>
                             <td>{advertiser.websiteLink}</td>
                             <td>{advertiser.hotline}</td>
-                            <td>{advertiser.companyProfile}</td>
-                            <td><img src={advertiser.logo} alt="Logo" width="50" /></td>
+                            <td><img src={getBase64ImageSrc(advertiser.companyProfile)} alt="Company Profile" width="50" /></td>
+                            <td><img src={getBase64ImageSrc(advertiser.idCardImage)} alt="ID Card" width="50" /></td>
+                            <td><img src={getBase64ImageSrc(advertiser.taxationRegistryImage)} alt="Taxation Registry" width="50" /></td>
+                            <td><img src={getBase64ImageSrc(advertiser.logo)} alt="Logo" width="50" /></td>
                             <td>
                                 <button onClick={() => acceptUser('Advertiser', advertiser._id)}>Accept</button>
                                 <button onClick={() => rejectUser('Advertiser', advertiser._id)} style={{ marginLeft: '10px' }}>Reject</button>
@@ -90,6 +99,7 @@ const UserManagement = () => {
                     ))}
                 </tbody>
             </table>
+
             <h3>Pending Tour Guides</h3>
             <p>Below is the list of pending tour guides:</p>
             <table className="users-table">
@@ -101,6 +111,7 @@ const UserManagement = () => {
                         <th>Profile Photo</th>
                         <th>Certification Images</th>
                         <th>Previous Work</th>
+                        <th>ID Card Image</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -110,10 +121,10 @@ const UserManagement = () => {
                             <td>{tourGuide.username}</td>
                             <td>{tourGuide.email}</td>
                             <td>{tourGuide.mobileNumber}</td>
-                            <td><img src={tourGuide.profilePhoto} alt="Profile" width="50" /></td>
+                            <td><img src={getBase64ImageSrc(tourGuide.profilePhoto)} alt="Profile" width="50" /></td>
                             <td>
                                 {tourGuide.certificationImages.map((image, index) => (
-                                    <img key={index} src={image} alt="Certification" width="50" />
+                                    <img key={index} src={getBase64ImageSrc(image)} alt="Certification" width="50" />
                                 ))}
                             </td>
                             <td>
@@ -123,6 +134,7 @@ const UserManagement = () => {
                                     </div>
                                 ))}
                             </td>
+                            <td><img src={getBase64ImageSrc(tourGuide.idCardImage)} alt="ID Card" width="50" /></td>
                             <td>
                                 <button onClick={() => acceptUser('TourGuide', tourGuide._id)}>Accept</button>
                                 <button onClick={() => rejectUser('TourGuide', tourGuide._id)} style={{ marginLeft: '10px' }}>Reject</button>
@@ -131,6 +143,7 @@ const UserManagement = () => {
                     ))}
                 </tbody>
             </table>
+
             <h3>Pending Sellers</h3>
             <p>Below is the list of pending sellers:</p>
             <table className="users-table">
@@ -152,9 +165,9 @@ const UserManagement = () => {
                             <td>{seller.username}</td>
                             <td>{seller.email}</td>
                             <td>{seller.name}</td>
-                            <td><img src={seller.idCardImage} alt="ID Card" width="50" /></td>
-                            <td><img src={seller.taxationRegistryImage} alt="Taxation Registry" width="50" /></td>
-                            <td><img src={seller.logo} alt="Logo" width="50" /></td>
+                            <td><img src={getBase64ImageSrc(seller.idCardImage)} alt="ID Card" width="50" /></td>
+                            <td><img src={getBase64ImageSrc(seller.taxationRegistryImage)} alt="Taxation Registry" width="50" /></td>
+                            <td><img src={getBase64ImageSrc(seller.logo)} alt="Logo" width="50" /></td>
                             <td>{seller.description}</td>
                             <td>
                                 <button onClick={() => acceptUser('Seller', seller._id)}>Accept</button>

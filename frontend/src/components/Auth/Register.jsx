@@ -9,8 +9,6 @@ import AdvertiserForm from './RegisterForms/AdvertiserForm';
 import { jwtDecode } from 'jwt-decode';
 import NavigateButton from '../UpdateProfileButton';
 
-
-
 const Register = () => {
     const { setAuth } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -42,7 +40,8 @@ const Register = () => {
         // Advertiser and seller Fields
         taxationRegistryImage: '',
         logo: '',
- 
+        // New fields
+        profilePhoto: '', // New field
     });
 
     const [message, setMessage] = useState('');
@@ -68,6 +67,7 @@ const Register = () => {
             websiteLink: '',
             hotline: '',
             companyProfile: '',
+            profilePhoto: '', // New field
         });
     };
 
@@ -103,6 +103,20 @@ const Register = () => {
             ...formData,
             previousWork: updatedPreviousWork
         });
+    };
+
+    const handleFileChange = (e) => {
+        const { name, files } = e.target;
+        const file = files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = reader.result.split(',')[1]; // Remove the prefix
+            setFormData({
+                ...formData,
+                [name]: base64String
+            });
+        };
+        reader.readAsDataURL(file);
     };
 
     const navigateBasedOnUserType = () => {
@@ -154,6 +168,7 @@ const Register = () => {
                     previousWork: formData.previousWork, // Updated field
                     certificationImages: formData.certificationImages, // New field
                     idCardImage: formData.idCardImage, // New field
+                    profilePhoto: formData.profilePhoto, // New field
                 };
                 break;
             case 'seller':
@@ -196,7 +211,7 @@ const Register = () => {
                 const { token } = response.data;
                 const decoded = jwtDecode(token);
                 console.log("decoded is ",decoded);
-    
+
                 setAuth({
                     token,
                     isAuthenticated: true,
@@ -206,16 +221,16 @@ const Register = () => {
                         type: decoded.userType,
                     },
                 });
-    
+
                 localStorage.setItem('token', token);
-    
+
                 navigateBasedOnUserType();
             }
-    
-            } catch (error) {
-                console.error('Registration failed:', error);
-                setMessage(error.response?.data?.message || 'Registration failed.');
-            }
+
+        } catch (error) {
+            console.error('Registration failed:', error);
+            setMessage(error.response?.data?.message || 'Registration failed.');
+        }
     };
 
     return (
@@ -270,10 +285,11 @@ const Register = () => {
                         handlePreviousWorkChange={handlePreviousWorkChange}
                         addPreviousWork={addPreviousWork}
                         removePreviousWork={removePreviousWork}
+                        handleFileChange={handleFileChange}
                     />
                 )}
-                {userType === 'seller' && <SellerForm formData={formData} handleChange={handleChange} />}
-                {userType === 'advertiser' && <AdvertiserForm formData={formData} handleChange={handleChange} />}
+                {userType === 'seller' && <SellerForm formData={formData} handleChange={handleChange} handleFileChange={handleFileChange} />}
+                {userType === 'advertiser' && <AdvertiserForm formData={formData} handleChange={handleChange} handleFileChange={handleFileChange} />}
                 <button type="submit">Register</button>
                 <NavigateButton path={"/login"} text='Login Instead'/>{'\u00A0'}
 
