@@ -21,6 +21,7 @@ function AdminDashboard() {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    const [flaggedId, setFlaggedId] = useState('');
 
     const hideAllForms = () => {
         setIsGovernorFormVisible(false);
@@ -103,6 +104,38 @@ function AdminDashboard() {
         } catch (error) {
             setMessage(error.response?.data?.message || 'Failed to change password.');
         }
+    };
+
+    const handleFlagItinerary = async (id) => {
+        try {
+            await axiosInstance.put(`/api/itinerary/flag/${id}`);
+            setMessage('Itinerary flagged successfully');
+        } catch (err) {
+            console.error('Failed to flag itinerary', err);
+            setMessage('Failed to flag itinerary');
+        }
+    };
+
+    const handleUnflagItinerary = async (id) => {
+        try {
+            await axiosInstance.put(`/api/itinerary/unflag/${id}`);
+            setMessage('Itinerary unflagged successfully');
+        } catch (err) {
+            console.error('Failed to unflag itinerary', err);
+            setMessage('Failed to unflag itinerary');
+        }
+    };
+
+    const handleFlagSubmit = (e) => {
+        e.preventDefault();
+        handleFlagItinerary(flaggedId);
+        setFlaggedId('');
+    };
+
+    const handleUnflagSubmit = (e) => {
+        e.preventDefault();
+        handleUnflagItinerary(flaggedId);
+        setFlaggedId('');
     };
 
     return (
@@ -222,6 +255,34 @@ function AdminDashboard() {
                     </button>
                 </div>
                 <Logout />
+            </div>
+
+            <div className="section">
+                <h3>Flag Itinerary</h3>
+                <form onSubmit={handleFlagSubmit}>
+                    <label>
+                        Itinerary ID:
+                        <input
+                            type="text"
+                            value={flaggedId}
+                            onChange={(e) => setFlaggedId(e.target.value)}
+                            required
+                        />
+                    </label>
+                    <button type="submit">Flag as Inappropriate</button>
+                </form>
+                <form onSubmit={handleUnflagSubmit}>
+                    <label>
+                        Itinerary ID:
+                        <input
+                            type="text"
+                            value={flaggedId}
+                            onChange={(e) => setFlaggedId(e.target.value)}
+                            required
+                        />
+                    </label>
+                    <button type="submit">Unflag as Inappropriate</button>
+                </form>
             </div>
         </div>
     );
