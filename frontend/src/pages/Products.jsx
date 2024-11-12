@@ -36,8 +36,13 @@ const Products = () => {
                 else{
                     response = await axiosInstance.get('/api/product');
                 }
-                setProducts(response.data);
-                setError(null);
+                if (response.data.length === 0) {
+                    setError('No products found');
+                }
+                else {
+                    setProducts(response.data);
+                    setError(null);
+                }
             } catch (err) {
                 console.log("Error is", err); // Log error if fetching fails
                 setError('Failed to fetch products');
