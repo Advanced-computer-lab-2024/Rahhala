@@ -1,7 +1,4 @@
 import models from "../models/index.model.js";
-import tourGuideRequestModel from "../models/tourGuideRequest.model.js";
-import sellerRequestModel from "../models/sellerRequest.model.js";
-import advertiserRequestModel from "../models/advertiserRequest.model.js";
 import { generateToken, comparePasswords } from "../utils/jwt.js";
 
 const handleLogin = async (model, credentials, userType) => {
@@ -25,11 +22,22 @@ const handleLogin = async (model, credentials, userType) => {
   console.log("model is", model);
   console.log("user is ", user);  
 
+  // Additional check for specific user types if no user is found
   if (!user) {
     throw new Error("Invalid credentials.");
   }
+  console.log("backend userType is ", userType);
+  // Check if the user is an advertiser, seller, or tour guide and if their status is accepted or rejected
+  if (["advertiser", "seller", "tourguide"].includes(userType.toLowerCase())) {
+    if (user.status === 'rejected') {
+      throw new Error(`Your ${userType} account has been rejected by an admin. Please contact support for more information.`);
+    }
+    if (user.status !== 'accepted') {
+      throw new Error(`Your ${userType} account has not been approved by an admin yet. Please check your login credentials or try again later.`);
+    }
+  }
 
-  const isMatch = comparePasswords(user.password, password);
+  const isMatch = comparePasswords(password, user.password);
   if (!isMatch) {
     throw new Error("Invalid credentials.");
   }
@@ -91,7 +99,7 @@ export const login = async (req, res) => {
 // Registration Controller (Optional for each user type)
 export const register = async (req, res) => {
   console.log("entered register");
-  const { userType, ...userData } = req.body;
+  const { userType, username, email, ...userData } = req.body;
   console.log("userType is ", userType);
   console.log("userData is ", userData);
 
@@ -106,30 +114,25 @@ export const register = async (req, res) => {
       break;
     case "tour guide":
     case "tourguide":
-      model = tourGuideRequestModel;
+      model = models.tourGuideModel;
       break;
     case "advertiser":
-      model = advertiserRequestModel;
+      model = models.advertiserModel;
       break;
     case "seller":
-      model = sellerRequestModel;
+      model = models.sellerModel;
       break;
     default:
       return res.status(400).json({ message: "Invalid userType." });
   }
 
   try {
-    const user = new model(userData);
+    const user = new model({ username, email, ...userData });
     await user.save();
-    if(model == models.touristModel){
-    const token = generateToken(user, userType);
-    res.status(201).json({ token });
-    console.log(token);
-    }
-    else{
-      res.status(201).json({ message: "your account creation request was submitted succesfully you will be admitted to the system once an admin apporves", user });
-    }
+
+    res.status(201).json({ message: "User registered successfully." });
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.error("Error registering user:", err);
+    res.status(500).json({ message: "Internal server error." });
   }
 };

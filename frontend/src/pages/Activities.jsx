@@ -1,23 +1,25 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import React, { useEffect, useState, useContext } from 'react';
 import axiosInstance from '../utils/axiosConfig';
-import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 import NavigateButton from '../components/UpdateProfileButton';
-import '../table.css'; 
+import Logout from '../components/Auth/Logout';
+import { useNavigate } from 'react-router-dom';
+import '../table.css';
 
 const Activities = () => {
-    const navigate = useNavigate(); // Initialize navigate
-    const [activities, setActivities] = useState(null);
+    const [activities, setActivities] = useState([]);
+    const [editActivity, setEditActivity] = useState({ id: '', name: '', price: '', date: '', category: '', tags: '' });
+    const [message, setMessage] = useState('');
     const [error, setError] = useState('');
     const [budget, setBudget] = useState('');
     const [date, setDate] = useState('');
     const [category, setCategory] = useState('');
-    const [rating, setRating] = useState('');
     const [sortCriteria, setSortCriteria] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
-    const [tags, setTags] = useState([]);
+    const [tags, setTags] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
-    const { auth } = useContext(AuthContext); // Get auth context
+    const { auth } = useContext(AuthContext);
+    const navigate = useNavigate();
     let homePath;
     if (auth.user && auth.user.type === 'tourist') {
         homePath = '/viewAll';
@@ -26,26 +28,46 @@ const Activities = () => {
         homePath = '/advertiser-dashboard';
     }
     useEffect(() => {
-        const fetchActivities = async () => {
-            try {
-                const response = await axiosInstance.get('/activities');
-                console.log(response.data);
-                setActivities(response.data);
-            } catch (err) {
-                setError('Failed to fetch activities');
-            }
-        };
         fetchActivities();
     }, []);
+
+    const fetchActivities = async () => {
+        try {
+            const response = await axiosInstance.get('/api/activity');
+            setActivities(response.data);
+        } catch (err) {
+            setError('Failed to fetch activities');
+        }
+    };
+
+    const updateActivity = async () => {
+        try {
+            await axiosInstance.put(`/api/activity/${editActivity.id}`, editActivity);
+            setMessage('Activity updated successfully!');
+            setEditActivity({ id: '', name: '', price: '', date: '', category: '', tags: '' });
+            fetchActivities();
+        } catch (error) {
+            setMessage('Error updating activity.');
+        }
+    };
+
+    const deleteActivity = async (id) => {
+        try {
+            await axiosInstance.delete(`/api/activity/${id}`);
+            setMessage('Activity deleted successfully!');
+            fetchActivities();
+        } catch (error) {
+            setMessage('Error deleting activity.');
+        }
+    };
 
     const filterActivities = () => {
         return activities.filter(activity => {
             return (
-                (budget ? activity.price <= budget : true) &&
-                (date ? new Date(activity.date).toDateString() === new Date(date).toDateString() : true) &&
-                (category ? activity.category === category : true) &&
-                (rating ? activity.rating >= rating : true) &&
-                (tags.length ? tags.every(tag => activity.tags.includes(tag)) : true) &&
+                (budget ? parseFloat(activity.price.replace(/[^0-9.-]+/g,"")).toString().startsWith(budget) : true) &&
+                (date ? new Date(activity.date).toDateString().startsWith(new Date(date).toDateString()) : true) &&
+                (category ? activity.category.toLowerCase().startsWith(category.toLowerCase()) : true) &&
+                (tags ? tags.split(',').every(tag => activity.tags.some(activityTag => activityTag.toLowerCase().includes(tag.trim().toLowerCase()))) : true) &&
                 (searchQuery ? activity.name.toLowerCase().includes(searchQuery.toLowerCase()) : true)
             );
         });
@@ -55,55 +77,76 @@ const Activities = () => {
         if (!sortCriteria) return activities;
         return activities.sort((a, b) => {
             if (sortCriteria === 'price') {
-                return sortOrder === 'asc' ? a.price - b.price : b.price - a.price;
-            } else if (sortCriteria === 'rating') {
-                return sortOrder === 'asc' ? a.rating - b.rating : b.rating - a.rating;
+                return sortOrder === 'asc' ? parseFloat(a.price.replace(/[^0-9.-]+/g,"")) - parseFloat(b.price.replace(/[^0-9.-]+/g,"")) : parseFloat(b.price.replace(/[^0-9.-]+/g,"")) - parseFloat(a.price.replace(/[^0-9.-]+/g,""));
+            } else if (sortCriteria === 'date') {
+                return sortOrder === 'asc' ? new Date(a.date) - new Date(b.date) : new Date(b.date) - new Date(a.date);
             }
             return 0;
         });
     };
 
     const handleTagsChange = (e) => {
-        const tagsArray = e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag);
-        setTags(tagsArray);
+        setTags(e.target.value);
     };
 
     const filteredActivities = activities ? filterActivities() : [];
     const sortedActivities = sortActivities(filteredActivities);
 
     return (
-        <div>
-            <div>
+        <div className="manage-activities">
+            <h2>Manage Activities</h2>
+            {message && <p className={message.includes('successfully') ? 'success' : 'error'}>{message}</p>}
+            <div className="filters">
                 <label>
                     Budget:
-                    <input min="0" type="number" value={budget} onChange={(e) => setBudget(e.target.value)} />
+                    <input
+                        type="text"
+                        value={budget}
+                        onChange={(e) => setBudget(e.target.value)}
+                        placeholder="Budget"
+                    />
                 </label>
                 <label>
                     Date:
-                    <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+                    <input
+                        type="date"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                    />
                 </label>
                 <label>
                     Category:
-                    <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} />
+                    <input
+                        type="text"
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        placeholder="Category"
+                    />
                 </label>
                 <label>
-                    Rating:
-                    <input type="number"
-                        value={rating}
-                        onChange={(e) => setRating(e.target.value)} 
-                        min="0"
-                        max="5"/>
+                    Tags:
+                    <input
+                        type="text"
+                        value={tags}
+                        onChange={handleTagsChange}
+                        placeholder="Tags"
+                    />
                 </label>
                 <label>
-                    Tags (comma separated):
-                    <input type="text" value={tags.join(', ')} onChange={handleTagsChange} />
+                    Search:
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Name"
+                    />
                 </label>
                 <label>
-                    Sort by:
+                    Sort By:
                     <select value={sortCriteria} onChange={(e) => setSortCriteria(e.target.value)}>
                         <option value="">None</option>
                         <option value="price">Price</option>
-                        <option value="rating">Rating</option>
+                        <option value="date">Date</option>
                     </select>
                 </label>
                 <label>
@@ -113,41 +156,92 @@ const Activities = () => {
                         <option value="desc">Descending</option>
                     </select>
                 </label>
-                <label>
-                    Search by name:
-                    <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-                </label>
             </div>
-            {activities ? (
-                <table>
+            {activities.length > 0 ? (
+                <table className="activities-table">
                     <thead>
                         <tr>
                             <th>Name</th>
                             <th>Price</th>
                             <th>Date</th>
                             <th>Category</th>
-                            <th>Rating</th>
                             <th>Tags</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {sortedActivities.map(activity => (
-                            <tr key={activity.id}>
+                            <tr key={activity._id}>
                                 <td>{activity.name}</td>
                                 <td>{activity.price}</td>
                                 <td>{new Date(activity.date).toLocaleDateString()}</td>
                                 <td>{activity.category}</td>
-                                <td>{activity.rating}</td>
                                 <td>{activity.tags.join(', ')}</td>
+                                <td>
+                                    <button onClick={() => setEditActivity({ id: activity._id, name: activity.name, price: activity.price, date: activity.date, category: activity.category, tags: activity.tags.join(', ') })}>Edit</button>
+                                    <button onClick={() => deleteActivity(activity._id)}>Delete</button>
+                                    <button onClick={() => navigate(`/getActivity/${activity._id}`)}>More Info</button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             ) : (
-                <div>Loading activities...</div>
+                <div className="loading">Loading activities...</div>
             )}
-            {error && <div>{error}</div>}
-            <NavigateButton path={homePath} text='Back'/>{'\u00A0'}
+            {editActivity.id && (
+                <div className="controls">
+                    <label>
+                        Edit Activity Name:
+                        <input
+                            type="text"
+                            value={editActivity.name}
+                            onChange={(e) => setEditActivity({ ...editActivity, name: e.target.value })}
+                            placeholder="Activity Name"
+                        />
+                    </label>
+                    <label>
+                        Price:
+                        <input
+                            type="text"
+                            value={editActivity.price}
+                            onChange={(e) => setEditActivity({ ...editActivity, price: e.target.value })}
+                            placeholder="Price"
+                        />
+                    </label>
+                    <label>
+                        Date:
+                        <input
+                            type="date"
+                            value={editActivity.date}
+                            onChange={(e) => setEditActivity({ ...editActivity, date: e.target.value })}
+                        />
+                    </label>
+                    <label>
+                        Category:
+                        <input
+                            type="text"
+                            value={editActivity.category}
+                            onChange={(e) => setEditActivity({ ...editActivity, category: e.target.value })}
+                            placeholder="Category"
+                        />
+                    </label>
+                    <label>
+                        Tags (comma separated):
+                        <input
+                            type="text"
+                            value={editActivity.tags}
+                            onChange={(e) => setEditActivity({ ...editActivity, tags: e.target.value })}
+                            placeholder="Tags"
+                        />
+                    </label>
+                    <button onClick={updateActivity}>Update Activity</button>
+                </div>
+            )}
+            <div className="navigation-buttons">
+                <NavigateButton path={homePath} text="Back to Dashboard" />
+                <Logout />
+            </div>
         </div>
     );
 };

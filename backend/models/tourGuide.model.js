@@ -10,7 +10,6 @@ const tourGuideSchema = new mongoose.Schema({
     },
     idCardImage: {
         type: String,
-        required: true
     },
     certificationImages: {
         type: [String],
@@ -46,9 +45,19 @@ const tourGuideSchema = new mongoose.Schema({
     ],
     profilePhoto: {
         type: String,
-        required: true
     },
-}, { timestamps: true }); // Adds createdAt and updatedAt timestamps
+    acceptedTermsAndConditions: {
+        type: Boolean,
+        default: false
+    },
+    status: {
+        type: String,
+        enum: ['accepted', 'rejected', 'pending'],
+        default: 'pending'
+    }
+}, {
+    timestamps: true // Adds createdAt and updatedAt timestamps
+});
 
 // Create the TourGuide model
 const tourGuideModel = mongoose.model('TourGuide', tourGuideSchema);

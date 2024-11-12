@@ -1,0 +1,101 @@
+/* UserManagement.css */
+.user-management {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: max-content;
+    width: 100vw;
+    padding: 50px;
+    background-color: var(--background-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(24, 26, 27, 0.1);
+}
+.user-management h2 {
+    text-align: center;
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+.user-management h3 {
+    color: black; /* Set the color of the headings to black */
+}
+.user-management .controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    width: 50%;
+}
+.user-management .controls label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1em;
+    color: var(--secondary-color);
+}
+.user-management .controls select {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1em;
+}
+.user-management .users-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: var(--background-color);
+}
+.user-management .users-table th,
+.user-management .users-table td {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    text-align: left;
+    color: var(--secondary-color);
+}
+.user-management .users-table th {
+    background-color: var(--primary-color);
+    color: #ffffff;
+}
+.user-management .users-table tr {
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.user-management .users-table tr:not(:first-child):hover {
+    background-color: var(--table-row-hover-color);
+    transform: translateY(-5px); /* Move the row up slightly */
+}
+.user-management .users-table tr.selected {
+    background-color: var(--table-row-selected-color);
+    font-weight: bold;
+    color: var(--primary-color);
+}
+.user-management .users-table tr:nth-child(even) {
+    background-color: var(--table-row-alt-color);
+}
+.user-management .users-table img {
+    max-width: 50px;
+    height: auto;
+    border-radius: 4px;
+}
+.user-management .users-table button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.user-management .users-table button:hover {
+    background-color: var(--primary-color-dark);
+    color: #ffffff;
+}
+.user-management .navigation-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+.success {
+    color: green;
+}
+.error {
+    color: red;
+}

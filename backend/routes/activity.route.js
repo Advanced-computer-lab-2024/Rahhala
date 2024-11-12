@@ -6,6 +6,7 @@ import {
   editActivity,
   deleteActivity,
   getActivitiesByUserID,
+  getActivityById
 } from "../controllers/activity.controller.js";
 
 const router = express.Router();
@@ -13,8 +14,9 @@ const router = express.Router();
 router.post("/", verifyToken, addActivity);
 router.post("/createActivity", addActivity);
 router.get("/", getActivities);
-router.put("/", verifyToken, editActivity);
-router.delete("/", deleteActivity);
+router.put("/:id", verifyToken, editActivity);
+router.delete("/:id", deleteActivity);
 router.get("/:id", verifyToken, getActivitiesByUserID);
+router.get("/getActivity/:id", getActivityById);
 
 export default router;

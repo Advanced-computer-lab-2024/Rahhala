@@ -13,12 +13,24 @@ const complaintSchema = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now,
-        required: true
     },
     status: {
         type: String,
         enum: ['resolved', 'pending'],
         default: 'pending',
+    },
+    reply: {
+        type: String,
+        default: ''
+    },
+    userType: {
+        type: String,
+        enum: ['Tourist', 'Tour Guide', 'Advertiser', 'Governor', 'Seller'],
+        required: true
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        refPath: 'userType',
         required: true
     }
 }, { timestamps: true }); // Adds createdAt and updatedAt timestamps

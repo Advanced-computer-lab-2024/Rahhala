@@ -7,8 +7,8 @@ import '../table.css';
 
 const Products = () => {
     const navigate = useNavigate(); // Initialize navigate
-    const [products, setProducts] = useState(null);
-    const [error, setError] = useState('');
+    const [products, setProducts] = useState([]); // State to hold products
+    const [error, setError] = useState(null);
     const [price, setPrice] = useState('');
     const [rating, setRating] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
@@ -17,7 +17,7 @@ const Products = () => {
     
     let homePath;
     if (auth.user && auth.user.type === 'tourist') {
-        homePath = '/toursitAccount';
+        homePath = '/touristAccount';
     }
     else if(auth.user && auth.user.type === 'seller'){
         homePath = '/seller-dashboard';
@@ -28,34 +28,95 @@ const Products = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axiosInstance.get('/getProducts');
-                console.log(response.data);
-                setProducts(response.data);
+                let userType = auth.user.type;
+                let response;
+                if(userType === "seller"){
+                    response = await axiosInstance.get('/api/product/myProducts');
+                }
+                else{
+                    response = await axiosInstance.get('/api/product');
+                }
+                if (response.data.length === 0) {
+                    setError('No products found');
+                }
+                else {
+                    setProducts(response.data);
+                    setError(null);
+                }
             } catch (err) {
+                console.log("Error is", err); // Log error if fetching fails
                 setError('Failed to fetch products');
             }
         };
         fetchProducts();
-    }, []);
+    }, [auth]);
 
     const filterProducts = () => {
         return products.filter(product => {
             return (
-                (price ? product.price <= price : true) &&
+                (price ? product.price.toString().startsWith(price) : true) &&
                 (rating ? product.averageRating >= rating : true) &&
-                (searchQuery ? product.name.toLowerCase().includes(searchQuery.toLowerCase()) : true)
+                (searchQuery ? product.name.toLowerCase().includes(searchQuery.toLowerCase()) : true) &&
+                (auth.user.type !== 'tourist' || !product.isArchived) // Exclude archived products for tourists
             );
         });
     };
 
-    const sortProducts = (products) => {
-        return products.sort((a, b) => {
-            return sortOrder === 'asc' ? a.averageRating - b.averageRating : b.averageRating - a.averageRating;
-        });
+    const sortedProducts = filterProducts().sort((a, b) => {
+        if (sortOrder === 'asc') {
+            return a.rating - b.rating;
+        } else {
+            return b.rating - a.rating;
+        }
+    });
+
+    const handleArchive = async (productId) => {
+        try {
+            console.log("productId is", productId); // Log productId before archiving
+            await axiosInstance.put(`/api/product/archive/${productId}`);
+            setProducts(products.map(product => 
+                product._id === productId ? { ...product, isArchived: true } : product
+            ));
+        } catch (err) {
+            setError('Failed to archive product');
+        }
     };
 
-    const filteredProducts = products ? filterProducts() : [];
-    const sortedProducts = sortProducts(filteredProducts);
+    const handleUnarchive = async (productId) => {
+        try {
+            console.log("productId is", productId); // Log productId before unarchiving
+            await axiosInstance.put(`/api/product/unarchive/${productId}`);
+            setProducts(products.map(product => 
+                product._id === productId ? { ...product, isArchived: false } : product
+            ));
+        } catch (err) {
+            setError('Failed to unarchive product');
+        }
+    };
+
+    const handleUploadPicture = async (productId, base64String) => {
+        try {
+            console.log("Uploading picture for productId:", productId); // Log productId before uploading picture
+            await axiosInstance.post(`/api/product/uploadPicture/${productId}`, { picture: base64String });
+            // Optionally, update the product's picture in the state
+            setProducts(products.map(product => 
+                product._id === productId ? { ...product, picture: base64String } : product
+            ));
+            setError('Picture uploaded successfully.');
+        } catch (err) {
+            setError('Failed to upload picture');
+        }
+    };
+
+    const handleFileChange = (productId, event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
+            handleUploadPicture(productId, base64String);
+        };
+        reader.readAsDataURL(file);
+    };
 
     return (
         <div>
@@ -84,31 +145,58 @@ const Products = () => {
                     <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                 </label>
             </div>
-            {products ? (
+            {products.length > 0 ? (
                 <table>
                     <thead>
                         <tr>
                             <th>Picture</th>
                             <th>Name</th>
                             <th>Price</th>
+                            {auth.user.type !== 'tourist' && <th>Quantity</th>} {/* Conditionally display quantity column */}
                             <th>Description</th>
                             <th>Seller</th>
                             <th>Rating</th>
                             <th>ID</th>
-
+                            {auth.user.type !== 'tourist' && <th>Archived</th>} {/* Conditionally display archived column */}
+                            {auth.user.type !== 'tourist' && <th>Actions</th>} {/* New column for actions */}
+                            {auth.user.type !== 'tourist' && <th>Upload Picture</th>} {/* New column for upload picture */}
+                            {auth.user.type === 'tourist' && <th>More Info</th>} {/* Conditionally display more info column */}
                         </tr>
                     </thead>
                     <tbody>
                         {sortedProducts.map(product => (
                             <tr key={product._id}>
-                                <td><img src={product.picture} alt={product.name} width="50" /></td>
+                                <td><img src={`data:image/jpeg;base64,${product.picture}`} alt={product.name} width="50" /></td>
                                 <td>{product.name}</td>
                                 <td>{product.price}</td>
+                                {auth.user.type !== 'tourist' && <td>{product.quantity}</td>} {/* Conditionally display quantity */}
                                 <td>{product.description}</td>
-                                <td>{product.sellerName}</td>
+                                <td>{product.sellerId}</td>
                                 <td>{product.averageRating}</td>
                                 <td>{product._id}</td>
-
+                                {auth.user.type !== 'tourist' && <td>{product.isArchived ? 'Yes' : 'No'}</td>} {/* Conditionally display isArchived */}
+                                {auth.user.type !== 'tourist' && (
+                                    <td>
+                                        {!product.isArchived ? (
+                                            <button onClick={() => handleArchive(product._id)}>Archive</button>
+                                        ) : (
+                                            <button onClick={() => handleUnarchive(product._id)}>Unarchive</button>
+                                        )}
+                                    </td>
+                                )}
+                                {auth.user.type !== 'tourist' && (
+                                    <td>
+                                        <input
+                                            type="file"
+                                            onChange={(e) => handleFileChange(product._id, e)}
+                                        />
+                                    </td>
+                                )}
+                                {auth.user.type === 'tourist' && (
+                                    <td>
+                                        <NavigateButton path={`/getProduct/${product._id}`} text='More Info'/>{'\u00A0'}
+                                    </td>
+                                )}
                             </tr>
                         ))}
                     </tbody>

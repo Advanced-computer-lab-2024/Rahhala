@@ -2,14 +2,18 @@ import touristModel from "../models/tourist.model.js";
 import activityModel from "../models/activity.model.js";
 import itineraryModel from "../models/itinerary.model.js";
 import museumModel from "../models/museum.model.js";
-import Complaint from '../models/complaint.model.js';
-import AccountDeletionRequest from '../models/accountDeletionRequest.model.js'; 
+import complaintModel from '../models/complaint.model.js';
+import accountDeletionRequestModel from '../models/accountDeletionRequest.model.js'; 
+import reviewModel from '../models/review.model.js';
+import tourGuideModel from '../models/tourGuide.model.js';
+import productModel from '../models/product.model.js';
+import mongoose from 'mongoose';
 
 // Get Tourist profile by email
 export const getTouristByEmail = async (req, res) => {
   console.log("entered getTouristByEmail");
 
-  const { email } = req.params;
+  const { email } = req.params; 
 
   try {
     const tourist = await touristModel.findOne({ email });
@@ -24,7 +28,7 @@ export const getTouristByEmail = async (req, res) => {
   }
 };
 
-// Get Tourist profile by ID
+// Get Tourist profile by ID 
 export const getTouristByID = async (req, res) => {
   console.log("entered getTouristByID");
   const id = req.user.id; // Get the user ID from the verified JWT payload
@@ -46,7 +50,7 @@ export const getTouristByID = async (req, res) => {
 export const editTourist = async (req, res) => {
   console.log("entered editTourist");
   const id = req.user.id; // Get the user ID from the verified JWT payload
-  const { email, mobileNumber, nationality, dob, occupation } = req.body;
+  const { email, mobileNumber, nationality, dob, occupation, profilePicture, currency, preferences } = req.body;
 
   try {
     const tourist = await touristModel.findById(id);
@@ -56,11 +60,14 @@ export const editTourist = async (req, res) => {
     }
 
     // Update other profile fields
+    tourist.email = email || tourist.email;
     tourist.mobileNumber = mobileNumber || tourist.mobileNumber;
     tourist.nationality = nationality || tourist.nationality;
     tourist.dob = dob || tourist.dob;
     tourist.occupation = occupation || tourist.occupation;
-    tourist.email = email || tourist.email;
+    tourist.profilePicture = profilePicture || tourist.profilePicture;
+    tourist.currency = currency || tourist.currency;
+    tourist.preferences = preferences || tourist.preferences;
 
     await tourist.save();
     res.status(200).json({
@@ -95,30 +102,6 @@ export const getTourists = async (req, res) => {
   }
 };
 
-// File a Complaint
-export const fileComplaint = async (req, res) => {
-  console.log("Filing a complaint");
-  const { title, body } = req.body; // Get title and body from the request body
-  const touristId = req.user.id; // Get the user ID from the verified JWT payload
-
-  try {
-    // Create a new complaint
-    const complaint = new Complaint({
-      title,
-      body,
-      touristId,
-    });
-
-    await complaint.save(); // Save the complaint to the database
-    res.status(201).json({ message: "Complaint filed successfully.", complaint });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error filing complaint." });
-  }
-};
-
-
-
 
 // Request Account Deletion
 export const requestAccountDeletion = async (req, res) => {
@@ -152,7 +135,7 @@ export const requestAccountDeletion = async (req, res) => {
     }
 
     // Create a new account deletion request
-    const deletionRequest = new AccountDeletionRequest({
+    const deletionRequest = new accountDeletionRequestModel({
       touristId: touristId,
     });
 
@@ -171,7 +154,7 @@ export const getComplaints = async (req, res) => {
   const touristId = req.user.id; // Get the user ID from the verified JWT payload
 
   try {
-    const complaints = await Complaint.find({ touristId }).populate('touristId', 'email'); // Adjust the populated fields as necessary
+    const complaints = await complaintModel.find({ touristId }).populate('touristId', 'email'); // Adjust the populated fields as necessary
 
     res.status(200).json({ complaints });
   } catch (error) {
@@ -230,6 +213,9 @@ export const bookItinerary = async (req, res) => {
         if (!itinerary) {
             return res.status(404).json({ error: "Itinerary not found" });
         }
+        if (tourist.bookedItineraries.includes(itineraryId)) {
+            return res.status(400).json({ error: "Itinerary already booked" });
+        }
 
         if (tourist.wallet < itinerary.price) {
             return res.status(400).json({ error: "Insufficient funds in wallet" });
@@ -251,7 +237,176 @@ export const bookItinerary = async (req, res) => {
         
 };
 
+export const bookActivity = async (req, res) => {
+    console.log("Booking an activity");
+    const touristId = req.user.id; // Get the user ID from the verified JWT payload
+    const { activityId } = req.body; // Get the activity ID from the request body
+
+    try {
+        const tourist = await touristModel.findById(touristId);
+        const activity = await activityModel.findById(activityId);
+
+        if (!tourist) {
+            return res.status(404).json({ error: "Tourist not found" });
+        }
+        if (tourist.bookedActivities.includes(activityId)) {
+            return res.status(400).json({ error: "Activity already booked" });
+        }
+
+        if (!activity) {
+            return res.status(404).json({ error: "Activity not found" });
+        }
+
+        if (tourist.wallet < parseFloat(activity.price.replace(/[^0-9.-]+/g, ""))) {
+            return res.status(400).json({ error: "Insufficient funds in wallet" });
+        }
+
+        // Deduct the price from the tourist's wallet
+        tourist.wallet -= parseFloat(activity.price.replace(/[^0-9.-]+/g, ""));
+
+        // Add the activity to the tourist's bookedActivities
+        tourist.bookedActivities.push(activityId);
+
+        await tourist.save();
+
+        res.status(200).json({ message: "Activity booked successfully", activity });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error booking activity." });
+    }
+};
+
+export const purchaseProduct = async (req, res) => {
+    console.log("Purchasing a product");
+    const touristId = req.user.id; // Get the user ID from the verified JWT payload
+    const { productId, quantity } = req.body; // Get the product ID and quantity from the request body
+    try {
+        const tourist = await touristModel.findById(touristId);
+        const product = await productModel.findById(productId);
+
+        if (!tourist) {
+            return res.status(404).json({ error: "Tourist not found" });
+        }
+
+        if (!product) {
+            return res.status(404).json({ error: "Product not found" });
+        }
+
+        if (product.quantity < quantity) {
+            return res.status(400).json({ error: "Insufficient product quantity available" });
+        }
+
+        const totalPrice = product.price * quantity;
+
+        if (tourist.wallet < totalPrice) {
+            return res.status(400).json({ error: "Insufficient funds in wallet" });
+        }
+
+        // Deduct the total price from the tourist's wallet
+        tourist.wallet -= totalPrice;
+
+        // Reduce the product quantity
+        product.quantity -= quantity;
+
+        // Increase the product sales
+        product.sales += quantity;
+
+        // Check if the product is already in the purchasedProducts array
+        const existingProductIndex = tourist.purchasedProducts.findIndex(p => p.productId.toString() === productId);
+
+        if (existingProductIndex !== -1) {
+            // If the product is already in the array, update the quantity
+            tourist.purchasedProducts[existingProductIndex].quantity += quantity;
+        } else {
+            // If the product is not in the array, add it with the specified quantity
+            tourist.purchasedProducts.push({ productId, quantity });
+        }
+
+        await tourist.save();
+        await product.save();
+
+        res.status(200).json({ message: "Product purchased successfully", product });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error purchasing product." });
+    }
+};
+
+export const cancelActivityBooking = async (req, res) => {
+    console.log("Cancelling an activity booking");
+    const touristId = req.user.id;
+    const { activityId } = req.body;
+
+    try {
+        const tourist = await touristModel.findById(touristId);
+        const activity = await activityModel.findById(activityId);
+
+        if (!tourist) {
+            return res.status(404).json({ error: "Tourist not found" });
+        }
+
+        if (!activity) {
+            return res.status(404).json({ error: "Activity not found" });
+        }
+
+        const currentTime = new Date();
+        const activityTime = new Date(activity.date);
+
+        if ((activityTime - currentTime) < 48 * 60 * 60 * 1000) {
+            return res.status(400).json({ error: "Cannot cancel booking within 48 hours of the activity" });
+        }
+
+        tourist.wallet += parseFloat(activity.price.replace(/[^0-9.-]+/g, ""));
+        tourist.bookedActivities = tourist.bookedActivities.filter(id => id.toString() !== activityId);
+
+        await tourist.save();
+
+        res.status(200).json({ message: "Activity booking cancelled and refunded successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error cancelling activity booking" });
+    }
+};
+
+export const cancelItineraryBooking = async (req, res) => {
+    console.log("Cancelling an itinerary booking");
+    const touristId = req.user.id;
+    const { itineraryId } = req.body;
+
+    try {
+        const tourist = await touristModel.findById(touristId);
+        const itinerary = await itineraryModel.findById(itineraryId);
+
+        if (!tourist) {
+            return res.status(404).json({ error: "Tourist not found" });
+        }
+
+        if (!itinerary) {
+            return res.status(404).json({ error: "Itinerary not found" });
+        }
+
+        const currentTime = new Date();
+        const itineraryTime = new Date(Math.min(...itinerary.availableDates));
+
+        if ((itineraryTime - currentTime) < 48 * 60 * 60 * 1000) {
+            return res.status(400).json({ error: "Cannot cancel booking within 48 hours of the itinerary" });
+        }
+
+        tourist.wallet += itinerary.price;
+        tourist.bookedItineraries = tourist.bookedItineraries.filter(id => id.toString() !== itineraryId);
+
+        await tourist.save();
+
+        res.status(200).json({ message: "Itinerary booking cancelled and refunded successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error cancelling itinerary booking" });
+    }
+};
+
+
 export const changePassword = async (req, res) => {
+    console.log("Changing password");
     const { oldPassword, newPassword } = req.body;
     const userID = req.user.id;
     console.log("Change password request received with ID:", userID);
@@ -281,4 +436,220 @@ export const changePassword = async (req, res) => {
         res.status(500).json({ message: "Error changing password" });
     }
     
+};
+
+
+export const addReview = async (req, res) => {
+    try {
+        const touristId = req.user.id;
+        const { rating, title, body, reviewedEntity, reviewedEntityType } = req.body;
+
+        // Validate required fields
+        if (!rating || !reviewedEntity || !reviewedEntityType) {
+            return res.status(400).json({ 
+                message: "Rating, reviewed entity, and entity type are required" 
+            });
+        }
+
+        // Validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(reviewedEntity)) {
+            return res.status(400).json({
+                message: "Invalid entity ID format"
+            });
+        }
+
+        // Validate rating range
+        if (rating < 0 || rating > 5) {
+            return res.status(400).json({ 
+                message: "Rating must be between 0 and 5" 
+            });
+        }
+
+        const tourist = await touristModel.findById(id);
+        if (!tourist) {
+            return res.status(404).json({
+                message: "Tourist not found"
+            });
+        }
+
+        // Check if entity exists based on type
+        let entityExists = false;
+        switch (reviewedEntityType) {
+            case 'Itinerary':
+                entityExists = await itineraryModel.findById(reviewedEntity);
+                break;
+            case 'TourGuide':
+                entityExists = await tourGuideModel.findById(reviewedEntity);
+                break;
+            case 'Activity':
+                entityExists = await activityModel.findById(reviewedEntity);
+                break;
+            case 'Product':
+                entityExists = await productModel.findById(reviewedEntity);
+                break;
+            default:
+                return res.status(400).json({
+                    message: "Invalid entity type"
+                });
+        }
+        if (!entityExists) {
+            return res.status(404).json({
+                message: `${reviewedEntityType} with ID ${reviewedEntity} not found`
+            });
+        }
+        console.log(entityExists);
+        // Check if the itinerary or activity is booked and the date today is after the event's date
+        if (reviewedEntityType === 'Itinerary' || reviewedEntityType === 'Activity') {
+            const today = new Date();
+            let isBooked = false;
+            let eventDate;
+
+            if (reviewedEntityType === 'Itinerary') {
+                isBooked = tourist.bookedItineraries.includes(reviewedEntity);
+                eventDate = new Date(Math.min(...entityExists.availableDates));
+            } else if (reviewedEntityType === 'Activity') {
+            isBooked = tourist.bookedActivities.includes(reviewedEntity);
+            eventDate = new Date(entityExists.date);
+            }
+
+            if (!isBooked) {
+            return res.status(400).json({
+                message: `You must book the ${reviewedEntityType.toLowerCase()} before reviewing it`
+            });
+            }
+
+            if (today < eventDate) {
+            return res.status(400).json({
+                message: `You can only review the ${reviewedEntityType.toLowerCase()} after the event date`
+            });
+            }
+        }
+
+        if (reviewedEntityType === 'TourGuide') {
+            const itineraries = await itineraryModel.find({ userId: reviewedEntity });
+            const today = new Date();
+            let hasAttended = false;
+
+            for (const itinerary of itineraries) {
+                const isBooked = tourist.bookedItineraries.includes(itinerary._id);
+                const eventDate = new Date(Math.min(...itinerary.availableDates));
+
+                if (isBooked && today > eventDate) {
+                    hasAttended = true;
+                    break;
+                }
+            }
+
+            if (!hasAttended) {
+                return res.status(400).json({
+                    message: "You must attend an itinerary created by this tour guide before reviewing"
+                });
+            }
+        }
+
+        if (reviewedEntityType === 'Product') {
+            const isPurchased = tourist.purchasedProducts.includes(reviewedEntity);
+            if (!isPurchased) {
+                return res.status(400).json({
+                    message: "You must purchase the product before reviewing it"
+                });
+            }
+        }
+
+        // Create new review
+        const review = new reviewModel({
+            tourist: touristId,
+            rating,
+            title,
+            body,
+            reviewedEntity,
+            reviewedEntityType
+        });
+
+        await review.save();
+
+        res.status(201).json({
+            message: "Review added successfully",
+            review
+        });
+
+    } catch (error) {
+        console.error("Error adding review:", error);
+        res.status(500).json({ 
+            message: "Error adding review",
+            error: error.message 
+        });
+    }
+};
+
+export const addMoneyToWallet = async (req, res) => {
+    console.log("Adding money to wallet");
+    const touristId = req.user.id; // Get the user ID from the verified JWT payload
+    const { amount } = req.body; // Get the amount to add from the request body
+
+    try {
+        const tourist = await touristModel.findById(touristId);
+
+        if (!tourist) {
+            return res.status(404).json({ error: "Tourist not found" });
+        }
+
+        // Add the specified amount to the tourist's wallet
+        tourist.wallet += amount;
+        // Calculate loyalty points based on the amount and current level
+        let pointsMultiplier;
+        if (tourist.totalLoyaltyPoints <= 100000) {
+            pointsMultiplier = 0.5;
+        } else if (tourist.totalLoyaltyPoints <= 500000) {
+            pointsMultiplier = 1;
+        } else {
+            pointsMultiplier = 1.5;
+        }
+
+        const loyaltyPoints = amount * pointsMultiplier;
+
+        // Add the calculated loyalty points to current and total loyalty points
+        tourist.currentLoyaltyPoints += loyaltyPoints;
+        tourist.totalLoyaltyPoints += loyaltyPoints;
+        await tourist.save();
+
+        res.status(200).json({ message: "Money added to wallet successfully", wallet: tourist.wallet });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error adding money to wallet." });
+    }
+};
+
+export const redeemLoyaltyPoints = async (req, res) => {
+    console.log("Redeeming loyalty points");
+    const touristId = req.user.id; // Get the user ID from the verified JWT payload
+    const { pointsToRedeem } = req.body; // Get the points to redeem from the request body
+
+    try {
+        const tourist = await touristModel.findById(touristId);
+
+        if (!tourist) {
+            return res.status(404).json({ error: "Tourist not found" });
+        }
+
+        if (pointsToRedeem > tourist.currentLoyaltyPoints) {
+            return res.status(400).json({ error: "Insufficient loyalty points" });
+        }
+
+        // Calculate the amount to add to the wallet
+        const amount = Math.floor((pointsToRedeem / 10000) * 100);
+
+        // Deduct the redeemed points from current loyalty points
+        tourist.currentLoyaltyPoints -= amount*100;
+
+        // Add the amount to the tourist's wallet
+        tourist.wallet += amount;
+
+        await tourist.save();
+
+        res.status(200).json({ message: "Loyalty points redeemed successfully", wallet: tourist.wallet, currentLoyaltyPoints: tourist.currentLoyaltyPoints });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error redeeming loyalty points." });
+    }
 };

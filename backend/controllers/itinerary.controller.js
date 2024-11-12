@@ -2,7 +2,8 @@ import itineraryModel from "../models/itinerary.model.js";
 import tourGuideModel from "../models/tourGuide.model.js";
 import touristModel from "../models/tourist.model.js";
 import reviewModel from "../models/review.model.js";
-// Add Itinerary to the Database
+
+// Create a new itinerary
 export const addItinerary = async (req, res) => {
   console.log("Received request body:", req.body);
 
@@ -120,33 +121,36 @@ if (isNaN(formattedPrice)) {
     res.status(500).json({ error: 'Failed to create itinerary' });
   }
 };
+
 // Get Itineraries from the Database
 export const getItineraries = async (req, res) => {
-  console.log("entered  getItineraries");
-
   try {
-    const itineraries = await itineraryModel
-      .find()
-      .populate("activities", "name location duration");
-    // .populate('tags', 'name');
-
-    res.status(200).json(itineraries);
-  } catch (err) {
-    console.error("Error fetching itineraries:", err);
-    res.status(500).json({ error: "Internal server error" });
+      let itineraries;
+      if (req.user && req.user.type === 'tourist') {
+          // Exclude flagged itineraries for tourists
+          itineraries = await itineraryModel.find({ flagged: false });
+      } else {
+          // Include all itineraries for other users
+          itineraries = await itineraryModel.find();
+      }
+      res.status(200).json(itineraries);
+  } catch (error) {
+      console.error("Error fetching itineraries:", error);
+      res.status(500).json({ message: "Error fetching itineraries" });
   }
 };
 
 // Get Itinerary by ID
 export const getItineraryByID = async (req, res) => {
-  console.log("entered  getItineraryByID");
+  console.log("entered getItineraryByID");
 
   try {
     const { id } = req.params;
-    const itinerary = await itineraryModel
-      .findById(id)
-      .populate("activities", "name location duration")
-      .populate("tags", "name");
+    const itinerary = await itineraryModel.findById(id);
+
+    if (!itinerary) {
+      return res.status(404).json({ error: "Itinerary not found" });
+    }
 
     res.status(200).json(itinerary);
   } catch (err) {
@@ -232,14 +236,14 @@ export const editItineraryByName = async (req, res) => {
 
 // Delete Itinerary from the Database
 export const deleteItinerary = async (req, res) => {
-  console.log("entered  deleteItinerary");
+  console.log("entered deleteItinerary");
 
   try {
     const { id } = req.params;
     const deletedItinerary = await itineraryModel.findByIdAndDelete(id);
 
     if (!deletedItinerary) {
-      return res.status(404).json({ message: "Itinerary not found" });
+      return res.status(404).json({ error: "Itinerary not found" });
     }
 
     res.status(200).json({ message: "Itinerary deleted successfully" });
@@ -371,3 +375,61 @@ export const addReview = async (req, res) => {
         res.status(500).json({ message: "An error occurred while adding the review" });
     }
     }
+
+export const updateItinerary = async (req, res) => {
+  console.log("entered updateItinerary");
+
+  try {
+    const { id } = req.params;
+    const updatedItinerary = await itineraryModel.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedItinerary) {
+      return res.status(404).json({ error: "Itinerary not found" });
+    }
+
+    res.status(200).json(updatedItinerary);
+  } catch (err) {
+    console.error("Error updating itinerary:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+export const flagItinerary = async (req, res) => {
+  try {
+      const { id } = req.params;
+      const itinerary = await itineraryModel.findById(id);
+
+      if (!itinerary) {
+          return res.status(404).json({ message: "Itinerary not found" });
+      }
+
+      itinerary.flagged = true;
+      await itinerary.save();
+
+      res.status(200).json({ message: "Itinerary flagged successfully" });
+  } catch (error) {
+      console.error("Error flagging itinerary:", error);
+      res.status(500).json({ message: "Error flagging itinerary" });
+  }
+};
+
+export const unflagItinerary = async (req, res) => {
+  try {
+      const { id } = req.params;
+      const itinerary = await itineraryModel.findById(id);
+
+      if (!itinerary) {
+          return res.status(404).json({ message: "Itinerary not found" });
+      }
+
+      itinerary.flagged = false;
+      await itinerary.save();
+
+      res.status(200).json({ message: "Itinerary unflagged successfully" });
+  } catch (error) {
+      console.error("Error unflagging itinerary:", error);
+      res.status(500).json({ message: "Error unflagging itinerary" });
+  }
+};

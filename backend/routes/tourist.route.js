@@ -6,23 +6,35 @@ import {
   getTourists,
   getTouristByEmail,
   requestAccountDeletion,
-  fileComplaint,
   getComplaints,
   bookItinerary,
+  bookActivity,
+  cancelActivityBooking,
+  cancelItineraryBooking,
   changePassword,
+  addReview,
+  addMoneyToWallet,
+  redeemLoyaltyPoints,
+  purchaseProduct,
   setTripPreferences
 } from "../controllers/tourist.controller.js";
 
 const router = express.Router();
 
-router.get("/:id", verifyToken, getTouristByID);
-router.put("/:id", verifyToken, editTourist);
+router.get("/", verifyToken, getTouristByID);
+router.put("/edit/:id", verifyToken, editTourist);
 router.get("/", getTourists);
 router.get("/", getTouristByEmail);
 router.post("/profile/request-delete", verifyToken, requestAccountDeletion);
-router.post("/complaints", verifyToken, fileComplaint);
 router.get("/viewComplaints", verifyToken, getComplaints);
 router.post("/bookItinerary", verifyToken, bookItinerary);
+router.post("/bookActivity", verifyToken, bookActivity);
+router.put("/cancelActivityBooking", verifyToken, cancelActivityBooking);
+router.put("/cancelItineraryBooking", verifyToken, cancelItineraryBooking);
 router.put("/changePassword", verifyToken, changePassword);
+router.post('/reviews', verifyToken, addReview);
+router.put('/addMoneyToWallet', verifyToken, addMoneyToWallet);
+router.post('/redeemLoyaltyPoints', verifyToken, redeemLoyaltyPoints);
+router.post('/purchaseProduct', verifyToken, purchaseProduct);
 router.post("/preferences", verifyToken, setTripPreferences);
 export default router;

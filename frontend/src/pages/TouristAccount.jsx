@@ -17,13 +17,13 @@ const TouristAccount = () => {
         if (auth.isAuthenticated && auth.user) {
             const fetchTourist = async () => {
                 try {
-                    const response = await axiosInstance.get('/touristAccount');
-                    delete response.data.profile._id;
+                    const response = await axiosInstance.get('/api/tourist/');
                     delete response.data.profile.password;
                     delete response.data.profile.createdAt;
                     delete response.data.profile.__v;
                     delete response.data.profile.updatedAt;
                     setProfile(response.data.profile);
+                    console.log(response.data.profile);
                 } catch (err) {
                     setError('Failed to load tourist profile.');
                 }
@@ -53,14 +53,16 @@ const TouristAccount = () => {
         <div>
             <NavigateButton path={"/viewAll"} text={"View All"}/>{'\u00A0'}
             <NavigateButton path={"/products"} text={"View Products"}/>{'\u00A0'}
+            <NavigateButton path={"/touristProducts"} text={"Purchased Products"}/>{'\u00A0'}
+            <NavigateButton path={"/submitComplaint"} text={"Submit Complaint"}/>{'\u00A0'}
+            <NavigateButton path={"/viewTouristAccount"} text={"My profile"}/>{'\u00A0'}
+            <NavigateButton path={"/touristBookings"} text={"My Bookings"}/>{'\u00A0'}
+            <NavigateButton path={"/wallet"} text={"My Wallet"}/>{'\u00A0'}
+            <NavigateButton path={"/redeem"} text={"Redeem"}/>{'\u00A0'}
+            <NavigateButton path={"/myComplaints"} text={"My Complaints"}/>{'\u00A0'}
+
             <Logout />
-            <h2>Tourist Profile</h2>
-            {profile ? (
-                <pre>{JSON.stringify(profile, null, 2)}</pre>
-            ) : (
-                <div>Loading profile...</div>
-            )}
-            <NavigateButton path={"/updateTouristAccount"} text={"Update Profile"}/> 
+           
         </div>
     );
 };

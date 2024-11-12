@@ -36,6 +36,15 @@ const sellerSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    acceptedTermsAndConditions: {
+        type: Boolean,
+        default: false
+    },
+    status: {
+        type: String,
+        enum: ['accepted', 'rejected', 'pending'],
+        default: 'pending'
+    }
 }, {
     timestamps: true
 });

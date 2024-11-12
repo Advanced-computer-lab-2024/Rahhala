@@ -14,8 +14,6 @@ export const addActivity = async (req, res) => {
     category,
     tags,
     specialDiscounts,
-    bookingOpen,
-    rating,
   } = req.body;
   try {
     if (!name) return res.status(400).json({ message: "Missing name" });
@@ -25,10 +23,6 @@ export const addActivity = async (req, res) => {
     if (!price) return res.status(400).json({ message: "Missing price" });
     if (!category) return res.status(400).json({ message: "Missing category" });
     if (!tags) return res.status(400).json({ message: "Missing tags" });
-    if (specialDiscounts === undefined)
-      return res.status(400).json({ message: "Missing special discounts" });
-    if (bookingOpen === undefined)
-      return res.status(400).json({ message: "Missing booking open status" });
 
     const activity = await activityModel.create({
       name,
@@ -39,9 +33,7 @@ export const addActivity = async (req, res) => {
       category,
       tags,
       specialDiscounts,
-      bookingOpen,
       userId,
-      rating,
     });
     res.status(201).json(activity);
   } catch (err) {
@@ -98,10 +90,8 @@ export const editActivity = async (req, res) => {
     tags,
     specialDiscounts,
     bookingOpen,
-    rating,
   } = req.body;
   try {
-    const options = { new: true }; // Return the updated document
     const activity = await activityModel.findById(id);
     if (!activity)
       return res.status(404).json({ message: "Activity not found" });
@@ -115,7 +105,6 @@ export const editActivity = async (req, res) => {
     activity.tags = tags || activity.tags;
     activity.specialDiscounts = specialDiscounts || activity.specialDiscounts;
     activity.bookingOpen = bookingOpen || activity.bookingOpen;
-    activity.rating = rating || activity.rating;
     await activity.save();
 
     return res.status(200).json(activity);
@@ -146,4 +135,22 @@ export const deleteActivity = async (req, res) => {
     console.error("Error deleting activity:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
+};
+
+//Get Activity by ID
+export const getActivityById = async (req, res) => {
+    console.log("entered getActivityById");
+
+    const id = req.params.id;
+    if (!id) return res.status(400).json({ message: "Missing ID" });
+
+    try {
+        const activity = await activityModel.findById(id);
+        if (!activity)
+            return res.status(404).json({ message: "Activity not found" });
+        return res.status(200).json(activity);
+    } catch (error) {
+        console.error("Error fetching activity:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
 };

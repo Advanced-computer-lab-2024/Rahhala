@@ -1,31 +1,35 @@
+import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import axiosInstance from '../utils/axiosConfig';
 import { useNavigate } from 'react-router-dom';
-import React, { useContext, useEffect, useState } from 'react';
 import NavigateButton from '../components/UpdateProfileButton';
+
 const UpdateTouristAccount = () => {
     const navigate = useNavigate();
     const { auth } = useContext(AuthContext); // Get auth context
     if (!auth.isAuthenticated) {
         navigate('/login');
     }
+    const [profile, setProfile] = useState({
+        email: '',
+        mobileNumber: '',
+        nationality: '',
+        occupation: '',
+        profilePicture: '',
+        preferences: [],
+        currency: ''
+    }); // State to hold the tourist profile
     const [error, setError] = useState(null); // State to handle errors
-    const [profile, setProfile] = useState(null); // State to hold the tourist profile
+    const [preferenceTags, setPreferenceTags] = useState([]); // State to hold available preference tags
 
     useEffect(() => {
         // Only fetch profile if the user is authenticated
         if (auth.isAuthenticated && auth.user) {
             const fetchTourist = async () => {
                 try {
-                    const response = await axiosInstance.get('/touristAccount');
-
-                    delete response.data.profile._id;
-                    delete response.data.profile.password;
-                    delete response.data.profile.createdAt;
-                    delete response.data.profile.__v;
-                    delete response.data.profile.updatedAt;
-                    setProfile(response.data.profile);
-
+                    const response = await axiosInstance.get('/api/tourist/');
+                    const { email, mobileNumber, nationality, occupation, profilePicture, preferences, currency } = response.data.profile;
+                    setProfile({ email, mobileNumber, nationality, occupation, profilePicture, preferences, currency });
                 } catch (err) {
                     setError('Failed to load tourist profile.');
                 }
@@ -33,112 +37,125 @@ const UpdateTouristAccount = () => {
 
             fetchTourist();
         }
-        
 
+        // Fetch preference tags
+        const fetchPreferenceTags = async () => {
+            try {
+                const response = await axiosInstance.get('/api/preferenceTag');
+                setPreferenceTags(response.data);
+            } catch (err) {
+                setError('Failed to load preference tags.');
+            }
+        };
+
+        fetchPreferenceTags();
     }, [auth]);
 
-
-    
-
-    
-    const [formData, setFormData] = useState({
-        
-        email: '',
-        mobileNumber: '',
-        nationality: '',
-        dob : '',
-        occupation : '',
-    });
-
-    useEffect(() => {
-        if (profile) {
-            const formattedDob = profile.dob ? new Date(profile.dob).toISOString().split('T')[0] : '';
-            setFormData({
-                email: profile.email || '',
-                mobileNumber: profile.mobileNumber || '',
-                nationality: profile.nationality || '',
-                dob: formattedDob || '',
-                occupation: profile.occupation || '',
-            });
-        }
-    }, [profile]);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
+    const handleCheckboxChange = (tagId) => {
+        setProfile((prevProfile) => {
+            const newPreferences = prevProfile.preferences.includes(tagId)
+                ? prevProfile.preferences.filter((id) => id !== tagId)
+                : [...prevProfile.preferences, tagId];
+            return { ...prevProfile, preferences: newPreferences };
         });
     };
 
-    
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setProfile((prevProfile) => ({
+            ...prevProfile,
+            [name]: value
+        }));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (auth.isAuthenticated && auth.user) {
-            try {
-            const response = await axiosInstance.patch('/updateTourist', formData);
-            navigate('/touristAccount');
-            } catch (err) {
-                setError('Failed to load tourist profile.');
-            }
-        } 
-    }
+        try {
+            console.log(profile)
+            await axiosInstance.put(`/api/tourist/edit/${auth.user._id}`, profile);
+            navigate('/viewTouristAccount');
+        } catch (err) {
+            setError('Failed to update profile.');
+        }
+    };
+
     return (
         <div>
-            <h2>Update Account</h2>
+            <h1>Update Tourist Account</h1>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Email:</label>
+                <label>
+                    Email:
                     <input
                         type="email"
                         name="email"
-                        value={formData.email}
+                        value={profile.email}
                         onChange={handleChange}
                     />
-                </div>
-                <div>
-                    <label>Mobile Number:</label>
+                </label>
+                <label>
+                    Mobile Number:
                     <input
-                        type="tel"
+                        type="text"
                         name="mobileNumber"
-                        value={formData.mobileNumber}
+                        value={profile.mobileNumber}
                         onChange={handleChange}
                     />
-                </div>
-                <div>
-                    <label>Nationality:</label>
+                </label>
+                <label>
+                    Nationality:
                     <input
                         type="text"
                         name="nationality"
-                        value={formData.nationality}
+                        value={profile.nationality}
                         onChange={handleChange}
                     />
-                </div>
-                <div>
-                    <label>Date of Birth:</label>
-                    <input
-                        type="date"
-                        name="dob"
-                        value={formData.dob}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div>
-                    <label>Occupation:</label>
+                </label>
+                <label>
+                    Occupation:
                     <input
                         type="text"
                         name="occupation"
-                        value={formData.occupation}
+                        value={profile.occupation}
                         onChange={handleChange}
                     />
-                </div>
-                <button type="submit">Update Account</button>
-
+                </label>
+                <label>
+                    Profile Picture:
+                    <input
+                        type="text"
+                        name="profilePicture"
+                        value={profile.profilePicture}
+                        onChange={handleChange}
+                    />
+                </label>
+                <label>
+                    Currency:
+                    <input
+                        type="text"
+                        name="currency"
+                        value={profile.currency}
+                        onChange={handleChange}
+                    />
+                </label>
+                <fieldset>
+                    <legend>Preferences</legend>
+                    {preferenceTags.map((tag) => (
+                        <label key={tag._id}>
+                            <input
+                                type="checkbox"
+                                checked={profile.preferences.includes(tag._id)}
+                                onChange={() => handleCheckboxChange(tag._id)}
+                            />
+                            {tag.name}
+                        </label>
+                    ))}
+                </fieldset>
+                <button type="submit">Update Profile</button>
             </form>
-            <NavigateButton path='/touristAccount' text='Back'/>
-
+            <NavigateButton path={"/viewTouristAccount"} text={"Back"}/>{'\u00A0'}
         </div>
-    )
-}
+    );
+};
 
-export default UpdateTouristAccount
+export default UpdateTouristAccount;

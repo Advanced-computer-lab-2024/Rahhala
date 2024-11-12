@@ -1,332 +1,289 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axiosInstance from '../utils/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import NavigateButton from '../components/UpdateProfileButton';
-import Lougout from '../components/Auth/Logout';
-function AdminDashboard() {
-    const navigate = useNavigate(); 
-    const [governorData, setGovernorData] = useState({
-        username: '',
-        password: '',
-    });
-    const [adminData, setAdminData] = useState({
-        email: '',
-        password: '',
-    });
-    const [categoryData, setCategoryData] = useState({
-        name: '',
-    });
-    const [updateCategoryData, setUpdateCategoryData] = useState({
-        id: '',
-        name: '',
-    });
-    const [deleteCategoryId, setDeleteCategoryId] = useState(''); // State for category ID to delete
+import Logout from '../components/Auth/Logout';
+import ChangePassword from './ChangePassword';
+import DeleteAccount from '../components/DeleteAccount';
+import { AuthContext } from '../context/AuthContext';
+import './AdminDashboard.css';
 
+function AdminDashboard() {
+    const navigate = useNavigate();
+    const { auth } = useContext(AuthContext); // Get auth context
     const [message, setMessage] = useState('');
     const [isGovernorFormVisible, setIsGovernorFormVisible] = useState(false);
     const [isAdminFormVisible, setIsAdminFormVisible] = useState(false);
-    const [isCategoryFormVisible, setIsCategoryFormVisible] = useState(false);
-    const [isUpdateCategoryFormVisible, setIsUpdateCategoryFormVisible] = useState(false); 
-    const [isDeleteCategoryFormVisible, setIsDeleteCategoryFormVisible] = useState(false); // New state for delete form
+    const [isChangePasswordFormVisible, setIsChangePasswordFormVisible] = useState(false);
+    const [isDeleteAccountFormVisible, setIsDeleteAccountFormVisible] = useState(false);
+    const [governorData, setGovernorData] = useState({ username: '', password: '' });
+    const [adminData, setAdminData] = useState({ username: '', password: '' });
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    const [flaggedId, setFlaggedId] = useState('');
 
-    // Handle input changes for governor form
-    const handleGovernorChange = (e) => {
-        const { name, value } = e.target;
-        setGovernorData({
-            ...governorData,
-            [name]: value,
-        });
+    const hideAllForms = () => {
+        setIsGovernorFormVisible(false);
+        setIsAdminFormVisible(false);
+        setIsChangePasswordFormVisible(false);
+        setIsDeleteAccountFormVisible(false);
     };
 
-    // Handle input changes for admin form
-    const handleAdminChange = (e) => {
-        const { name, value } = e.target;
-        setAdminData({
-            ...adminData,
-            [name]: value,
-        });
+    const toggleGovernorForm = () => {
+        hideAllForms();
+        setIsGovernorFormVisible(!isGovernorFormVisible);
+        setMessage('');
     };
 
-    // Handle input changes for category form
-    const handleCategoryChange = (e) => {
-        const { name, value } = e.target;
-        setCategoryData({
-            ...categoryData,
-            [name]: value,
-        });
+    const toggleAdminForm = () => {
+        hideAllForms();
+        setIsAdminFormVisible(!isAdminFormVisible);
+        setMessage('');
     };
 
-    // Handle input changes for update category form
-    const handleUpdateCategoryChange = (e) => {
-        const { name, value } = e.target;
-        setUpdateCategoryData({
-            ...updateCategoryData,
-            [name]: value,
-        });
+    const toggleChangePasswordForm = () => {
+        hideAllForms();
+        setIsChangePasswordFormVisible(!isChangePasswordFormVisible);
+        setMessage('');
     };
 
-    // Handle input changes for delete category form
-    const handleDeleteCategoryChange = (e) => {
-        setDeleteCategoryId(e.target.value); // Update delete category ID
+    const toggleDeleteAccountForm = () => {
+        hideAllForms();
+        setIsDeleteAccountFormVisible(!isDeleteAccountFormVisible);
+        setMessage('');
     };
 
-    // Handle form submission for governor
+    useEffect(() => {
+        if (message) {
+            const timer = setTimeout(() => {
+                setMessage('');
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [message]);
+
     const handleGovernorSubmit = async (e) => {
         e.preventDefault();
-        
         try {
-            await axiosInstance.post('/createGovernor', governorData);
+            await axiosInstance.post('/api/governor', governorData);
             setMessage('Tourism Governor added successfully!');
-            setGovernorData({ username: '', password: '' }); 
-            setIsGovernorFormVisible(false); 
+            setGovernorData({ username: '', password: '' });
+            setIsGovernorFormVisible(false);
         } catch (error) {
             setMessage(error.response?.data?.message || 'Failed to add Tourism Governor.');
         }
     };
 
-    // Handle form submission for admin
     const handleAdminSubmit = async (e) => {
         e.preventDefault();
-        
         try {
-            await axiosInstance.post('/addAdmin', adminData); 
+            await axiosInstance.post('/api/admin/', adminData);
             setMessage('Admin added successfully!');
-            setAdminData({ email: '', password: '' }); 
-            setIsAdminFormVisible(false); 
+            setAdminData({ username: '', password: '' });
+            setIsAdminFormVisible(false);
         } catch (error) {
             setMessage(error.response?.data?.message || 'Failed to add Admin.');
         }
     };
 
-    // Handle form submission for category
-    const handleCategorySubmit = async (e) => {
-        e.preventDefault();
-        
-        try {
-            await axiosInstance.post('/createCategories', categoryData); 
-            setMessage('Category added successfully!');
-            setCategoryData({ name: '' }); 
-            setIsCategoryFormVisible(false); 
-        } catch (error) {
-            setMessage(error.response?.data?.message || 'Failed to add category.');
+    const handleChangePassword = async (currentPassword, newPassword, confirmNewPassword) => {
+        if (newPassword !== confirmNewPassword) {
+            setMessage('New passwords do not match.');
+            return;
         }
-    };
-
-    // Handle form submission for updating a category
-    const handleUpdateCategorySubmit = async (e) => {
-        e.preventDefault();
 
         try {
-            await axiosInstance.patch(`/updateCategory/${updateCategoryData.id}`, { name: updateCategoryData.name });
-            setMessage('Category updated successfully!');
-            setUpdateCategoryData({ id: '', name: '' }); 
-            setIsUpdateCategoryFormVisible(false); 
+            await axiosInstance.put('/api/admin/changePassword', { oldPassword: currentPassword, newPassword });
+            setMessage('Password changed successfully!');
+            setCurrentPassword('');
+            setNewPassword('');
+            setConfirmNewPassword('');
+            setIsChangePasswordFormVisible(false);
         } catch (error) {
-            setMessage(error.response?.data?.message || 'Failed to update category.');
+            setMessage(error.response?.data?.message || 'Failed to change password.');
         }
     };
 
-    // Handle form submission for deleting a category
-    const handleDeleteCategorySubmit = async (e) => {
-        e.preventDefault();
-
+    const handleFlagItinerary = async (id) => {
         try {
-            await axiosInstance.delete(`/deleteCategory/${deleteCategoryId}`);
-            setMessage('Category deleted successfully!');
-            setDeleteCategoryId(''); // Reset form
-            setIsDeleteCategoryFormVisible(false); // Hide the form after submission
-        } catch (error) {
-            setMessage(error.response?.data?.message || 'Failed to delete category.');
+            await axiosInstance.put(`/api/itinerary/flag/${id}`);
+            setMessage('Itinerary flagged successfully');
+        } catch (err) {
+            console.error('Failed to flag itinerary', err);
+            setMessage('Failed to flag itinerary');
         }
     };
 
-    // Toggle governor form visibility
-    const toggleGovernorForm = () => {
-        setIsGovernorFormVisible(!isGovernorFormVisible);
-        setMessage('');
-    };
-
-    // Toggle admin form visibility
-    const toggleAdminForm = () => {
-        setIsAdminFormVisible(!isAdminFormVisible);
-        setMessage('');
-    };
-
-    // Toggle category form visibility
-    const toggleCategoryForm = () => {
-        setIsCategoryFormVisible(!isCategoryFormVisible);
-        setMessage('');
-    };
-
-    // Toggle update category form visibility
-    const toggleUpdateCategoryForm = () => {
-        setIsUpdateCategoryFormVisible(!isUpdateCategoryFormVisible);
-        setMessage('');
-    };
-
-    // Toggle delete category form visibility
-    const toggleDeleteCategoryForm = () => {
-        setIsDeleteCategoryFormVisible(!isDeleteCategoryFormVisible);
-        setMessage('');
-    };
-
-    // Effect to clear message after 3 seconds
-    useEffect(() => {
-        if (message) {
-            const timer = setTimeout(() => {
-                setMessage('');
-            }, 3000); 
-
-            return () => clearTimeout(timer); 
+    const handleUnflagItinerary = async (id) => {
+        try {
+            await axiosInstance.put(`/api/itinerary/unflag/${id}`);
+            setMessage('Itinerary unflagged successfully');
+        } catch (err) {
+            console.error('Failed to unflag itinerary', err);
+            setMessage('Failed to unflag itinerary');
         }
-    }, [message]); 
+    };
 
-    const handleShowCategories = () => {
-        navigate('/ActivityCategories'); 
+    const handleFlagSubmit = (e) => {
+        e.preventDefault();
+        handleFlagItinerary(flaggedId);
+        setFlaggedId('');
+    };
+
+    const handleUnflagSubmit = (e) => {
+        e.preventDefault();
+        handleUnflagItinerary(flaggedId);
+        setFlaggedId('');
     };
 
     return (
-        <div>
+        <div className="admin-dashboard">
             <h2>Admin Dashboard</h2>
-            {message && <p>{message}</p>}
+            {message && <p className="message">{message}</p>}
             
-            {/* Button to toggle Category form */}
-            <button onClick={toggleCategoryForm}>
-                {isCategoryFormVisible ? 'Cancel' : 'Add Category'}
-            </button>
-            {isCategoryFormVisible && (
-                <form onSubmit={handleCategorySubmit}>
-                    <div>
-                        <label>Category Name:</label>
+            <div className="buttons">
+                <button onClick={toggleGovernorForm}>
+                    {isGovernorFormVisible ? 'Cancel' : 'Add Tourism Governor'}
+                </button>
+                <button onClick={toggleAdminForm}>
+                    {isAdminFormVisible ? 'Cancel' : 'Add Admin'}
+                </button>
+            </div>
+
+            <div className="form-container">
+                {isGovernorFormVisible && (
+                    <form onSubmit={handleGovernorSubmit}>
+                        <div>
+                            <label>Username:</label>
+                            <input
+                                type="text"
+                                name="username"
+                                value={governorData.username}
+                                onChange={(e) => setGovernorData({ ...governorData, username: e.target.value })}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label>Password:</label>
+                            <input
+                                type="password"
+                                name="password"
+                                value={governorData.password}
+                                onChange={(e) => setGovernorData({ ...governorData, password: e.target.value })}
+                                required
+                            />
+                        </div>
+                        <button type="submit">Add Tourism Governor</button>
+                    </form>
+                )}
+
+                {isAdminFormVisible && (
+                    <form onSubmit={handleAdminSubmit}>
+                        <div>
+                            <label>Username:</label>
+                            <input
+                                type="text"
+                                name="username"
+                                value={adminData.username}
+                                onChange={(e) => setAdminData({ ...adminData, username: e.target.value })}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label>Password:</label>
+                            <input
+                                type="password"
+                                name="password"
+                                value={adminData.password}
+                                onChange={(e) => setAdminData({ ...adminData, password: e.target.value })}
+                                required
+                            />
+                        </div>
+                        <button type="submit">Add Admin</button>
+                    </form>
+                )}
+
+                {isChangePasswordFormVisible && (
+                    <ChangePassword
+                        userRole="admin"
+                        handleChangePassword={handleChangePassword}
+                    />
+                )}
+
+                {isDeleteAccountFormVisible && (
+                    <DeleteAccount userType={auth.user.type} userId={auth.user.id} />
+                )}
+            </div>
+
+            <div className="section">
+                <h3>Product Management</h3>
+                <div className="buttons">
+                    <NavigateButton path="/products" text="View Products" />
+                    <NavigateButton path='/createProduct' text='Create Product'/>
+                </div>
+            </div>
+
+            <div className="section">
+                <h3>Management Panel</h3>
+                <div className="buttons">
+                    <NavigateButton path="/userManagement" text="Pending Users Management" />
+                </div>
+                <div className="buttons">
+                    <NavigateButton path="/preferenceTagManagement" text="Preference Tags Management" />
+                </div>
+                <div className="buttons">
+                    <NavigateButton path="/activityCategories" text="Activity Categories" />
+                </div>
+                <div className="buttons">
+                    <NavigateButton path="/complaintManagement" text="Complaint Management" />
+                </div>
+                <div className="buttons">
+                    <NavigateButton path="/accountDeletionRequests" text="Account Deletion Requests" />
+                </div>
+            </div>
+
+            <div className="section">
+                <h3>Others</h3>
+                <div className="buttons">
+                    <button onClick={toggleChangePasswordForm}>
+                        {isChangePasswordFormVisible ? 'Cancel' : 'Change Password'}
+                    </button>
+                    <button onClick={toggleDeleteAccountForm}>
+                        {isDeleteAccountFormVisible ? 'Cancel' : 'Delete Account'}
+                    </button>
+                </div>
+                <Logout />
+            </div>
+
+            <div className="section">
+                <h3>Flag Itinerary</h3>
+                <form onSubmit={handleFlagSubmit}>
+                    <label>
+                        Itinerary ID:
                         <input
                             type="text"
-                            name="name"
-                            value={categoryData.name}
-                            onChange={handleCategoryChange}
+                            value={flaggedId}
+                            onChange={(e) => setFlaggedId(e.target.value)}
                             required
                         />
-                    </div>
-                    <br />
-                    <button type="submit">Add Category</button>
+                    </label>
+                    <button type="submit">Flag as Inappropriate</button>
                 </form>
-            )}
-
-            {/* Button to toggle Update Category form */}
-            <button onClick={toggleUpdateCategoryForm}>
-                {isUpdateCategoryFormVisible ? 'Cancel' : 'Update Category'}
-            </button>
-            {isUpdateCategoryFormVisible && (
-                <form onSubmit={handleUpdateCategorySubmit}>
-                    <div>
-                        <label>Category ID:</label>
+                <form onSubmit={handleUnflagSubmit}>
+                    <label>
+                        Itinerary ID:
                         <input
                             type="text"
-                            name="id"
-                            value={updateCategoryData.id}
-                            onChange={handleUpdateCategoryChange}
+                            value={flaggedId}
+                            onChange={(e) => setFlaggedId(e.target.value)}
                             required
                         />
-                    </div>
-                    <div>
-                        <label>New Category Name:</label>
-                        <input
-                            type="text"
-                            name="name"
-                            value={updateCategoryData.name}
-                            onChange={handleUpdateCategoryChange}
-                            required
-                        />
-                    </div>
-                    <br />
-                    <button type="submit">Update Category</button>
+                    </label>
+                    <button type="submit">Unflag as Inappropriate</button>
                 </form>
-            )}
-
-            {/* Button to toggle Delete Category form */}
-            <button onClick={toggleDeleteCategoryForm}>
-                {isDeleteCategoryFormVisible ? 'Cancel' : 'Delete Category'}
-            </button>
-            {isDeleteCategoryFormVisible && (
-                <form onSubmit={handleDeleteCategorySubmit}>
-                    <div>
-                        <label>Category ID:</label>
-                        <input
-                            type="text"
-                            value={deleteCategoryId}
-                            onChange={handleDeleteCategoryChange}
-                            required
-                        />
-                    </div>
-                    <br />
-                    <button type="submit">Delete Category</button>
-                </form>
-            )}
-
-            {/* Button to toggle Governor form */}
-            <button onClick={handleShowCategories}>Show All Categories</button>
-
-            <button onClick={toggleGovernorForm}>
-                {isGovernorFormVisible ? 'Cancel' : 'Add Tourism Governor'}
-            </button>
-            {isGovernorFormVisible && (
-                <form onSubmit={handleGovernorSubmit}>
-                    <div>
-                        <label>Username:</label>
-                        <input
-                            type="text"
-                            name="username"
-                            value={governorData.username}
-                            onChange={handleGovernorChange}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label>Password:</label>
-                        <input
-                            type="password"
-                            name="password"
-                            value={governorData.password}
-                            onChange={handleGovernorChange}
-                            required
-                        />
-                    </div>
-                    <br />
-                    <button type="submit">Add Tourism Governor</button>
-                </form>
-            )}
-
-            <button onClick={toggleAdminForm}>
-                {isAdminFormVisible ? 'Cancel' : 'Add Admin'}
-            </button>
-            {isAdminFormVisible && (
-                <form onSubmit={handleAdminSubmit}>
-                    <div>
-                        <label>Email:</label>
-                        <input
-                            type="email"
-                            name="email"
-                            value={adminData.email}
-                            onChange={handleAdminChange}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label>Password:</label>
-                        <input
-                            type="password"
-                            name="password"
-                            value={adminData.password}
-                            onChange={handleAdminChange}
-                            required
-                        />
-                    </div>
-                    <br />
-                    <button type="submit">Add Admin</button>
-                </form>
-            )}
-            <NavigateButton path="/products" text="View Products" />
-            <NavigateButton path='/createProduct' text='Create Product'/>
-            <Lougout/>
+            </div>
         </div>
     );
 }

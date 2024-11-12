@@ -35,9 +35,18 @@ const advertiserSchema = new mongoose.Schema({
         required: true
     },
     logo: {
-        type: String,
+        type: String, // Store the logo as a Base64 string
         required: true
     },
+    acceptedTermsAndConditions: {
+        type: Boolean,
+        default: false
+    },
+    status: {
+        type: String,
+        enum: ['accepted', 'rejected', 'pending'],
+        default: 'pending'
+    }
 });
 
 const advertiserModel = mongoose.model('Advertiser', advertiserSchema);

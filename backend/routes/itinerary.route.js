@@ -12,6 +12,8 @@ import {
   activateItinerary,
   deactivateItinerary,
   addReview,
+  flagItinerary,
+  unflagItinerary,
 } from "../controllers/itinerary.controller.js";
 
 const router = express.Router();
@@ -28,5 +30,7 @@ router.put("/activate/:id", verifyToken, activateItinerary);
 router.delete("/", deleteItinerary);
 router.put("/", editItinerary);
 router.post("/review/:id", verifyToken, addReview);
+router.put('/flag/:id', verifyToken, flagItinerary);
+router.put('/unflag/:id', verifyToken, unflagItinerary);
 
 export default router;
