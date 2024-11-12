@@ -32,5 +32,12 @@ router.put("/", editItinerary);
 router.post("/review/:id", verifyToken, addReview);
 router.put('/flag/:id', verifyToken, flagItinerary);
 router.put('/unflag/:id', verifyToken, unflagItinerary);
-
+router.put('/updateIsActive/:userId', async (req, res) => {
+  try {
+      await itineraryModel.updateMany({ userId: req.params.userId }, { isActive: false });
+      res.status(200).json({ message: 'Itineraries updated successfully' });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+});
 export default router;

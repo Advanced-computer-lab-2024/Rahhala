@@ -6,21 +6,7 @@ import itineraryModel from '../models/itinerary.model.js';
 export const getAllAccountDeletionRequests = async (req, res) => {
     try {
         const requests = await accountDeletionRequestModel.find();
-        const requestsWithDeletionInfo = await Promise.all(requests.map(async (request) => {
-            const hasUpcomingActivities = await activityModel.exists({ userId: request.userId, date: { $gte: new Date() }, bookings: { $elemMatch: { status: 'paid' } } });
-            const hasUpcomingItineraries = await itineraryModel.exists({ userId: request.userId, date: { $gte: new Date() }, bookings: { $elemMatch: { status: 'paid' } } });
-            // booking open(activity model) , itinerary false(isactive),
-            const canBeDeleted = !(hasUpcomingActivities || hasUpcomingItineraries);
-
-            return {
-                ...request.toObject(),
-                canBeDeleted,
-                hasUpcomingActivities,
-                hasUpcomingItineraries,
-            };
-        }));
-
-        res.status(200).json(requestsWithDeletionInfo);
+        res.status(200).json(requests);
     } catch (error) {
         console.error('Error fetching account deletion requests:', error);
         res.status(500).json({ message: 'Error fetching account deletion requests' });

@@ -22,5 +22,12 @@ router.delete("/:id", deleteMuseum);
 router.put("/:name", editMuseumByName);
 router.delete("/:name", deleteMuseumByName);
 router.get("/:id", getMuseumById);
-
+router.get('/booked/:userId', async (req, res) => {
+  try {
+      const bookedMuseums = await museumModel.find({ userId: req.params.userId, bookings: { $elemMatch: { status: 'paid' } } });
+      res.status(200).json(bookedMuseums);
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+});
 export default router;

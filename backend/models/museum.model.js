@@ -33,7 +33,7 @@ const museumSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    userID: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Governor',
         required: true,
