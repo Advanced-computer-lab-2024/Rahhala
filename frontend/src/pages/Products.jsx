@@ -152,7 +152,7 @@ const Products = () => {
                             <th>Picture</th>
                             <th>Name</th>
                             <th>Price</th>
-                            <th>Quantity</th>
+                            {auth.user.type !== 'tourist' && <th>Quantity</th>} {/* Conditionally display quantity column */}
                             <th>Description</th>
                             <th>Seller</th>
                             <th>Rating</th>
@@ -169,7 +169,7 @@ const Products = () => {
                                 <td><img src={`data:image/jpeg;base64,${product.picture}`} alt={product.name} width="50" /></td>
                                 <td>{product.name}</td>
                                 <td>{product.price}</td>
-                                <td>{product.quantity}</td>
+                                {auth.user.type !== 'tourist' && <td>{product.quantity}</td>} {/* Conditionally display quantity */}
                                 <td>{product.description}</td>
                                 <td>{product.sellerId}</td>
                                 <td>{product.averageRating}</td>
