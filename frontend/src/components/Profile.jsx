@@ -38,10 +38,29 @@ const Profile = ({ data }) => {
                             <img src={`data:image/jpeg;base64,${value}`} alt={`${key}`} style={{ maxWidth: '200px', display: 'block', margin: '10px 0' }} />
                         )}
                     </div>
-                ) : (
+                ) : ( key==="certificationImages" ? (
                     <div key={key}>
-                    <strong>{key}:</strong> {renderValue(value)}
+                        <strong>{key}:</strong>
+                        <ul>
+                            {value.map((item, index) => (
+                                <li key={index}>
+                                    {isImageLink(item) ? (
+                                        <img src={item} alt={`${key}-${index}`} style={{ maxWidth: '200px', display: 'block', margin: '10px 0' }} />
+                                    ) : (
+                                        <img src={`data:image/jpeg;base64,${item}`} alt={`${key}-${index}`} style={{ maxWidth: '200px', display: 'block', margin: '10px 0' }} />
+                                    )}
+                                </li>
+                        ))}
+                        </ul>
+                    <div key={key}>
+                    </div>
+
+                    {/* <div key={key}>
+                    <strong>{key}:</strong> {renderValue(value)} */}
                 </div>
+                ) : (
+                    <p key={key}><strong>{key}:</strong> {renderValue(value)}</p>
+                )
                 )
             ))}
         </div>
