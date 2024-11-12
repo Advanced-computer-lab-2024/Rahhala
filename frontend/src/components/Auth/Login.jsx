@@ -79,6 +79,7 @@ const Login = () => {
             }
 
         } catch (error) {
+            console.error('Login failed:', error);
             setMessage(error.response?.data?.message || 'Login failed.');
         }
     };

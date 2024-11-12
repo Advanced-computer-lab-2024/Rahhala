@@ -31,12 +31,12 @@ const TourGuideDashboard = () => {
 
     const handleAcceptTerms = async () => {
         try {
-            await axiosInstance.put('/api/tourguide/acceptTerms');
+            await axiosInstance.put('/api/tourGuide/acceptTerms');
             setProfile({ ...profile, acceptedTermsAndConditions: true });
             setSuccessMessage('Terms and conditions accepted successfully.');
             setTimeout(() => setSuccessMessage(''), 3000);
         } catch (err) {
-            setErrorMessage('Failed to accept terms and conditions.');
+            setErrorMessage(err.response.data.error);
             setTimeout(() => setErrorMessage(''), 3000);
         }
     };

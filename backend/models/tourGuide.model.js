@@ -10,7 +10,6 @@ const tourGuideSchema = new mongoose.Schema({
     },
     idCardImage: {
         type: String,
-        required: true
     },
     certificationImages: {
         type: [String],

@@ -46,6 +46,7 @@ export const editTourGuide = async (req, res) => {
 
 // Accept Terms and Conditions
 export const acceptTerms = async (req, res) => {
+    console.log("entered acceptTerms");
   const id = req.user.id;
 
   try {
