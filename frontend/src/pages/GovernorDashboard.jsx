@@ -30,6 +30,10 @@ function GovernorDashboard() {
     navigate('/showAllMuseums'); // Redirect to the museums list page
   };
 
+  const handleShowMuseumTags = () => {
+    navigate('/museumTags'); // Redirect to the museum tags page
+  };
+
   const handleInputChange = (e) => {
     setMuseumData({
       ...museumData,
@@ -117,6 +121,7 @@ function GovernorDashboard() {
       <button onClick={() => setShowChangePasswordForm(!showChangePasswordForm)}>
         {showChangePasswordForm ? 'Cancel' : 'Change My Password'}
       </button>
+      <button onClick={handleShowMuseumTags}>Manage Museum Tags</button> {/* Button to navigate to MuseumTags */}
       {showChangePasswordForm && (
         <form onSubmit={handleChangePassword}>
           <div>

@@ -106,7 +106,7 @@ const MuseumTags = () => {
                     ))}
                 </tbody>
             </table>
-            <NavigateButton path="/" text="Back" />
+            <NavigateButton path="/GovernorDashboard" text="Back" />
         </div>
     );
 };
