@@ -182,9 +182,8 @@ const Products = () => {
                                 {auth.user.type !== 'tourist' && (
                                     <td>
                                         <input
-                                            type="text"
-                                            placeholder="Enter image URL"
-                                            onBlur={(e) => handleUrlChange(product._id, e)}
+                                            type="file"
+                                            onChange={(e) => handleFileChange(product._id, e)}
                                         />
                                     </td>
                                 )}

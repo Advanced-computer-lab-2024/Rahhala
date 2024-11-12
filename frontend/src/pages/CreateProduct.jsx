@@ -46,6 +46,20 @@ const CreateProduct = () => {
         setMessage('');
     };
 
+    const handleFileChange = (e) => {
+        const { name, files } = e.target;
+        const file = files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = reader.result.split(',')[1]; // Remove the prefix
+            setProduct({
+                ...product,
+                [name]: base64String
+            });
+        };
+        reader.readAsDataURL(file);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -64,8 +78,8 @@ const CreateProduct = () => {
             {message && <p className={message.includes('Error') ? 'error' : 'success'}>{message}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label>Picture URL:</label>
-                    <input type="text" name="picture" value={product.picture} onChange={handleChange} />
+                    <label>Picture:</label>
+                    <input type="file" name="picture" onChange={handleFileChange} required />
                 </div>
                 <div>
                     <label>Price:</label>
