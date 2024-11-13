@@ -104,7 +104,8 @@ export const editActivity = async (req, res) => {
     activity.category = category || activity.category;
     activity.tags = tags || activity.tags;
     activity.specialDiscounts = specialDiscounts || activity.specialDiscounts;
-    activity.bookingOpen = bookingOpen || activity.bookingOpen;
+    if(bookingOpen !== undefined)
+        activity.bookingOpen = bookingOpen;
     await activity.save();
 
     return res.status(200).json(activity);

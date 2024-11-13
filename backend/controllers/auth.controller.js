@@ -27,6 +27,7 @@ const handleLogin = async (model, credentials, userType) => {
   delete user.idCardImage
   delete user.logo
   delete user.taxationRegistryImage
+  delete user.companyProfile
   // Additional check for specific user types if no user is found
   if (!user) {
     throw new Error("Invalid credentials.");
