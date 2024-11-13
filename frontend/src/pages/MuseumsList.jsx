@@ -16,7 +16,7 @@ function MuseumList() {
   useEffect(() => {
     const fetchMuseums = async () => {
       try {
-        const response = await axiosInstance.get('/getAllMuseum');
+        const response = await axiosInstance.get('/api/museum/');
         setMuseums(response.data); // Assuming the response data is an array
         setError(null); // Clear any previous error
       } catch (err) {

@@ -11,7 +11,9 @@ export const addMuseum = async (req, res) => {
     try {
         const userId = req.user.id; // Assuming `req.user` is set by JWT middleware
         console.log(userId);
-        const museum = await museumModel.create({
+        let museum;
+        if(tags.length === 0) {
+        museum = await museumModel.create({
         name,
         description,
         pictures,
@@ -20,11 +22,26 @@ export const addMuseum = async (req, res) => {
         foreignerPrice,
         nativePrice, 
         studentPrice,
-        userID: userId,
-        tags
+        userId: userId,
         });
+    }
+    else {
+        museum = await museumModel.create({
+            name,
+            description,
+            pictures,
+            location,
+            openingHours,
+            foreignerPrice,
+            nativePrice, 
+            studentPrice,
+            userId: userId,
+            tags
+            });
+    }    
         res.status(201).json(museum);
     } catch (error) {
+        console.log(error);
         res.status(400).json({ error: error.message });
     }
 };

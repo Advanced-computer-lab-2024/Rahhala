@@ -34,6 +34,9 @@ const Activities = () => {
     const fetchActivities = async () => {
         try {
             const response = await axiosInstance.get('/api/activity');
+            if (auth.user.type === 'tourist') {
+                response.data = response.data.filter(activity => activity.bookingOpen);
+            }
             setActivities(response.data);
         } catch (err) {
             setError('Failed to fetch activities');
