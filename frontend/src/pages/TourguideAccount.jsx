@@ -47,7 +47,7 @@ const TourguideAccount = () => {
     const handleChangePassword = async (e) => {
         e.preventDefault();
         try {
-            const response = await axiosInstance.put('/api/tourguide/changePassword', {
+            const response = await axiosInstance.put('/api/tourguide/edit/changePassword', {
                 oldPassword,
                 newPassword
             });

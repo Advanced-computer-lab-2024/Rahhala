@@ -208,28 +208,28 @@ const Register = () => {
             } else {
                 setMessage('Registration successful!');
                 // store the token and redirect
-                const { token } = response.data;
-                const decoded = jwtDecode(token);
-                console.log("decoded is ",decoded);
+                // const { token } = response.data;
+                // console.log('Received token:', token);
 
-                setAuth({
-                    token,
-                    isAuthenticated: true,
-                    loading: false,
-                    user: {
-                        id: decoded.id,
-                        type: decoded.userType,
-                    },
-                });
+                // setAuth({
+                //     token,
+                //     isAuthenticated: true,
+                //     loading: false,
+                //     user: {
+                //         id: decoded.id,
+                //         type: decoded.userType,
+                //     },
+                // });
 
-                localStorage.setItem('token', token);
+                // localStorage.setItem('token', token);
 
-                navigateBasedOnUserType();
+                // navigateBasedOnUserType();
+                // navigate('/login');
             }
 
         } catch (error) {
             console.error('Registration failed:', error);
-            setMessage(error.response?.data?.message || 'Registration failed.');
+            setMessage(error.response?.data?.error || 'Registration failed.');
         }
     };
 

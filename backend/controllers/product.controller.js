@@ -39,7 +39,7 @@ export const createProduct = async (req, res) => {
   const id = req.user.id;
   console.log("id: ", id); // Debugging
 
-  const { description, price, name, quantity, averageRating, picture } =
+  const { description, price, name, quantity, picture } =
     req.body;
   console.log("req.body: ", req.body); // Debugging
 
@@ -59,8 +59,6 @@ export const createProduct = async (req, res) => {
       price,
       description,
       quantity,
-      sales: 0, // Set sales to 0 by default
-      averageRating: averageRating || 0, // Default to 0 if not provided
     });
 
     // Save the product to the database

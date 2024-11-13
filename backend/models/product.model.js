@@ -12,7 +12,6 @@ const productSchema = mongoose.Schema(
       ref: "seller",
       required: true,
     },
-    averageRating: { type: Number, default: 0 }, // Store average rating
     quantity: { type: Number, required: true }, // Field for available quantity
     sales: { type: Number, default: 0 }, // Field for total sales
     isArchived: { type: Boolean, default: false }, // Field to archive products
