@@ -11,6 +11,8 @@ import TouristWallet from './components/dashboards/Tourist/Wallet';
 import Products from './components/dashboards/Tourist/Products';
 import Redeem from './components/dashboards/Tourist/Redeem';
 import Complaints from './components/dashboards/Tourist/Complaints';
+import TourGuide from './components/dashboards/TourGuideDashboard';
+import TourGProfile from './components/dashboards/TourGuide/Profile';
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
           <Route path="/products" element={<Products />} />
           <Route path="/redeem" element={<Redeem />} />
           <Route path="/complaints" element={<Complaints />} />
+          <Route path="/tour-guide" element={<TourGuide />} />
+          <Route path="/tour-guide-profile" element={<TourGProfile />} />
         </Routes>
       </Router>
     </AuthProvider>
