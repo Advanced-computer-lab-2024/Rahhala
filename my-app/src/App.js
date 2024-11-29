@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { AuthProvider } from './utils/AuthContext';
 import Login from './components/Login';
 import Signup from './components/SignUp';
 import Guest from './components/dashboards/GuestDashboard';
