@@ -61,16 +61,6 @@ const TouristProfile = () => {
     setUpdatedUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCheckboxChange = (tagId) => {
-    setUpdatedUser((prev) => {
-      const preferencesArray = prev.preferences.split(', ').filter(Boolean);
-      const newPreferences = preferencesArray.includes(tagId)
-        ? preferencesArray.filter((id) => id !== tagId)
-        : [...preferencesArray, tagId];
-      return { ...prev, preferences: newPreferences.join(', ') };
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -109,8 +99,16 @@ const TouristProfile = () => {
     }
   };
 
-  const handleChangePassword = () => {
-    navigate('/touristChangePassword');
+  const handleChangePassword = (e) => {
+    e.preventDefault();
+    if (passwordData.newPassword === passwordData.confirmNewPassword) {
+      alert('Password changed successfully');
+      // Add logic to handle password change (e.g., API call)
+      setIsChangingPassword(false); 
+      setPasswordData({ oldPassword: '', newPassword: '', confirmNewPassword: '' }); 
+    } else {
+      alert('New passwords do not match');
+    }
   };
 
   const handleRequestAccountDeletion = async () => {
@@ -172,6 +170,13 @@ const TouristProfile = () => {
             >
               Request Account Deletion
             </button>
+
+            <button
+              onClick={() => setIsChangingPassword(true)}
+              className="py-2 px-4 bg-white text-blue-500 border-2 border-blue-500 rounded-md"
+            >
+              Change Password
+            </button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -221,7 +226,7 @@ const TouristProfile = () => {
                 onChange={(e) => {
                   const file = e.target.files[0];
                   if (file) {
-                    setUpdatedUser((prev) => ({
+                    setUpdatedUser ((prev) => ({
                       ...prev,
                       profilePicture: URL.createObjectURL(file),
                     }));
@@ -230,14 +235,32 @@ const TouristProfile = () => {
                 className="p-2 border rounded"
               />
             </div>
-            <div className="flex justify-center mt-8">
-              <button
-                onClick={handleChangePassword}
-                className="py-2 px-4 bg-blue-500 text-white rounded-md"
-              >
-                Change Password
-              </button>
+            <div className="flex justify-between">
+              <label className="font-bold" htmlFor="currency">Currency:</label>
+              <input
+                type="text"
+                id="currency"
+                name="currency"
+                value={updatedUser .currency}
+                onChange={handleInputChange}
+                className="p-2 border rounded"
+                required
+              />
             </div>
+            <div className="flex justify-between">
+              <label className="font-bold" htmlFor="preferences">Preferences:</label>
+              <input
+  type="text"
+  id="preferences"
+  name="preferences"
+  value={updatedUser.preferences}
+  onChange={handleInputChange}
+  className="p-2 border rounded"
+/>
+
+            </div>
+
+        
             <div className="flex justify-center mt-6 space-x-4">
               <button
                 type="submit"
@@ -247,6 +270,62 @@ const TouristProfile = () => {
               </button>
               <button
                 onClick={() => setIsEditing(false)}
+                type="button"
+                className="py-2 px-4 bg-gray-500 text-white rounded-md"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
+
+        {isChangingPassword && (
+          <form onSubmit={handleChangePassword} className="space-y-4 mt-6">
+            <div className="flex justify-between">
+              <label className="font-bold" htmlFor="oldPassword">Old Password:</label>
+              <input
+                type="password"
+                id="oldPassword"
+                name="oldPassword"
+                value={passwordData.oldPassword}
+                onChange={(e) => setPasswordData({ ...passwordData, oldPassword: e.target.value })}
+                className="p-2 border rounded"
+                required
+              />
+            </div>
+            <div className="flex justify-between">
+              <label className="font-bold" htmlFor="newPassword">New Password:</label>
+              <input
+                type="password"
+                id="newPassword"
+                name="newPassword"
+                value={passwordData.newPassword}
+                onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                className="p-2 border rounded"
+                required
+              />
+            </div>
+            <div className="flex justify-between">
+              <label className="font-bold" htmlFor="confirmNewPassword">Confirm New Password:</label>
+              <input
+                type="password"
+                id="confirmNewPassword"
+                name="confirmNewPassword"
+                value={passwordData.confirmNewPassword}
+                onChange={(e) => setPasswordData({ ...passwordData, confirmNewPassword: e.target.value })}
+                className="p-2 border rounded"
+                required
+              />
+            </div>
+            <div className="flex justify-center mt-6 space-x-4">
+              <button
+                type="submit"
+                className="py-2 px-4 bg-green-500 text-white rounded-md"
+              >
+                Change Password
+              </button>
+              <button
+                onClick={() => setIsChangingPassword(false)}
                 type="button"
                 className="py-2 px-4 bg-gray-500 text-white rounded-md"
               >
