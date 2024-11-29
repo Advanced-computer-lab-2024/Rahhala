@@ -1,6 +1,6 @@
 import sellerModel from "../models/seller.model.js";
 
-// Add Seller to the Database
+// get Seller from the Database
 export const getSeller = async (req, res) => {
   const id = req.user.id;
 
@@ -194,4 +194,21 @@ export const registerSeller = async (req, res) => {
     console.error("Error registering seller:", error);
     res.status(500).json({ error: "Error registering seller" });
   }
+};
+
+
+// get all sellers
+export const getAllSellers = async (req, res) => {
+    console.log("entered get all sellers");
+    try {
+        const sellers = await sellerModel.find();
+        sellers.forEach(seller => {
+            seller.idCardImage = undefined;
+            seller.logo = undefined;
+            seller.taxationRegistryImage = undefined;
+        });
+        res.status(200).json(sellers);
+    } catch (error) {
+        res.status(500).json({ error: "Error fetching sellers" });
+    }
 };

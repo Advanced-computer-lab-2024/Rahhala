@@ -12,7 +12,7 @@ const Header = () => {
 
   return (
     <header className="text-white flex justify-between items-center p-4 w-full relative" style={{ backgroundColor: '#334EAC' }}>
-      <h1 className="text-2xl font-bold">Welcome, Username</h1>
+      <h1 className="text-2xl font-bold">Welcome!</h1>
       <div className="flex items-center ml-auto space-x-4 relative">
         <button onClick={toggleDropdown} className="p-2">
           <span className="block w-6 h-1 bg-white mb-1"></span>

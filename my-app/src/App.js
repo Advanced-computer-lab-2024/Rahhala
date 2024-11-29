@@ -10,9 +10,11 @@ import TouristWallet from './components/dashboards/Tourist/Wallet';
 import Products from './components/dashboards/Tourist/Products';
 import Redeem from './components/dashboards/Tourist/Redeem';
 import Complaints from './components/dashboards/Tourist/Complaints';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
   return (
+    <AuthProvider>
     <Router>
       <Routes>
         <Route path="/" element={<Navigate to="/signup" replace />} />
@@ -28,6 +30,7 @@ function App() {
         <Route path="/complaints" element={<Complaints />} />
       </Routes>
     </Router>
+    </AuthProvider>
   );
 }
 

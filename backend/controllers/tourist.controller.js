@@ -49,6 +49,7 @@ export const getTouristByID = async (req, res) => {
 // Edit Tourist Information
 export const editTourist = async (req, res) => {
   console.log("entered editTourist");
+  console.log(req.body);
   const id = req.user.id; // Get the user ID from the verified JWT payload
   const { email, mobileNumber, nationality, dob, occupation, profilePicture, currency, preferences } = req.body;
 
@@ -75,6 +76,7 @@ export const editTourist = async (req, res) => {
       profile: tourist,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Error updating tourist profile." });
   }
 };
