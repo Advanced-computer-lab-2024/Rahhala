@@ -59,7 +59,7 @@ function Login() {
         admin: '/AdminDashboard',
         seller: '/seller-dashboard',
         advertiser: '/advertiser-dashboard',
-        tourism_governor: '/GovernorDashboard',
+        tourism_governor: '/governor',
       };
       const targetRoute = routes[userType.toLowerCase()];
       if (targetRoute) {

@@ -4,6 +4,7 @@ import Login from './components/Login';
 import Signup from './components/SignUp';
 import Guest from './components/dashboards/GuestDashboard';
 import Tourist from './components/dashboards/TouristDashboard';
+import Governor from './components/dashboards/GovernorDashboard';
 import TouristProfile from './components/dashboards/Tourist/Profile';
 import TouristBook from './components/dashboards/Tourist/Booking';
 import TouristWallet from './components/dashboards/Tourist/Wallet';
@@ -24,6 +25,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/guest" element={<Guest />} />
           <Route path="/tourist" element={<Tourist />} />
+          <Route path="/governor" element={<Governor />} />
           <Route path="/tourist-profile" element={<TouristProfile />} />
           <Route path="/tourist-booking" element={<TouristBook />} />
           <Route path="/tourist-wallet" element={<TouristWallet />} />
