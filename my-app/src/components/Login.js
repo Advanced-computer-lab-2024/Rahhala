@@ -55,7 +55,7 @@ function Login() {
       setMessage('Login successful! Redirecting...');
       const routes = {
         tourist: '/tourist',
-        tourguide: '/tourguide-dashboard',
+        tourguide: '/tour-guide',
         admin: '/AdminDashboard',
         seller: '/seller-dashboard',
         advertiser: '/advertiser-dashboard',

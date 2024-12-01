@@ -70,7 +70,6 @@ const BookingPage = () => {
     };
 
     const handleSubmit = async (type, id) => {
-        console.log("id",id);
         try {
             await axiosInstance.post('/api/review', {
                 rating: rating,

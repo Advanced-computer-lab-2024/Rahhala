@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useLogout from '../utils/LogoutUtil';
 
 
 const Header = () => {
+    const handleLogout = useLogout();
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -29,7 +32,7 @@ const Header = () => {
               <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => navigate('/products')}>Products</li>
               <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => navigate('/redeem')}>Redeem</li>
               <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => navigate('/complaints')}>Complaints</li>
-              <li className="px-4 py-2 hover:bg-red-200 cursor-pointer text-red-600" onClick={() => (window.location.href = '/login')}>Sign Out</li>
+              <li className="px-4 py-2 hover:bg-red-200 cursor-pointer text-red-600" onClick={() => (handleLogout())}>Sign Out</li>
             </ul>
           </div>
         )}

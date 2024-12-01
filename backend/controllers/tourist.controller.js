@@ -247,6 +247,7 @@ export const purchaseProduct = async (req, res) => {
     console.log("Purchasing a product");
     const touristId = req.user.id; // Get the user ID from the verified JWT payload
     const { productId, quantity } = req.body; // Get the product ID and quantity from the request body
+    console.log(req.body);
     try {
         const tourist = await touristModel.findById(touristId);
         const product = await productModel.findById(productId);
@@ -605,6 +606,7 @@ export const redeemLoyaltyPoints = async (req, res) => {
 
         // Calculate the amount to add to the wallet
         const amount = Math.floor((pointsToRedeem / 10000) * 100);
+        console.log(amount);
 
         // Deduct the redeemed points from current loyalty points
         tourist.currentLoyaltyPoints -= amount*100;

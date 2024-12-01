@@ -16,7 +16,7 @@ function ProductsPage() {
     const [error, setError] = useState(null);
     const [reviews, setReviews] = useState([]);
     const [sellers, setSellers] = useState([]);
-
+    const [tourist, setTourist] = useState(null);
     useEffect(() => {
         const fetchSellers = async () => {
             try {
@@ -64,6 +64,17 @@ function ProductsPage() {
           };
       
         fetchReviews();
+
+        const fetchTourist = async () => {
+            try {
+                const response = await axiosInstance.get('/api/tourist');
+                setTourist(response.data);
+            } catch (err) {
+                console.log("Error is", err); // Log error if fetching fails
+                setError('Failed to fetch tourist');
+            }
+        }
+        fetchTourist();
 
       
     }, [auth]);
@@ -115,7 +126,9 @@ function ProductsPage() {
 
     const filterProducts = () => {
         if (view === "purchased") {
-            const purchasedProductIds = auth.user.purchasedProducts;
+            if (!tourist) return [];
+            const purchasedProductIds = tourist.profile.purchasedProducts.map(purchase => purchase.productId);
+            console.log("Purchased product ids are", purchasedProductIds);
             const purchasedProducts = products.filter(product => purchasedProductIds.includes(product._id));
             return purchasedProducts;
         }
@@ -128,14 +141,14 @@ function ProductsPage() {
 
     const handleBuy = async (product) => {
         try {
-            console.log("quantity is", quantity);
             await axiosInstance.post('/api/tourist/purchaseProduct', {
                 productId: product._id,
-                quantity: quantity
+                quantity: quantity[product._id]
             });
             alert('Purchase successful!');
             window.location.reload();
         } catch (err) {
+            alert(err.response.data.error)
             console.log("Error is", err); // Log error if purchase fails
             setError(err.response.data.error);
         }
@@ -144,15 +157,15 @@ function ProductsPage() {
     const handleIncrease = (product) => {
         setQuantity((prev) => ({
             ...prev,
-            [product.id]: (prev[product.id] || 1) + 1,
+            [product._id]: (prev[product._id] || 1) + 1,
         }));
     };
 
     const handleDecrease = (product) => {
-        if ((quantity[product.id] || 1) > 1) {
+        if ((quantity[product._id] || 1) > 1) {
             setQuantity((prev) => ({
                 ...prev,
-                [product.id]: (prev[product.id] || 1) - 1,
+                [product._id]: (prev[product._id] || 1) - 1,
             }));
         }
     };
@@ -177,8 +190,20 @@ function ProductsPage() {
         setReview({ title: "", body: "", rating: 1 });
     };
 
-    const handleSubmitReview = () => {
-        alert(`Review submitted for ${selectedProduct.name}:\nTitle: ${review.title}\nBody: ${review.body}\nRating: ${review.rating}`);
+    const handleSubmitReview = async () => {
+        try {
+            await axiosInstance.post('/api/review', {
+                rating: review.rating,
+                title: review.title,
+                body: review.body,
+                reviewedEntity: selectedProduct._id,
+                reviewedEntityType: "Product"
+            });
+            alert('Review submitted successfully');
+            window.location.reload();
+        } catch (err) {
+            setError('Failed to submit review.');
+        }
         closeReviewModal();
     };
 
@@ -215,7 +240,7 @@ function ProductsPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filterProducts().map((product) => (
-                            <div key={product.id} className="bg-white shadow-md rounded-lg p-4 text-center w-full lg:w-72">
+                            <div key={product._id} className="bg-white shadow-md rounded-lg p-4 text-center w-full lg:w-72">
                                 <img
                                     src={product.image}
                                     alt={product.name}
@@ -238,11 +263,11 @@ function ProductsPage() {
                                         </button>
                                         <input
                                             type="number"
-                                            value={quantity[product.id] || 1}
+                                            value={quantity[product._id] || 1}
                                             onChange={(e) =>
                                                 setQuantity((prev) => ({
                                                     ...prev,
-                                                    [product.id]: Number(e.target.value),
+                                                    [product._id]: Number(e.target.value),
                                                 }))
                                             }
                                             min="1"
