@@ -54,7 +54,16 @@ const tourGuideSchema = new mongoose.Schema({
         type: String,
         enum: ['accepted', 'rejected', 'pending'],
         default: 'pending'
-    }
+    },
+
+    resetPasswordOTP: {
+    type: String,
+  },
+    resetPasswordExpires: {
+    type: Date,
+  },
+
+    
 }, {
     timestamps: true // Adds createdAt and updatedAt timestamps
 });

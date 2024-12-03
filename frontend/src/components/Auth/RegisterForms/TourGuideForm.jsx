@@ -45,7 +45,7 @@ const TourGuideForm = ({ formData, handleChange, handlePreviousWorkChange, addPr
                     name="certificationImages"
                     onChange={handleFileChange}
                     multiple
-                    required
+                    
                 />
             </div>
             <div>
@@ -54,7 +54,7 @@ const TourGuideForm = ({ formData, handleChange, handlePreviousWorkChange, addPr
                     type="file"
                     name="idCardImage"
                     onChange={handleFileChange}
-                    required
+                    
                 />
             </div>
             <div>
