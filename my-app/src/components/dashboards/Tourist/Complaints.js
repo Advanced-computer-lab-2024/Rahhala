@@ -12,6 +12,17 @@ function ComplaintsPage() {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const navigate = useNavigate();
 
+    const formatDate = (dateString) => {
+        const options = { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            hour: '2-digit', 
+            minute: '2-digit'
+        };
+        return new Date(dateString).toLocaleString('en-US', options);
+    };
+
     useEffect(() => {
         const fetchComplaints = async () => {
         try {
@@ -98,7 +109,9 @@ function ComplaintsPage() {
                 complaints.map((complaint, index) => (
                     <div key={index} className="p-4 border border-gray-300 rounded-md">
                     <h3 className="font-semibold text-lg">{complaint.title}</h3>
-                    <p className="text-sm text-gray-500">Submitted on: {complaint.date}</p>
+                    <p className="text-sm text-gray-500">
+                        Submitted on: {formatDate(complaint.date)}
+                    </p>
                     <p className="mt-2">{complaint.body}</p>
                     <p className={`mt-2 text-sm ${complaint.status === "resolved" ? "text-green-500" : "text-yellow-500"}`}>
                         Status: {complaint.status}
