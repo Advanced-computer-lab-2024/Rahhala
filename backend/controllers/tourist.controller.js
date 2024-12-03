@@ -12,6 +12,8 @@ import { generateToken, comparePasswords } from "../utils/jwt.js";
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
+import saleModel from '../models/sale.model.js';
+import { recordSale } from '../controllers/sale.controller.js';
 
 dotenv.config({ path: "../../.env" }); // Adjust path if needed
 
@@ -267,7 +269,7 @@ export const bookItinerary = async (req, res) => {
             return res.status(404).json({ error: "Itinerary not found" });
         }
         if (tourist.bookedItineraries.includes(itineraryId)) {
-            return res.status(400).json({ error: "Itinerary already booked" });
+             return res.status(400).json({ error: "Itinerary already booked" });
         }
 
         if (tourist.wallet < itinerary.price) {
@@ -280,7 +282,18 @@ export const bookItinerary = async (req, res) => {
         // Add the itinerary to the tourist's bookedItineraries
         tourist.bookedItineraries.push(itineraryId);
 
+        console.log("itinerary id is ", itineraryId);
+
+        await recordSale({
+          saleId: itineraryId,
+          type: 'Itinerary',
+          sellerId: itinerary.userId,
+          buyerId: touristId,
+        });
+
         await tourist.save();
+
+        
 
         res.status(200).json({ message: "Itinerary booked successfully", itinerary });
     } catch (error) {
@@ -319,6 +332,13 @@ export const bookActivity = async (req, res) => {
 
         // Add the activity to the tourist's bookedActivities
         tourist.bookedActivities.push(activityId);
+
+        await recordSale({
+          saleId: activityId,
+          type: 'Activity',
+          sellerId: activity.userId,
+          buyerId: touristId,
+        });
 
         await tourist.save();
 
@@ -378,6 +398,12 @@ export const purchaseProduct = async (req, res) => {
 
         await tourist.save();
         await product.save();
+        await recordSale({
+          saleId: productId,
+          type: 'Product',
+          sellerId: product.sellerId,
+          buyerId: touristId,
+        });
 
         res.status(200).json({ message: "Product purchased successfully", product });
     } catch (error) {
