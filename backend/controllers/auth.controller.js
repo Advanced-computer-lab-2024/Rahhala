@@ -12,15 +12,10 @@ const handleLogin = async (model, credentials, userType) => {
   let user;
   // Search by username if provided, otherwise search by email
   if (username) {
-    console.log("entered username");
     user = await model.findOne({ username });
   } else {
     user = await model.findOne({ email });
   }
-  console.log("username is ", username);
-  console.log("email is ", email);
-  console.log("model is", model);
-  console.log("user is ", user);  
   user = user.toObject();
   delete user.profilePhoto
   delete user.certificationImages

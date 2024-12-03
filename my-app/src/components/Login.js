@@ -1,81 +1,74 @@
 import React, { useState, useContext } from 'react';
+import axiosInstance from '../utils/axiosConfig';
+import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import {jwtDecode} from 'jwt-decode';
 import loginImage from '../images/pexels-wanderer-731217.jpg';
 import backgroundImage from '../images/pexels-codioful-7130504.jpg';
-import axiosInstance from '../utils/axiosConfig';
-import { jwtDecode } from 'jwt-decode';
-import { AuthContext } from '../utils/AuthContext';
 
 function Login() {
-  const navigate = useNavigate();
   const { setAuth } = useContext(AuthContext);
-  const [userType, setUserType] = useState('');
-  const [emailOrUsername, setEmailOrUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    identifier: '',
+    password: '',
+    userType: 'tourist',
+  });
   const [message, setMessage] = useState('');
 
-  const handleLogin = async (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-        // Determine if identifier is email or username based on format
-        const isEmail = emailOrUsername.includes('@');
-        
-        // Prepare the data based on identifier type
-        const loginData = {
-            password: password,
-            userType: userType,
-            // Set either email or username based on the identifier format
-            ...(isEmail 
-                ? { email: emailOrUsername }
-                : { username: emailOrUsername }
-            )
-        };
-        console.log( "login data", loginData);
-        const response = await axiosInstance.post('/api/auth/login', loginData);
-        const { token } = response.data;
+      const isEmail = formData.identifier.includes('@');
+      const loginData = {
+        password: formData.password,
+        userType: formData.userType,
+        ...(isEmail ? { email: formData.identifier } : { username: formData.identifier }),
+      };
 
-        localStorage.setItem('token', token);
-        const decoded = jwtDecode(token);
-        const userType = decoded.userType;
-        console.log("userType", userType);
-        console.log("decoded", decoded);
-        setAuth({
-            token,
-            isAuthenticated: true,
-            loading: false,
-            user: {
-                id: decoded.id,
-                type: userType,
-            },
-        });
+      const response = await axiosInstance.post('/api/auth/login', loginData);
+      const { token } = response.data;
 
-        setMessage('Login successful! Redirecting...');
-        // add your disired routes here //
-        const routes = {
-            tourist: '/touristAccount',
-            tourguide: '/tourguide-dashboard',
-            admin: '/AdminDashboard',
-            seller: '/seller-dashboard',
-            advertiser: '/advertiser-dashboard',
-            tourism_governor: '/GovernorDashboard',
+      localStorage.setItem('token', token);
+      const decoded = jwtDecode(token);
+      const userType = decoded.userType;
 
-        };
-        const targetRoute = routes[userType.toLowerCase()];
-        console.log("targetRoute", targetRoute);    
-        if (targetRoute) {
-            console.log('Navigating to:', targetRoute); // Debugging
-            navigate(targetRoute);
-        }
+      setAuth({
+        token,
+        isAuthenticated: true,
+        loading: false,
+        user: {
+          id: decoded.id,
+          type: userType,
+        },
+      });
 
+      setMessage('Login successful! Redirecting...');
+      const routes = {
+        tourist: '/tourist',
+        tourguide: '/tour-guide',
+        admin: '/AdminDashboard',
+        seller: '/seller-dashboard',
+        advertiser: '/advertiser-dashboard',
+        tourism_governor: '/governor',
+      };
+      const targetRoute = routes[userType.toLowerCase()];
+      if (targetRoute) {
+        navigate(targetRoute);
+      }
     } catch (error) {
-        console.error('Login failed:', error);
-        setMessage(error.response?.data?.message || 'Login failed.');
+      console.error('Login failed:', error);
+      setMessage(error.response?.data?.message || 'Login failed.');
     }
-};
-
-  const handleGuest = () => {
-    navigate('/home');
   };
 
   return (
@@ -84,7 +77,6 @@ function Login() {
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <div className="flex w-full max-w-4xl bg-white rounded-lg shadow-lg opacity-90">
-        
         <div className="hidden md:flex w-1/2">
           <img 
             src={loginImage} 
@@ -95,27 +87,35 @@ function Login() {
 
         <div className="flex flex-col justify-center w-full p-8 md:w-1/2">
           <h2 className="text-3xl font-bold text-center text-gray-800">Login</h2>
-          <form className="mt-8 space-y-4" onSubmit={handleLogin}>
+          {message && <p className="text-center text-red-500">{message}</p>}
+          <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
             <input 
-              onChange={(e) => setEmailOrUsername(e.target.value)}
               type="text" 
+              name="identifier"
+              value={formData.identifier}
+              onChange={handleChange}
               placeholder="Email or Username" 
               className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              required
             />
             <input 
-              onChange={(e) => setPassword(e.target.value)}
               type="password" 
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
               placeholder="Password" 
               className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              required
             />
             <select 
-              value={userType}
-              onChange={(e) => setUserType(e.target.value)}
+              name="userType"
+              value={formData.userType}
+              onChange={handleChange}
               className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              required
             >
-              <option value="" disabled>Select User Type</option>
               <option value="tourist">Tourist</option>
-              <option value="tour_guide">Tour Guide</option>
+              <option value="tourguide">Tour Guide</option>
               <option value="seller">Seller</option>
               <option value="advertiser">Advertiser</option>
               <option value="tourism_governor">Tourism Governor</option>
@@ -129,7 +129,7 @@ function Login() {
             </button>
           </form>
           <button 
-            onClick={handleGuest} 
+            onClick={() => navigate('/guest')} 
             className="w-full p-3 mt-4 text-blue-500 border border-blue-500 rounded hover:bg-blue-100"
           >
             Continue as Guest

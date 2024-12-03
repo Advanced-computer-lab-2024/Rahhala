@@ -10,6 +10,7 @@ import {
   registerSeller,
   requestPasswordReset,
   resetPassword,
+  getAllSellers
 } from "../controllers/seller.controller.js";
 
 const router = express.Router();
@@ -24,5 +25,6 @@ router.post("/register", registerSeller);
 
 router.post('/requestPasswordReset', requestPasswordReset);
 router.post('/resetPassword', resetPassword);
+router.get("/all", getAllSellers);
 
 export default router;
