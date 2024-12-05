@@ -4,6 +4,7 @@ import sellerModel from "../models/seller.model.js";
 import tourGuideModel from "../models/tourGuide.model.js";
 import governorModel from "../models/governor.model.js";
 import touristModel from "../models/tourist.model.js";
+import Sale from '../models/sale.model.js';
 
 // Add Admin to the Database
 export const addAdmin = async (req, res) => {

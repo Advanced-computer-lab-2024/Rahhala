@@ -18,6 +18,8 @@ import AccountDeletionRequestRoutes from "./routes/accountDeletionRequest.route.
 import preferenceTagRoutes from "./routes/preferenceTag.route.js";
 import complaintRoute from "./routes/complaint.route.js";
 import reviewRoute from "./routes/review.route.js";
+import saleRoute from "./routes/sale.route.js";
+
 import cors from "cors";
 import museumTagRoutes from './routes/museumTag.routes.js';
 
@@ -43,6 +45,8 @@ app.use("/api/accountDeletionRequest", AccountDeletionRequestRoutes);
 app.use("/api/preferenceTag", preferenceTagRoutes);
 app.use("/api/complaint", complaintRoute);
 app.use("/api/review", reviewRoute);
+app.use("/api/sale", saleRoute);
+
 app.use('/api/museumTags', museumTagRoutes);
 
 app.get("/", (req, res) => {

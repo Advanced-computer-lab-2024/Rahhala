@@ -14,6 +14,7 @@ import crypto from 'crypto';
 import dotenv from 'dotenv';
 import saleModel from '../models/sale.model.js';
 import { recordSale } from '../controllers/sale.controller.js';
+import Tourist from "../models/tourist.model.js";
 
 dotenv.config({ path: "../../.env" }); // Adjust path if needed
 
@@ -275,7 +276,6 @@ export const bookItinerary = async (req, res) => {
         if (tourist.wallet < itinerary.price) {
             return res.status(400).json({ error: "Insufficient funds in wallet" });
         }
-
         // Deduct the price from the tourist's wallet
         tourist.wallet -= itinerary.price;
 
@@ -289,6 +289,7 @@ export const bookItinerary = async (req, res) => {
           type: 'Itinerary',
           sellerId: itinerary.userId,
           buyerId: touristId,
+          price: itinerary.price,
         });
 
         await tourist.save();
@@ -338,6 +339,7 @@ export const bookActivity = async (req, res) => {
           type: 'Activity',
           sellerId: activity.userId,
           buyerId: touristId,
+          price: activity.price,
         });
 
         await tourist.save();
@@ -365,7 +367,6 @@ export const purchaseProduct = async (req, res) => {
         if (!product) {
             return res.status(404).json({ error: "Product not found" });
         }
-
         if (product.quantity < quantity) {
             return res.status(400).json({ error: "Insufficient product quantity available" });
         }
@@ -403,6 +404,8 @@ export const purchaseProduct = async (req, res) => {
           type: 'Product',
           sellerId: product.sellerId,
           buyerId: touristId,
+          price: product.price,
+          quantity: quantity,
         });
 
         res.status(200).json({ message: "Product purchased successfully", product });

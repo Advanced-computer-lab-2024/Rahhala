@@ -21,6 +21,14 @@ const saleSchema = new mongoose.Schema({
     required: true,
     ref: 'Tourist', // Assuming you have a User model for buyers
   },
+  price: {
+    type: Number,
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    default: 1,
+  },
 }, {
   timestamps: true, // Automatically add createdAt and updatedAt fields
 });
