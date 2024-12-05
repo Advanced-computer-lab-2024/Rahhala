@@ -16,20 +16,16 @@ const itinerarySchema = new mongoose.Schema(
     activityDetails: [
   {
     name: {
-      type: String,
-      required: true,
+      type: String
     },
     location: {
-      type: [Number],
-      required: true,
+      type: [Number]
     },
     duration: {
-      type: String,
-      required: true,
+      type: String
     },
     time: {
-      type: String,
-      required: true,
+      type: String
     },
   },
 ],
