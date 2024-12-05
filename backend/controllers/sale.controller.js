@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
 import Sale from '../models/sale.model.js';
+import touristModel from "../models/tourist.model.js";
+import itineraryModel from "../models/itinerary.model.js";
+import activityModel from "../models/activity.model.js";
 
 // Record a Sale
 export const recordSale = async ({ saleId, type, sellerId, buyerId, price, quantity = 1 }) => {
@@ -111,7 +114,7 @@ export const getTotalSales = async (req, res) => {
 };
 
 
-export const getFilteredSalesReport = async (req, res) => {
+export const getFilteredSalesReport = async (req, res) => { //type is Activity or Itinerary or Product capital first letter
   const sellerId = req.user.id; // Get the seller ID from the verified JWT payload
   const { type, startDate, endDate, month, year } = req.body; // Use body instead of query
 
@@ -174,5 +177,106 @@ export const getFilteredSalesReport = async (req, res) => {
   } catch (error) {
     console.error('Error getting filtered sales report:', error);
     res.status(500).json({ error: 'Error getting filtered sales report' });
+  }
+};
+
+// Get Total Tourists for User's Itineraries and Activities
+export const getTotalTouristsForUser = async (req, res) => {
+  const userId = req.user.id; // Get the user ID from the verified JWT payload
+
+  try {
+    // Find all itineraries and activities created by the user
+    const itineraries = await itineraryModel.find({ userId: new mongoose.Types.ObjectId(userId) }).select('_id availableDates name');
+    const activities = await activityModel.find({ userId: new mongoose.Types.ObjectId(userId) }).select('_id date name');
+
+    const itineraryIds = itineraries.map(itinerary => itinerary._id);
+    const activityIds = activities.map(activity => activity._id);
+
+    const currentDate = new Date();
+
+    // Filter itineraries and activities to include only those with dates that have passed
+    const pastItineraryIds = itineraries
+      .filter(itinerary => itinerary.availableDates.some(date => new Date(date) < currentDate))
+      .map(itinerary => itinerary._id);
+
+    const pastActivityIds = activities
+      .filter(activity => new Date(activity.date) < currentDate)
+      .map(activity => activity._id);
+
+    // Count tourists who booked these itineraries and activities
+    const totalTourists = await touristModel.aggregate([
+      {
+        $match: {
+          $or: [
+            { bookedItineraries: { $in: pastItineraryIds } },
+            { bookedActivities: { $in: pastActivityIds } }
+          ]
+        }
+      },
+      {
+        $unwind: {
+          path: "$bookedItineraries",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $unwind: {
+          path: "$bookedActivities",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $lookup: {
+          from: 'itineraries',
+          localField: 'bookedItineraries',
+          foreignField: '_id',
+          as: 'itineraryDetails'
+        }
+      },
+      {
+        $lookup: {
+          from: 'activities',
+          localField: 'bookedActivities',
+          foreignField: '_id',
+          as: 'activityDetails'
+        }
+      },
+      {
+        $addFields: {
+          itineraryDetails: { $arrayElemAt: ["$itineraryDetails", 0] },
+          activityDetails: { $arrayElemAt: ["$activityDetails", 0] }
+        }
+      },
+      {
+        $match: {
+          $or: [
+            { "itineraryDetails._id": { $in: pastItineraryIds } },
+            { "activityDetails._id": { $in: pastActivityIds } }
+          ]
+        }
+      },
+      {
+        $group: {
+          _id: {
+            $cond: {
+              if: { $in: ["$bookedItineraries", pastItineraryIds] },
+              then: "$itineraryDetails.name",
+              else: "$activityDetails.name"
+            }
+          },
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    const result = totalTourists.reduce((acc, item) => {
+      acc[item._id] = item.count;
+      return acc;
+    }, {});
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error getting total tourists:', error);
+    res.status(500).json({ error: 'Error getting total tourists' });
   }
 };
