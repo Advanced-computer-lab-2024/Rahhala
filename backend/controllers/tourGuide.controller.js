@@ -6,6 +6,7 @@ export const editTourGuide = async (req, res) => {
   const {
     work,
     yearsOfExperience,
+    previousWork,
     certificationImages,
     email,
     mobileNumber,
@@ -26,13 +27,15 @@ export const editTourGuide = async (req, res) => {
     user.email = email || user.email;
     user.profilePhoto = profilePhoto || user.profilePhoto;
     user.status = status || user.status;
-
-    if (work && yearsOfExperience) {
+    if (previousWork){
+        user.previousWork = previousWork
+    }
+    else if (work && yearsOfExperience) {
       user.previousWork.push({ work, yearsOfExperience });
     }
 
     if (certificationImages && certificationImages.length > 0) {
-      user.certificationImages = certificationImages;
+      user.certificationImages = user.certificationImages.concat(certificationImages);
     }
 
     await user.save();
