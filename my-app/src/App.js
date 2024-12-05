@@ -15,6 +15,7 @@ import { AuthProvider } from './context/AuthContext';
 import TourGuide from './components/dashboards/TourGuideDashboard';
 import TourGProfile from './components/dashboards/TourGuide/Profile';
 import ResetPassword from './components/ResetPassword';
+import SalesReport from './components/dashboards/TourGuide/SalesReport';
 
 function App() {
   return (
@@ -36,6 +37,8 @@ function App() {
           <Route path="/tour-guide" element={<TourGuide />} />
           <Route path="/tour-guide-profile" element={<TourGProfile />} />
           <Route path="/ResetPassword" element={<ResetPassword />} />
+          <Route path="/TourGuideSales" element={<SalesReport />} />
+
 
         </Routes>
       </Router>
