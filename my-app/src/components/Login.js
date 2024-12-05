@@ -137,6 +137,9 @@ function Login() {
           <p className="mt-4 text-sm text-center text-gray-600">
             Don't have an account? <a href="/signup" className="text-blue-500">Sign up</a>
           </p>
+          <p className="mt-4 text-sm text-center text-gray-600">
+            Need Help? <a onClick={() => navigate('/resetPassword', { state: { userType: formData.userType } })} className="text-blue-500 cursor-pointer">Forgot your password</a>
+          </p>
         </div>
       </div>
     </div>

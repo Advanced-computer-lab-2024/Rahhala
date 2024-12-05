@@ -14,6 +14,7 @@ import Complaints from './components/dashboards/Tourist/Complaints';
 import { AuthProvider } from './context/AuthContext';
 import TourGuide from './components/dashboards/TourGuideDashboard';
 import TourGProfile from './components/dashboards/TourGuide/Profile';
+import ResetPassword from './components/ResetPassword';
 
 function App() {
   return (
@@ -34,6 +35,8 @@ function App() {
           <Route path="/complaints" element={<Complaints />} />
           <Route path="/tour-guide" element={<TourGuide />} />
           <Route path="/tour-guide-profile" element={<TourGProfile />} />
+          <Route path="/ResetPassword" element={<ResetPassword />} />
+
         </Routes>
       </Router>
     </AuthProvider>
