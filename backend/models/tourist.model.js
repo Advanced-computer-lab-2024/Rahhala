@@ -90,7 +90,15 @@ const touristSchema = new mongoose.Schema({
             required: true,
             default: 1
         }
-    }]
+    }],
+
+    resetPasswordOTP: {
+        type: String,
+      },
+        resetPasswordExpires: {
+        type: Date,
+      },
+    
 }, { timestamps: true }); // Adds createdAt and updatedAt timestamps
 
 // Create the Tourist model

@@ -166,9 +166,9 @@ const Register = () => {
                     mobileNumber: formData.mobileNumber,
                     yearsOfExperience: formData.yearsOfExperience,
                     previousWork: formData.previousWork, // Updated field
-                    certificationImages: formData.certificationImages, // New field
-                    idCardImage: formData.idCardImage, // New field
-                    profilePhoto: formData.profilePhoto, // New field
+                    //certificationImages: formData.certificationImages, // New field
+                    //idCardImage: formData.idCardImage, // New field
+                    //profilePhoto: formData.profilePhoto, // New field
                 };
                 break;
             case 'seller':

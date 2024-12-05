@@ -1,4 +1,9 @@
 import sellerModel from "../models/seller.model.js";
+import nodemailer from 'nodemailer';
+import crypto from 'crypto';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: "../../.env" }); // Adjust path if needed
 
 // get Seller from the Database
 export const getSeller = async (req, res) => {
@@ -195,6 +200,87 @@ export const registerSeller = async (req, res) => {
     res.status(500).json({ error: "Error registering seller" });
   }
 };
+
+// Generate OTP
+const generateOTP = () => {
+  return crypto.randomBytes(3).toString('hex'); // Generate a 6-digit OTP
+};
+
+// Send OTP Email
+const sendOTPEmail = async (email, otp) => {
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.mailtrap.io',
+    port: 587,
+    auth: {
+      user: process.env.MAILTRAP_USER,
+      pass: process.env.MAILTRAP_PASS,
+    },
+  });
+
+  const mailOptions = {
+    from: 'no-reply@example.com',
+    to: email,
+    subject: 'Your OTP for Password Reset',
+    text: `Your OTP for password reset is: ${otp}`,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+
+// Request OTP for Password Reset
+export const requestPasswordReset = async (req, res) => {
+  console.log("entered requestPasswordReset");
+  const { email } = req.body;
+
+  try {
+    const seller = await sellerModel.findOne({ email });
+
+    if (!seller) {
+      return res.status(404).json({ error: 'seller not found' });
+    }
+
+    const otp = generateOTP();
+    seller.resetPasswordOTP = otp;
+    seller.resetPasswordExpires = Date.now() + 3600000; // OTP expires in 1 hour
+
+    await seller.save();
+
+    await sendOTPEmail(email, otp);
+
+    res.status(200).json({ message: 'OTP sent to your email' });
+  } catch (error) {
+    console.error('Error requesting password reset:', error);
+    res.status(500).json({ error: 'Error requesting password reset' });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+    const { email, otp, newPassword } = req.body;
+  
+    try {
+      const seller = await sellerModel.findOne({ email });
+  
+      if (!seller) {
+        return res.status(404).json({ error: 'seller not found' });
+      }
+  
+      if (seller.resetPasswordOTP !== otp || seller.resetPasswordExpires < Date.now()) {
+        return res.status(400).json({ error: 'Invalid or expired OTP' });
+      }
+  
+      seller.password = newPassword;
+      seller.resetPasswordOTP = undefined;
+      seller.resetPasswordExpires = undefined;
+  
+      await seller.save();
+  
+      res.status(200).json({ message: 'Password reset successfully' });
+    } catch (error) {
+      console.error('Error resetting password:', error);
+      res.status(500).json({ error: 'Error resetting password' });
+    }
+  };
+
 
 
 // get all sellers

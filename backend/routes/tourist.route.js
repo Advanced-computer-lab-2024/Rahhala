@@ -15,11 +15,15 @@ import {
   addReview,
   addMoneyToWallet,
   redeemLoyaltyPoints,
-  purchaseProduct
+  purchaseProduct,
+  loginTourist,
+  requestPasswordReset, 
+  resetPassword,
+
 } from "../controllers/tourist.controller.js";
 
 const router = express.Router();
-
+router.post("/login", loginTourist);
 router.get("/", verifyToken, getTouristByID);
 router.put("/edit/:id", verifyToken, editTourist);
 router.get("/", getTourists);
@@ -35,4 +39,7 @@ router.post('/reviews', verifyToken, addReview);
 router.put('/addMoneyToWallet', verifyToken, addMoneyToWallet);
 router.post('/redeemLoyaltyPoints', verifyToken, redeemLoyaltyPoints);
 router.post('/purchaseProduct', verifyToken, purchaseProduct);
+
+router.post('/requestPasswordReset', requestPasswordReset);
+router.post('/resetPassword', resetPassword);
 export default router;

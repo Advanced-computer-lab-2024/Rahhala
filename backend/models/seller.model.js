@@ -44,7 +44,14 @@ const sellerSchema = new mongoose.Schema({
         type: String,
         enum: ['accepted', 'rejected', 'pending'],
         default: 'pending'
-    }
+    },
+    resetPasswordOTP: {
+        type: String,
+      },
+        resetPasswordExpires: {
+        type: Date,
+      },
+    
 }, {
     timestamps: true
 });

@@ -8,6 +8,8 @@ import {
   submitDocuments,
   getDocuments,
   registerAdvertiser,
+  requestPasswordReset,
+  resetPassword
 } from "../controllers/advertiser.controller.js";
 
 const router = express.Router();
@@ -18,5 +20,8 @@ router.put("/changePassword", verifyToken, changePassword);
 router.post("/submitDocuments", verifyToken, submitDocuments);
 router.get("/documents", verifyToken, getDocuments);
 router.post("/register", registerAdvertiser);
+
+router.post('/requestPasswordReset', requestPasswordReset);
+router.post('/resetPassword', resetPassword);
 
 export default router;

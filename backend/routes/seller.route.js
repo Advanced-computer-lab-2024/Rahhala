@@ -8,6 +8,8 @@ import {
   acceptTerms,
   getDocuments, // Add this import
   registerSeller,
+  requestPasswordReset,
+  resetPassword,
   getAllSellers
 } from "../controllers/seller.controller.js";
 
@@ -20,6 +22,9 @@ router.post("/submitDocuments", verifyToken, submitDocuments);
 router.put("/acceptTerms", verifyToken, acceptTerms);
 router.get("/documents", verifyToken, getDocuments); // Add this route
 router.post("/register", registerSeller);
+
+router.post('/requestPasswordReset', requestPasswordReset);
+router.post('/resetPassword', resetPassword);
 router.get("/all", getAllSellers);
 
 export default router;
