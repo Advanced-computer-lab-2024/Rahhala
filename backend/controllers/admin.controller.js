@@ -135,8 +135,6 @@ export const acceptAdvertiser = async (req, res) => {
       return res.status(404).json({ message: "Advertiser not found" });
     }
     advertiser.status = "accepted";
-    advertiser.idCardImage = "x";
-    advertiser.taxationRegistryImage = "x";
     await advertiser.save();
     res.status(200).json({ message: "Advertiser accepted successfully" });
   } catch (error) {
@@ -187,8 +185,6 @@ export const acceptSeller = async (req, res) => {
       return res.status(404).json({ message: "Seller not found" });
     }
     seller.status = "accepted";
-    seller.taxationRegistryImage="x";
-    seller.idCardImage="x";
     await seller.save();
     res.status(200).json({ message: "Seller accepted successfully" });
   } catch (error) {
@@ -239,8 +235,6 @@ export const acceptTourGuide = async (req, res) => {
       return res.status(404).json({ message: "Tour Guide not found" });
     }
     tourGuide.status = "accepted";
-    tourGuide.certificationImages = [];
-    tourGuide.idCardImage = "x";
     await tourGuide.save();
     res.status(200).json({ message: "Tour Guide accepted successfully" });
   } catch (error) {

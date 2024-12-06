@@ -14,26 +14,29 @@ import Complaints from './components/dashboards/Tourist/Complaints';
 import { AuthProvider } from './context/AuthContext';
 import TourGuide from './components/dashboards/TourGuideDashboard';
 import TourGProfile from './components/dashboards/TourGuide/Profile';
-
+import AdminDashboard from './components/dashboards/Admin/AdminDashboard';
+import NewAccountRequests from './components/dashboards/Admin/NewAccountRequests';
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Navigate to="/signup" replace />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/guest" element={<Guest />} />
-          <Route path="/tourist" element={<Tourist />} />
-          <Route path="/governor" element={<Governor />} />
-          <Route path="/tourist-profile" element={<TouristProfile />} />
-          <Route path="/tourist-booking" element={<TouristBook />} />
-          <Route path="/tourist-wallet" element={<TouristWallet />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/redeem" element={<Redeem />} />
-          <Route path="/complaints" element={<Complaints />} />
-          <Route path="/tour-guide" element={<TourGuide />} />
-          <Route path="/tour-guide-profile" element={<TourGProfile />} />
+            <Route path="/" element={<Navigate to="/signup" replace />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/guest" element={<Guest />} />
+            <Route path="/tourist" element={<Tourist />} />
+            <Route path="/governor" element={<Governor />} />
+            <Route path="/tourist-profile" element={<TouristProfile />} />
+            <Route path="/tourist-booking" element={<TouristBook />} />
+            <Route path="/tourist-wallet" element={<TouristWallet />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/redeem" element={<Redeem />} />
+            <Route path="/complaints" element={<Complaints />} />
+            <Route path="/tour-guide" element={<TourGuide />} />
+            <Route path="/tour-guide-profile" element={<TourGProfile />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/new-account-requests" element={<NewAccountRequests />} />
         </Routes>
       </Router>
     </AuthProvider>
