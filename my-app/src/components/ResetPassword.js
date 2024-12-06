@@ -6,14 +6,13 @@ import backgroundImage from '../images/pexels-codioful-7130504.jpg';
 
 function ResetPassword() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const userType = location.state?.userType || 'tourist'; // Default to 'tourist' if userType is not provided
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     email: '',
     otp: '',
     newPassword: '',
     confirmNewPassword: '',
+    userType: '',
   });
   const [message, setMessage] = useState('');
 
@@ -31,7 +30,7 @@ function ResetPassword() {
     try {
       if (step === 1) {
         // Send email to get OTP
-        await axiosInstance.post(`/api/${userType}/requestPasswordReset`, { email: formData.email, userType });
+        await axiosInstance.post(`/api/${formData.userType}/requestPasswordReset`, { email: formData.email, userType: formData.userType });
         setMessage('OTP sent to your email.');
         setStep(2);
       } else {
@@ -41,7 +40,7 @@ function ResetPassword() {
           return;
         }
 
-        await axiosInstance.post(`/api/${userType}/resetPassword`, {
+        await axiosInstance.post(`/api/${formData.userType}/resetPassword`, {
           email: formData.email,
           otp: formData.otp,
           newPassword: formData.newPassword,
@@ -75,15 +74,36 @@ function ResetPassword() {
           {message && <p className="text-center text-red-500">{message}</p>}
           <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
             {step === 1 ? (
-              <input 
-                type="email" 
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Email" 
-                className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                required
-              />
+              <>
+                <div className="mb-4">
+                  <input 
+                    type="email" 
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Email" 
+                    className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <select 
+                    name="userType"
+                    value={formData.userType}
+                    onChange={handleChange}
+                    className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                    required
+                  >
+                    <option value="tourist">Tourist</option>
+                    <option value="tourguide">Tour Guide</option>
+                    <option value="seller">Seller</option>
+                    <option value="advertiser">Advertiser</option>
+                    <option value="tourism_governor">Tourism Governor</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+              </>
+              
             ) : (
               <>
                 <input 

@@ -8,6 +8,8 @@ const SalesReport = () => {
     const [salesReport, setSalesReport] = useState(null);
     const [engagement, setEngagement] = useState(null);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [showActivities, setShowActivities] = useState(true);
+    const [showItineraries, setShowItineraries] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -40,7 +42,6 @@ const SalesReport = () => {
     };
 
     return (
-        
         <div className="min-h-screen bg-gray-100 flex flex-col">
             <header className="text-white flex justify-between items-center p-4 w-full relative" style={{ backgroundColor: '#334EAC' }}>
                 <h1 className="text-2xl font-bold">Sales Report</h1>
@@ -57,6 +58,7 @@ const SalesReport = () => {
                                 <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => navigate('/tour-guide')}>Home</li>
                                 <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => navigate('/tour-guide-profile')}>Profile</li>
                                 <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => navigate('/tourGuideSales')}>Sales Report</li>
+                                <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => navigate('/tourGuideNotifications')}>Notifications</li>
                                 <li className="px-4 py-2 hover:bg-red-200 cursor-pointer text-red-600" onClick={() => (window.location.href = '/login')}>Sign Out</li>
                             </ul>
                         </div>
@@ -64,42 +66,60 @@ const SalesReport = () => {
                 </div>
             </header>
             <button
-            onClick={() => navigate(-1)}
-            className="text-blue-500 mt-4 ml-4 flex items-center"
-        >
-            ← Back
-        </button>
+                onClick={() => navigate(-1)}
+                className="text-blue-500 mt-4 ml-4 flex items-center"
+            >
+                ← Back
+            </button>
 
             <div className="flex-1 p-6 flex flex-col items-center">
                 <div className="space-y-6 w-full max-w-4xl flex flex-col items-center">
+                    <div className="flex space-x-4 mb-4">
+                        <button
+                            onClick={() => setShowActivities(!showActivities)}
+                            className={`px-4 py-2 rounded ${showActivities ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                        >
+                            Activities
+                        </button>
+                        <button
+                            onClick={() => setShowItineraries(!showItineraries)}
+                            className={`px-4 py-2 rounded ${showItineraries ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                        >
+                            Itineraries
+                        </button>
+                    </div>
                     {salesReport ? (
                         <>
-                            <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col w-full text-sm relative">
-                                <h3 className="text-lg font-semibold mb-4">Your Activities Summary</h3>
-                                <div className="space-y-2">
-                                    <div>
-                                        <strong>Count:</strong>
-                                        <p>{salesReport.activities.count}</p>
-                                    </div>
-                                    <div>
-                                        <strong>Total Revenue:</strong>
-                                        <p>${salesReport.activities.totalRevenue}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col w-full text-sm relative">
-                                <h3 className="text-lg font-semibold mb-4">Your Itineraries Summary</h3>
-                                <div className="space-y-2">
-                                    <div>
-                                        <strong>Count:</strong>
-                                        <p>{salesReport.itineraries.count}</p>
-                                    </div>
-                                    <div>
-                                        <strong>Total Revenue:</strong>
-                                        <p>${salesReport.itineraries.totalRevenue}</p>
+                            {showActivities && (
+                                <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col w-full text-sm relative">
+                                    <h3 className="text-lg font-semibold mb-4">Your Activities Summary</h3>
+                                    <div className="space-y-2">
+                                        <div>
+                                            <strong>Count:</strong>
+                                            <p>{salesReport.activities.count}</p>
+                                        </div>
+                                        <div>
+                                            <strong>Total Revenue:</strong>
+                                            <p>${salesReport.activities.totalRevenue}</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            )}
+                            {showItineraries && (
+                                <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col w-full text-sm relative">
+                                    <h3 className="text-lg font-semibold mb-4">Your Itineraries Summary</h3>
+                                    <div className="space-y-2">
+                                        <div>
+                                            <strong>Count:</strong>
+                                            <p>{salesReport.itineraries.count}</p>
+                                        </div>
+                                        <div>
+                                            <strong>Total Revenue:</strong>
+                                            <p>${salesReport.itineraries.totalRevenue}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </>
                     ) : (
                         <p>No sales report available.</p>

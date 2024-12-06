@@ -286,6 +286,7 @@ export const loginTourGuide = async (req, res) => {
 export const requestPasswordReset = async (req, res) => {
   console.log("entered requestPasswordReset");
   const { email } = req.body;
+  console.log(req.body);
 
   try {
     const tourGuide = await tourGuideModel.findOne({ email });
@@ -334,6 +335,8 @@ export const verifyOTP = async (req, res) => {
 // Reset Password
 export const resetPassword = async (req, res) => {
   const { email, otp, newPassword } = req.body;
+  console.log("entered resetPassword");
+  console.log(req.body);
 
   try {
     const tourGuide = await tourGuideModel.findOne({ email });
