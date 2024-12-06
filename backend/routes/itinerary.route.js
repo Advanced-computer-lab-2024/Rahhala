@@ -30,7 +30,7 @@ router.put("/activate/:id", verifyToken, activateItinerary);
 router.delete("/delete/:id", deleteItinerary);
 router.put("/update/:id", editItinerary);
 router.post("/review/:id", verifyToken, addReview);
-router.put('/flag/:id', verifyToken, flagItinerary);
+router.put('/flag', verifyToken, flagItinerary);
 router.put('/unflag/:id', verifyToken, unflagItinerary);
 router.put('/updateIsActive/:userId', async (req, res) => {
   try {

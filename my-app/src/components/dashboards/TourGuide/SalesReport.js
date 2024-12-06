@@ -6,6 +6,7 @@ import { AuthContext } from '../../../context/AuthContext';
 const SalesReport = () => {
     const { auth } = useContext(AuthContext);
     const [salesReport, setSalesReport] = useState(null);
+    const [engagement, setEngagement] = useState(null);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -21,11 +22,25 @@ const SalesReport = () => {
         fetchSalesReport();
     }, [auth]);
 
+    useEffect(() => {
+        const fetchTouristEngagement = async () => {
+            try {
+                const response = await axiosInstance.get('/api/sale/totalTourists');
+                setEngagement(response.data);
+                console.log("engagement", response.data);
+            } catch (error) {
+                console.log('Error:', error);
+            }
+        };
+        fetchTouristEngagement();
+    }, [auth]);
+
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
     };
 
     return (
+        
         <div className="min-h-screen bg-gray-100 flex flex-col">
             <header className="text-white flex justify-between items-center p-4 w-full relative" style={{ backgroundColor: '#334EAC' }}>
                 <h1 className="text-2xl font-bold">Sales Report</h1>
@@ -48,13 +63,19 @@ const SalesReport = () => {
                     )}
                 </div>
             </header>
+            <button
+            onClick={() => navigate(-1)}
+            className="text-blue-500 mt-4 ml-4 flex items-center"
+        >
+            ← Back
+        </button>
 
             <div className="flex-1 p-6 flex flex-col items-center">
                 <div className="space-y-6 w-full max-w-4xl flex flex-col items-center">
                     {salesReport ? (
                         <>
                             <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col w-full text-sm relative">
-                                <h3 className="text-lg font-semibold mb-4">Activities Summary</h3>
+                                <h3 className="text-lg font-semibold mb-4">Your Activities Summary</h3>
                                 <div className="space-y-2">
                                     <div>
                                         <strong>Count:</strong>
@@ -67,7 +88,7 @@ const SalesReport = () => {
                                 </div>
                             </div>
                             <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col w-full text-sm relative">
-                                <h3 className="text-lg font-semibold mb-4">Itineraries Summary</h3>
+                                <h3 className="text-lg font-semibold mb-4">Your Itineraries Summary</h3>
                                 <div className="space-y-2">
                                     <div>
                                         <strong>Count:</strong>
@@ -83,6 +104,21 @@ const SalesReport = () => {
                     ) : (
                         <p>No sales report available.</p>
                     )}
+                    <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col w-full text-sm relative">
+                        <h3 className="text-lg font-semibold mb-4">Tourist Engagement</h3>
+                        {engagement ? (
+                            <div className="space-y-2">
+                                {Object.entries(engagement).map(([key, value]) => (
+                                    <div key={key}>
+                                        <strong>{key}:</strong>
+                                        <p>{value}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p>No engagement data available.</p>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

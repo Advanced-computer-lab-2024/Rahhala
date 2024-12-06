@@ -412,8 +412,9 @@ export const updateItinerary = async (req, res) => {
   }
 };
 export const flagItinerary = async (req, res) => {
+  console.log("entered flagItinerary");
   try {
-      const { id } = req.params;
+      const { id } = req.body;
       const itinerary = await itineraryModel.findById(id);
 
       if (!itinerary) {
@@ -421,6 +422,8 @@ export const flagItinerary = async (req, res) => {
       }
 
       itinerary.flagged = true;
+      itinerary.flaggedReason = "Inappropriate content";
+      itinerary.flaggedDate = new Date();
       await itinerary.save();
 
       res.status(200).json({ message: "Itinerary flagged successfully" });

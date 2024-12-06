@@ -16,6 +16,7 @@ import TourGuide from './components/dashboards/TourGuideDashboard';
 import TourGProfile from './components/dashboards/TourGuide/Profile';
 import ResetPassword from './components/ResetPassword';
 import SalesReport from './components/dashboards/TourGuide/SalesReport';
+import Notifications from './components/dashboards/Notifications';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
           <Route path="/tour-guide-profile" element={<TourGProfile />} />
           <Route path="/ResetPassword" element={<ResetPassword />} />
           <Route path="/TourGuideSales" element={<SalesReport />} />
+          <Route path="/Notifications" element={<Notifications />} />
 
 
         </Routes>
