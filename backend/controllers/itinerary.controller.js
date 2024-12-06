@@ -2,6 +2,35 @@ import itineraryModel from "../models/itinerary.model.js";
 import tourGuideModel from "../models/tourGuide.model.js";
 import touristModel from "../models/tourist.model.js";
 import reviewModel from "../models/review.model.js";
+import nodemailer from 'nodemailer';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import advertiserModel from "../models/advertiser.model.js";
+
+
+
+dotenv.config({ path: "../../.env" }); // Adjust path if needed
+
+// Send Notification Email
+const sendNotificationEmail = async (email, itineraryName, flaggedReason) => {
+  const transporter = nodemailer.createTransport({
+    host: 'sandbox.smtp.mailtrap.io',
+    port: 587,
+    auth: {
+      user: process.env.MAILTRAP_USER,
+      pass: process.env.MAILTRAP_PASS,
+    },
+  });
+
+  const mailOptions = {
+    from: 'no-reply@example.com',
+    to: email,
+    subject: 'Your Itinerary has been Flagged',
+    text: `Your itinerary "${itineraryName}" has been flagged for the following reason: ${flaggedReason}. Please review and take necessary actions.`,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
 
 // Create a new itinerary
 export const addItinerary = async (req, res) => {
@@ -411,6 +440,9 @@ export const updateItinerary = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+
+
 export const flagItinerary = async (req, res) => {
   console.log("entered flagItinerary");
   try {
@@ -420,10 +452,24 @@ export const flagItinerary = async (req, res) => {
       if (!itinerary) {
           return res.status(404).json({ message: "Itinerary not found" });
       }
+      const userId = itinerary.userId;
+      let user = await tourGuideModel.findById(userId);
+      if (!user) {
+        user = await advertiserModel.findById(userId);
+      }
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      console.log(user);
+      const email = user.email;
+      console.log(email); 
+
 
       itinerary.flagged = true;
       itinerary.flaggedReason = "Inappropriate content";
       itinerary.flaggedDate = new Date();
+      sendNotificationEmail(email, itinerary.name, itinerary.flaggedReason);
       await itinerary.save();
 
       res.status(200).json({ message: "Itinerary flagged successfully" });
