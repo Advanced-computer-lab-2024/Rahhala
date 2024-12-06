@@ -14,6 +14,9 @@ import Complaints from './components/dashboards/Tourist/Complaints';
 import { AuthProvider } from './context/AuthContext';
 import TourGuide from './components/dashboards/TourGuideDashboard';
 import TourGProfile from './components/dashboards/TourGuide/Profile';
+import ResetPassword from './components/ResetPassword';
+import SalesReport from './components/dashboards/TourGuide/SalesReport';
+import Notifications from './components/dashboards/Notifications';
 import AdminDashboard from './components/dashboards/Admin/AdminDashboard';
 import NewAccountRequests from './components/dashboards/Admin/NewAccountRequests';
 function App() {
@@ -37,6 +40,11 @@ function App() {
             <Route path="/tour-guide-profile" element={<TourGProfile />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/new-account-requests" element={<NewAccountRequests />} />
+          <Route path="/ResetPassword" element={<ResetPassword />} />
+          <Route path="/TourGuideSales" element={<SalesReport />} />
+          <Route path="/Notifications" element={<Notifications />} />
+
+
         </Routes>
       </Router>
     </AuthProvider>

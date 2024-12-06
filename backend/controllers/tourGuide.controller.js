@@ -3,6 +3,7 @@ import { generateToken, comparePasswords } from "../utils/jwt.js";
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
+import itineraryModel from "../models/itinerary.model.js";
 
 
 dotenv.config({ path: "../../.env" }); // Adjust path if needed
@@ -355,5 +356,23 @@ export const resetPassword = async (req, res) => {
   } catch (error) {
     console.error('Error resetting password:', error);
     res.status(500).json({ error: 'Error resetting password' });
+  }
+};
+
+
+export const getNotifications = async (req, res) => {
+  try {
+    console.log("entered getNotifications");
+    const itineraries = await itineraryModel.find({ userId: req.user.id, flagged: true });
+    console.log("itineraries are ", itineraries);
+
+    if (!itineraries.length) {
+      return res.status(404).json({ message: 'No flagged itineraries found' });
+    }
+    console.log("itineraries are ", itineraries);
+    res.status(200).json(itineraries);
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+    res.status(500).json({ error: 'Error fetching notifications' });
   }
 };

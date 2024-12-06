@@ -23,6 +23,7 @@ const TourGuideDashboard = () => {
         tags: [],
         activityDetails: [{ name: '', duration: '', location: [], time: '' }],
     });
+    console.log('auth:', auth); // Assuming auth context has user information
 
     useEffect(() => {
         const fetchTourGuide = async () => {
@@ -159,6 +160,8 @@ const TourGuideDashboard = () => {
             <button onClick={toggleDropdown} className="p-2">
             <span className="block w-6 h-1 bg-white mb-1"></span>
             <span className="block w-6 h-1 bg-white mb-1"></span>
+            <span className="block w-6 h-1 bg-white mb-1"></span>
+            <span className="block w-6 h-1 bg-white mb-1"></span>
             <span className="block w-6 h-1 bg-white"></span>
             </button>
             {dropdownOpen && (
@@ -166,6 +169,8 @@ const TourGuideDashboard = () => {
                 <ul className="text-sm text-gray-700">
                 <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => navigate('/tour-guide')}>Home</li>
                 <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => navigate('/tour-guide-profile')}>Profile</li>
+                <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => navigate('/tourGuideSales')}>Sales Report</li>
+                <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => navigate('/Notifications')}>Notifications</li>
                 <li className="px-4 py-2 hover:bg-red-200 cursor-pointer text-red-600" onClick={() => (window.location.href = '/login')}>Sign Out</li>
                 </ul>
             </div>

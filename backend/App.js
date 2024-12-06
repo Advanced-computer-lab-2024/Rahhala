@@ -40,6 +40,7 @@ app.use("/api/museum", museumRoutes);
 app.use("/api/seller", sellerRoutes);
 app.use("/api/tourist", touristRoutes);
 app.use("/api/tourGuide", tourGuideRoutes);
+app.use("/api/tourguide", tourGuideRoutes);
 app.use("/api/product", productRoutes);
 app.use("/api/accountDeletionRequest", AccountDeletionRequestRoutes);
 app.use("/api/preferenceTag", preferenceTagRoutes);

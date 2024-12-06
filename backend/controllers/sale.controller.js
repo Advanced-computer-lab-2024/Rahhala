@@ -24,6 +24,7 @@ export const recordSale = async ({ saleId, type, sellerId, buyerId, price, quant
 
 // Get Sales Report
 export const getSalesReport = async (req, res) => {
+  console.log("entered getSalesReport")
   const sellerId = req.user.id; // Get the seller ID from the verified JWT payload
 
   try {
@@ -62,6 +63,7 @@ export const getSalesReport = async (req, res) => {
         salesReport.products.totalRevenue = sale.totalRevenue;
       }
     });
+    console.log(salesReport)
 
     res.status(200).json(salesReport);
   } catch (error) {

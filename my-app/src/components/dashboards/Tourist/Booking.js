@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../../Header.js';
 import axiosInstance from '../../../utils/axiosConfig';
 import { AuthContext } from '../../../context/AuthContext';
-import { set } from 'mongoose';
+//import { set } from 'mongoose';
 
 const BookingPage = () => {
     const { auth } = useContext(AuthContext);

@@ -69,6 +69,12 @@ const itinerarySchema = new mongoose.Schema(
       type: Boolean,
       default: false,
   },
+  flaggedReason: {
+      type: String,
+  },
+  flaggedDate: {
+      type: Date,
+  },
   },
   {
     timestamps: true,
