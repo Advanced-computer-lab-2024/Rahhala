@@ -10,6 +10,9 @@ const SalesReport = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [showActivities, setShowActivities] = useState(true);
     const [showItineraries, setShowItineraries] = useState(true);
+    const [showEngagement, setShowEngagement] = useState(true);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -36,6 +39,21 @@ const SalesReport = () => {
         };
         fetchTouristEngagement();
     }, [auth]);
+
+    const handleFilter = async () => {
+        try {
+            const response = await axiosInstance.post('/api/sale/filterTotalTourists', {
+                startDate: new Date(startDate).toISOString(),
+                endDate: new Date(endDate).toISOString()
+            });
+            console.log("response is", response.data);
+            console.log("start date", startDate);
+            console.log("end date", endDate);   
+            setEngagement(response.data);
+        } catch (error) {
+            console.log('Error:', error);
+        }
+    };
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
@@ -87,6 +105,30 @@ const SalesReport = () => {
                         >
                             Itineraries
                         </button>
+                        <button
+                            onClick={() => setShowEngagement(!showEngagement)}
+                            className={`px-4 py-2 rounded ${showEngagement ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                        >
+                            Tourist Engagement
+                        </button>
+                        <input
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            className="px-4 py-2 border rounded"
+                        />
+                        <input
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            className="px-4 py-2 border rounded"
+                        />
+                        <button
+                            onClick={handleFilter}
+                            className="px-4 py-2 bg-blue-500 text-white rounded"
+                        >
+                            Filter
+                        </button>
                     </div>
                     {salesReport ? (
                         <>
@@ -124,21 +166,23 @@ const SalesReport = () => {
                     ) : (
                         <p>No sales report available.</p>
                     )}
-                    <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col w-full text-sm relative">
-                        <h3 className="text-lg font-semibold mb-4">Tourist Engagement</h3>
-                        {engagement ? (
-                            <div className="space-y-2">
-                                {Object.entries(engagement).map(([key, value]) => (
-                                    <div key={key}>
-                                        <strong>{key}:</strong>
-                                        <p>{value}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <p>No engagement data available.</p>
-                        )}
-                    </div>
+                    {showEngagement && (
+                        <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col w-full text-sm relative">
+                            <h3 className="text-lg font-semibold mb-4">Tourist Engagement</h3>
+                            {engagement ? (
+                                <div className="space-y-2">
+                                    {Object.entries(engagement).map(([key, value]) => (
+                                        <div key={key}>
+                                            <strong>{key}:</strong>
+                                            <p>{value}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p>No engagement data available.</p>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
