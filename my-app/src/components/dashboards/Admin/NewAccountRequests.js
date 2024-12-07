@@ -396,9 +396,10 @@ const NewAccountRequests = () => {
         >
             ← Back
         </button>
+        <h1 className="text-4xl text-blue-800 font-bold text-center">New Account Requests</h1>
 
-        <div className="flex justify-center mt-20">
-        <div className="space-y-4 max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg text-sm">
+        <div className="flex justify-center mt-10">
+        <div className="space-y-4 max-w-xl w-full mx-auto p-6 bg-white shadow-lg rounded-lg text-sm">
         {tourGuides.length === 0 ? (
                 <h2 className="text-2xl font-bold mb-4">No new TourGuides</h2>
             ) : (

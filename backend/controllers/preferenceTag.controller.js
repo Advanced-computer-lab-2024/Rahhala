@@ -41,6 +41,8 @@ export const updateTag = async (req, res) => {
     try {
         const { id } = req.params;
         const { name } = req.body;
+        console.log("entered updateTag with req.body: ", req.body, " and id: ", id);
+
         const updatedTag = await PreferenceTag.findByIdAndUpdate(id, { name }, { new: true, runValidators: true });
         if (!updatedTag) {
             return res.status(404).json({ message: 'Tag not found' });

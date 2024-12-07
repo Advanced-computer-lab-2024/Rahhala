@@ -30,6 +30,23 @@ export const addAdmin = async (req, res) => {
   }
 };
 
+// get admin by id
+export const getAdmin = async (req, res) => {
+    console.log("entered getAdmin");
+    const id = req.user.id;
+    try {
+        const admin = await adminModel.findById(id);
+        console.log(id);
+        if (!admin) {
+            return res.status(404).json({ message: "Admin not found" });
+        }
+        res.status(200).json({ admin });
+    } catch (error) {
+        console.error("Error getting admin:", error);
+        res.status(500).json({ message: "Error getting admin" });
+    }
+};
+
 //Delete Admin from the Database
 export const deleteEntity = async (req, res) => {
   let { entityType, id } = req.params;
@@ -278,3 +295,27 @@ export const viewUsersInfo = async (req, res) => {
     res.status(500).json({ message: "Error viewing uploaded documents" });
   }
 };
+
+// get all users
+export const getUsers = async (req, res) => {
+    console.log("entered getUsers");
+    try {
+      const tourists = await touristModel.find({}, '-profilePicture');
+      const tourGuides = await tourGuideModel.find({}, '-idCardImage -certificationImages -profilePhoto');
+      const sellers = await sellerModel.find({}, '-idCardImage -taxationRegistryImage -logo');
+      const advertisers = await advertiserModel.find({}, '-idCardImage -taxationRegistryImage -logo -companyProfile');
+      const governors = await governorModel.find();
+  
+      res.status(200).json({
+        tourists,
+        tourGuides,
+        sellers,
+        advertisers,
+        governors
+      });
+  
+    } catch (error) {
+      console.error("Error getting users:", error);
+      res.status(500).json({ message: "Error getting users" });
+    }
+  };

@@ -56,7 +56,7 @@ function Login() {
       const routes = {
         tourist: '/tourist',
         tourguide: '/tour-guide',
-        admin: '/AdminDashboard',
+        admin: '/admin',
         seller: '/seller-dashboard',
         advertiser: '/advertiser-dashboard',
         tourism_governor: '/governor',
