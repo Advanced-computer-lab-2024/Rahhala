@@ -40,7 +40,7 @@ Ensure all the following technologies are installed on your device:
 - npm
 
 ## Installation Steps
-1. Copy the repository URL link. Open VS Code and clone the repository using the URL you copied
+1. Copy the repository URL link. Open VS Code and clone the repository using the URL you copied.
 2. Create a new file called .env and store the following values in it.
 ```javascript
 MONGO_URI=mongodb+srv://Yahya:rHgkAP86GQwz2DE@rahhala.tazze.mongodb.net/rahhala?retryWrites=true&w=majority&appName=Rahhala
