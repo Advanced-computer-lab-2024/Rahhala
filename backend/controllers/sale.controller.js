@@ -117,8 +117,10 @@ export const getTotalSales = async (req, res) => {
 
 
 export const getFilteredSalesReport = async (req, res) => { //type is Activity or Itinerary or Product capital first letter
+  console.log("entered getFilteredSalesReport")
   const sellerId = req.user.id; // Get the seller ID from the verified JWT payload
   const { type, startDate, endDate, month, year } = req.body; // Use body instead of query
+  console.log("req.body",req.body)
 
   try {
     const matchConditions = { sellerId: new mongoose.Types.ObjectId(sellerId) };

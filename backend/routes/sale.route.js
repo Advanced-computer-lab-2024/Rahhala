@@ -11,7 +11,7 @@ const router = express.Router();
 router.get('/totalSales', getTotalSales);
 router.get('/salesReport', verifyToken, getSalesReport);
 router.get('/totalTourists', verifyToken, getTotalTouristsForUser);
-router.get('/filterSalesReport', verifyToken, getFilteredSalesReport);
+router.post('/filterSalesReport', verifyToken, getFilteredSalesReport);
 router.post('/filterTotalTourists', verifyToken, filterTotalTouristsForUser);
 
 

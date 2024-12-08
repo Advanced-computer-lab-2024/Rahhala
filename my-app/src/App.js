@@ -19,6 +19,7 @@ import SalesReport from './components/dashboards/TourGuide/SalesReport';
 import Notifications from './components/dashboards/Notifications';
 import AdminDashboard from './components/dashboards/Admin/AdminDashboard';
 import NewAccountRequests from './components/dashboards/Admin/NewAccountRequests';
+import AdminSalesReport from './components/dashboards/Admin/AdminSalesReport';
 function App() {
   return (
     <AuthProvider>
@@ -43,6 +44,7 @@ function App() {
           <Route path="/ResetPassword" element={<ResetPassword />} />
           <Route path="/TourGuideSales" element={<SalesReport />} />
           <Route path="/Notifications" element={<Notifications />} />
+          <Route path="/admin/sales" element={<AdminSalesReport />} />
 
 
         </Routes>
