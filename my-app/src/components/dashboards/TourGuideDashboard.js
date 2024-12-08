@@ -160,8 +160,6 @@ const TourGuideDashboard = () => {
             <button onClick={toggleDropdown} className="p-2">
             <span className="block w-6 h-1 bg-white mb-1"></span>
             <span className="block w-6 h-1 bg-white mb-1"></span>
-            <span className="block w-6 h-1 bg-white mb-1"></span>
-            <span className="block w-6 h-1 bg-white mb-1"></span>
             <span className="block w-6 h-1 bg-white"></span>
             </button>
             {dropdownOpen && (

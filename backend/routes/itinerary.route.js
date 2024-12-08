@@ -1,4 +1,5 @@
 import express from "express";
+import itineraryModel from "../models/itinerary.model.js";
 import { verifyToken } from "../middleware/auth.js";
 import {
   addItinerary,
@@ -34,6 +35,7 @@ router.put('/flag', verifyToken, flagItinerary);
 router.put('/unflag/:id', verifyToken, unflagItinerary);
 router.put('/updateIsActive/:userId', async (req, res) => {
   try {
+        console.log("entered updateIsActive");
       await itineraryModel.updateMany({ userId: req.params.userId }, { isActive: false });
       res.status(200).json({ message: 'Itineraries updated successfully' });
   } catch (error) {
