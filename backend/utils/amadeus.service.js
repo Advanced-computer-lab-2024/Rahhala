@@ -34,6 +34,7 @@ const searchFlights = async (origin, destination, departureDate) => {
   if (!accessToken) {
     await getAccessToken();
   }
+  console.log('origin , destination , departureDate', origin , destination , departureDate)
 
   try {
     const response = await axios.get(AMADEUS_FLIGHT_SEARCH_URL, {
