@@ -36,6 +36,7 @@ import ManageActivities from './components/dashboards/Advertiser/ManageActivitie
 import SellerDashBoard from './components/dashboards/Seller/SellerDashBoard';
 import SellerProducts from './components/dashboards/Seller/SellerProducts';
 import TouristOrders from './components/dashboards/Tourist/TouristOrders';
+import Flights from './components/dashboards/Tourist/Flights';
 function App() {
     return (
         <AuthProvider>
@@ -77,6 +78,7 @@ function App() {
                 <Route path="/Notifications" element={<Notifications />} />
                 <Route path="/seller" element={<SellerDashBoard />} />
                 <Route path="/seller-products" element={<SellerProducts />} />
+                <Route path="/flights" element={<Flights />} />
             </Routes>
         </Router>
     </AuthProvider>
