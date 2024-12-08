@@ -111,10 +111,8 @@ const touristSchema = new mongoose.Schema({
     ],
     deliveryAddresses: [
         {
-            address: {
-                type: String,
-                required: true,
-            },
+            type: String,
+            required: false,
         },
     ],
     paymentMethod: {
@@ -127,11 +125,6 @@ const touristSchema = new mongoose.Schema({
     },
     orders: [
         {
-            orderId: { 
-                type: String, 
-                required: true, 
-                unique: true 
-            },
             status: { 
                 type: String, 
                 default: 'pending' 
