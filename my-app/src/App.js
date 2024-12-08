@@ -35,6 +35,7 @@ import FlagItinerary from './components/dashboards/Admin/FlagItinerary';
 import ManageActivities from './components/dashboards/Advertiser/ManageActivities';
 import SellerDashBoard from './components/dashboards/Seller/SellerDashBoard';
 import SellerProducts from './components/dashboards/Seller/SellerProducts';
+import TouristOrders from './components/dashboards/Tourist/TouristOrders';
 import Flights from './components/dashboards/Tourist/Flights';
 function App() {
     return (
@@ -53,6 +54,7 @@ function App() {
                 <Route path="/products" element={<Products />} />
                 <Route path="/redeem" element={<Redeem />} />
                 <Route path="/complaints" element={<Complaints />} />
+                <Route path="/tourist-orders" element={<TouristOrders />} />
                 <Route path="/tour-guide" element={<TourGuide />} />
                 <Route path="/tour-guide-profile" element={<TourGProfile />} />
                 <Route path="/admin" element={<AdminDashboard />} />

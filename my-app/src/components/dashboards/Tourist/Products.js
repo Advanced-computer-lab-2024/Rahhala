@@ -2,13 +2,15 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
 import axiosInstance from '../../../utils/axiosConfig';
 import Header from "../../Header.js";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
 function ProductsPage() {
     const { auth } = useContext(AuthContext);
     const [view, setView] = useState("all");
     const [products, setProducts] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [quantity, setQuantity] = useState(1);
+    const [quantity, setQuantity] = useState([]);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -17,6 +19,11 @@ function ProductsPage() {
     const [reviews, setReviews] = useState([]);
     const [sellers, setSellers] = useState([]);
     const [tourist, setTourist] = useState(null);
+    const [cart, setCart] = useState([]);
+    const [cartModalOpen, setCartModalOpen] = useState(false);
+    const [deliveryAddresses, setDeliveryAddresses] = useState([]);
+    const [selectedAddress, setSelectedAddress] = useState(null);
+    const [checkoutModalOpen, setCheckoutModalOpen] = useState(false);
     useEffect(() => {
         const fetchSellers = async () => {
             try {
@@ -46,6 +53,11 @@ function ProductsPage() {
                 }
                 else {
                     setProducts(response.data);
+                    const initialQuantities = response.data.reduce((acc, product) => {
+                        acc[product._id] = 1;
+                        return acc;
+                    }, {});
+                    setQuantity(initialQuantities);
                     setError(null);
                 }
             } catch (err) {
@@ -70,6 +82,7 @@ function ProductsPage() {
             try {
                 const response = await axiosInstance.get('/api/tourist');
                 setTourist(response.data);
+                setDeliveryAddresses(response.data.profile.deliveryAddresses);
             } catch (err) {
                 console.log("Error is", err); // Log error if fetching fails
                 setError('Failed to fetch tourist');
@@ -88,6 +101,7 @@ function ProductsPage() {
 
         if (productReviews.length === 0) return null;
         
+        
         const averageRating = productReviews.length > 0
             ? (productReviews.reduce((sum, review) => sum + review.rating, 0) / productReviews.length).toFixed(1)
             : 0;
@@ -99,7 +113,8 @@ function ProductsPage() {
             <div>
                 <h4 className="font-semibold mt-2">Reviews</h4>
                 <div className="mb-3 p-2 bg-gray-50 rounded">
-                    <p className="text-sm text-gray-500">Seller: {seller.username}</p>
+                    {seller ? <p className="text-sm text-gray-500">Seller: {seller.username}</p> : 
+                    <p className="text-sm text-gray-500">Admin</p>}
 
                     <p className="text-lg font-medium">
                         Average Rating: {averageRating}/5.0 ⭐
@@ -144,6 +159,7 @@ function ProductsPage() {
 
     const handleBuy = async (product) => {
         try {
+            console.log("quantity is", quantity);
             await axiosInstance.post('/api/tourist/purchaseProduct', {
                 productId: product._id,
                 quantity: quantity[product._id]
@@ -210,14 +226,97 @@ function ProductsPage() {
         closeReviewModal();
     };
 
+    const handleAddToCart = async (product) => {
+        try {
+            await axiosInstance.post(`/api/tourist/cart/${product._id}/${quantity[product._id] || 1}`);
+            alert('Product added to cart!');
+        } catch (err) {
+            alert(err.response.data.error);
+            console.log("Error is", err); // Log error if adding to cart fails
+            setError(err.response.data.error);
+        }
+    };
+
+    const handleCartClick = async () => {
+        try {
+            const response = await axiosInstance.get('/api/tourist');
+            const touristData = response.data;
+            const cartItems = touristData.profile.cart.map(cartItem => {
+                const product = products.find(p => p._id === cartItem.product);
+                return { ...product, quantity: cartItem.quantity };
+            });
+            setCart(cartItems);
+            setCartModalOpen(true);
+        } catch (err) {
+            console.log("Error is", err); // Log error if fetching cart fails
+            setError('Failed to fetch cart');
+        }
+    };
+
+    const closeCartModal = () => {
+        setCartModalOpen(false);
+    };
+
+    const handleRemoveFromCart = async (productId) => {
+        try {
+            await axiosInstance.delete(`/api/tourist/cart/${productId}`);
+            alert('Product removed from cart!');
+            window.location.reload();
+        } catch (err) {
+            alert(err.response.data.error);
+            console.log("Error is", err); // Log error if removing from cart fails
+            setError(err.response.data.error);
+        }
+    };
+
+    const handleCheckoutClick = async () => {
+        try {
+            const response = await axiosInstance.get('/api/tourist');
+            const touristData = response.data;
+            if (touristData.profile.deliveryAddresses.length === 0) {
+                alert('You need to add a delivery address in your profile page.');
+            } else {
+                setDeliveryAddresses(touristData.profile.deliveryAddresses);
+                setCheckoutModalOpen(true);
+            }
+        } catch (err) {
+            console.log("Error is", err); // Log error if fetching delivery addresses fails
+            setError('Failed to fetch delivery addresses');
+        }
+    };
+
+    const handleCheckout = async () => {
+        if (!selectedAddress) {
+            alert('Please select a delivery address.');
+            return;
+        }
+        try {
+            await axiosInstance.post('/api/tourist/checkout', {
+                deliveryAddress: selectedAddress
+            });
+            alert('Checkout successful!');
+            window.location.reload();
+        } catch (err) {
+            alert(err.response?.data?.error || err.response?.data?.message || 'Failed to checkout');
+            console.log("Error is", err); // Log error if checkout fails
+            setError(err.response.data.error);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-100">
             <Header toggleDropdown={toggleDropdown} dropdownOpen={dropdownOpen} />
-
             <div className="flex justify-center items-center mt-20">
                 <div className="w-full max-w-4xl bg-white p-6 rounded-lg shadow-lg">
-                    <h1 className="text-2xl font-semibold mb-6 text-center">Products</h1>
-
+                    <div className="flex justify-between items-center mb-6">
+                        <h1 className="text-2xl font-semibold text-center flex-grow">Products</h1>
+                        <FontAwesomeIcon 
+                            icon={faShoppingCart} 
+                            className="text-gray-600 cursor-pointer" 
+                            size="2x"
+                            onClick={handleCartClick}
+                        />
+                    </div>
                     <div className="flex justify-center space-x-4 mb-6">
                         <button
                             onClick={() => setView("all")}
@@ -311,6 +410,16 @@ function ProductsPage() {
                                         </>
                                     )}
                                 </div>
+                                {view !== "purchased" && (
+                                    <div className="flex w-full justify-center mt-2">
+                                        <button
+                                            onClick={() => handleAddToCart(product)}
+                                            className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600"
+                                        >
+                                            Add to Cart
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -411,6 +520,90 @@ function ProductsPage() {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {cartModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+                        <h2 className="text-xl font-semibold mb-4">Your Cart</h2>
+                        {cart.length > 0 ? (
+                            cart.map((item, idx) => (
+                                <div key={idx} className="mb-4">
+                                    <img
+                                        src={item.picture ? `data:image/jpeg;base64,${item.picture}` : '/path/to/default/image.jpg'}
+                                        alt={item.name}
+                                        className="w-24 h-24 object-cover rounded-lg mb-4" // Changed size to w-24 h-24
+                                    />
+                                    <h3 className="text-lg font-semibold">{item.name}</h3>
+                                    <p className="text-lg font-semibold text-blue-500">${item.price}</p>
+                                    <p className="text-gray-600">Quantity: {item.quantity}</p>
+                                    <button
+                                        onClick={() => handleRemoveFromCart(item._id)}
+                                        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 mt-2"
+                                    >
+                                        Remove from Cart
+                                    </button>
+                                    {idx < cart.length - 1 && <hr className="my-4 border-1 border-gray-700" />} {/* Darker and thicker separator */}
+                                </div>
+                            ))
+                        ) : (
+                            <p>Your cart is empty</p>
+                        )}
+                        <div className="flex justify-end mt-4 space-x-4">
+                            <button
+                                onClick={closeCartModal}
+                                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                            >
+                                Close
+                            </button>
+                            {cart.length > 0 && (
+                                <button
+                                    onClick={handleCheckoutClick}
+                                    className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                                >
+                                    Checkout
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {checkoutModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+                        <h2 className="text-xl font-semibold mb-4">Select Delivery Address</h2>
+                        <div className="mb-4">
+                            {deliveryAddresses.map((address, idx) => (
+                                <div key={idx} className="mb-2">
+                                    <input
+                                        type="radio"
+                                        id={`address-${address}`}
+                                        name="deliveryAddress"
+                                        value={JSON.stringify(address)} // Convert address object to string
+                                        onChange={(e) => setSelectedAddress(JSON.parse(e.target.value))} // Parse string back to object
+                                        className="mr-2"
+                                    />
+                                    <label htmlFor={`address-${idx}`} className="text-gray-700">{address}</label>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="flex justify-end mt-4 space-x-4">
+                            <button
+                                onClick={() => setCheckoutModalOpen(false)}
+                                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleCheckout}
+                                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                            >
+                                Confirm
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

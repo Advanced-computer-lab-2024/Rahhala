@@ -22,6 +22,7 @@ There is also middlware file for user verifications.
 The frontend consists of dashboards for every type of users.
 
 ## Screenshots
+
 ## Technologies Used
 
 Frontend:
@@ -119,7 +120,25 @@ npm run dev
 npm start
 ```  
 ## API Reference
+Amadeus Self-Service API has been used to implement the flight and hotel search and booking services for tourists using the system.
 ## Credits
+Yahya Al-Azhary
+
+Youssef Hazem
+
+Mahmoud Ayman 
+
+Abdelrahman Gaballa
+
+Youssef Hendawy
+
+Mohamed Hefny
+
+Omar Elsherif
+
+Moazz Ahmed Abdellatif
+
+Marawan Tawhed Fathy Abdelhady
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)

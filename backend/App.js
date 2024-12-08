@@ -20,6 +20,7 @@ import complaintRoute from "./routes/complaint.route.js";
 import reviewRoute from "./routes/review.route.js";
 import saleRoute from "./routes/sale.route.js";
 import flightRoutes from "./routes/flight.route.js";
+import hotelRoutes from "./routes/hotel.route.js";
 
 import cors from "cors";
 import museumTagRoutes from './routes/museumTag.routes.js';
@@ -52,6 +53,8 @@ app.use("/api/sale", saleRoute);
 app.use('/api/museumTags', museumTagRoutes);
 
 app.use('/api/flights', flightRoutes);
+app.use('/api/hotels', hotelRoutes);
+
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
