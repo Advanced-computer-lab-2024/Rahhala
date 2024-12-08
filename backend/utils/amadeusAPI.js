@@ -9,7 +9,7 @@ const API_SECRET = process.env.AMADEUS_API_SECRET;
 
 let token = null;
 
-const getAuthToken = async () => {
+export const getAuthToken = async () => {
   if (token && token.expires_at > Date.now()) {
     return token.access_token;
   }
@@ -32,5 +32,3 @@ const getAuthToken = async () => {
     throw error;
   }
 };
-
-module.exports = { getAuthToken };
