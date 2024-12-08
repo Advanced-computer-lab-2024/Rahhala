@@ -57,7 +57,7 @@ function Login() {
         tourist: '/tourist',
         tourguide: '/tour-guide',
         admin: '/admin',
-        seller: '/seller-dashboard',
+        seller: '/seller',
         advertiser: '/advertiser',
         tourism_governor: '/governor',
       };

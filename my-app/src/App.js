@@ -33,6 +33,8 @@ import UpdateAdvertiserAccount from './components/dashboards/Advertiser/UpdateAd
 import AdminProducts from './components/dashboards/Admin/AdminProducts';
 import FlagItinerary from './components/dashboards/Admin/FlagItinerary';
 import ManageActivities from './components/dashboards/Advertiser/ManageActivities';
+import SellerDashBoard from './components/dashboards/Seller/SellerDashBoard';
+import SellerProducts from './components/dashboards/Seller/SellerProducts';
 function App() {
     return (
         <AuthProvider>
@@ -71,6 +73,8 @@ function App() {
                 <Route path="/ResetPassword" element={<ResetPassword />} />
                 <Route path="/TourGuideSales" element={<SalesReport />} />
                 <Route path="/Notifications" element={<Notifications />} />
+                <Route path="/seller" element={<SellerDashBoard />} />
+                <Route path="/seller-products" element={<SellerProducts />} />
             </Routes>
         </Router>
     </AuthProvider>

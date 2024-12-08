@@ -26,8 +26,7 @@ export const getSeller = async (req, res) => {
 export const editSeller = async (req, res) => {
   const id = req.user.id;
   console.log("entered edit seller with id ", req.user.id);
-  const { name, description, email, username, logo, status } = req.body;
-  console.log(logo);
+  const { name, description, email, username, logo, status, idCardImage, taxationRegistryImage } = req.body;
 
 
   try {
@@ -41,6 +40,8 @@ export const editSeller = async (req, res) => {
           email,
           username,
           logo,
+          idCardImage,
+          taxationRegistryImage,
           status
         }
       },

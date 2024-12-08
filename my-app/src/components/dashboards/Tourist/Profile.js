@@ -149,13 +149,34 @@ const TouristProfile = () => {
 
         {!isEditing ? (
           <div className="space-y-4">
-            {Object.keys(user).map((key) => (
-              <div className="flex justify-between" key={key}>
-                <p className="font-bold">{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:</p>
-                <p>{key === 'dob' ? new Date(user[key]).toLocaleDateString() : user[key]}</p>
-              </div>
-            ))}
-            <div className="mt-4">
+{Object.keys(user).map((key) => (
+  <div className="flex justify-between" key={key}>
+    <p className="font-bold">{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:</p>
+    <p>
+      {Array.isArray(user[key])
+        ? user[key].map((item, index) => (
+            <div key={index}>
+              {typeof item === 'object' && item !== null
+                ? Object.keys(item).map((subKey) => (
+                    <div key={subKey}>
+                      <span className="font-bold">{subKey.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:</span> {item[subKey]}
+                    </div>
+                  ))
+                : item}
+            </div>
+          ))
+        : typeof user[key] === 'object' && user[key] !== null
+        ? Object.keys(user[key]).map((subKey) => (
+            <div key={subKey}>
+              <span className="font-bold">{subKey.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:</span> {user[key][subKey]}
+            </div>
+          ))
+        : key === 'dob'
+        ? new Date(user[key]).toLocaleDateString()
+        : user[key]}
+    </p>
+  </div>
+))}            <div className="mt-4">
             <p className="text-center text-gray-700">
                 You are a level {level} wanderer!
             </p>
