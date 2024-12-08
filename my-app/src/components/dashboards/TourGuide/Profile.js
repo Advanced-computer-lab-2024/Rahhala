@@ -4,7 +4,7 @@ import { AuthContext } from '../../../context/AuthContext';
 import axiosInstance from '../../../utils/axiosConfig';
 import Header from '../../Header.js';
 
-const TouristProfile = () => {
+const TouristGuideProfile = () => {
     const { auth } = useContext(AuthContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState('');
@@ -442,4 +442,4 @@ const TouristProfile = () => {
     );
 };
 
-export default TouristProfile;
+export default TouristGuideProfile;

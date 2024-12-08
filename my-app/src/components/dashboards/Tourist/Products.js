@@ -39,6 +39,7 @@ function ProductsPage() {
                 }
                 else{
                     response = await axiosInstance.get('/api/product');
+                    response.data = response.data.filter(product => !product.isArchived);
                 }
                 if (response.data.length === 0) {
                     setError('No products found');
@@ -242,7 +243,8 @@ function ProductsPage() {
                         {filterProducts().map((product) => (
                             <div key={product._id} className="bg-white shadow-md rounded-lg p-4 text-center w-full lg:w-72">
                                 <img
-                                    src={product.image}
+
+                                    src={product.picture? `data:image/jpeg;base64,${product.picture}` : '/path/to/default/image.jpg'}
                                     alt={product.name}
                                     className="w-full h-48 object-cover rounded-lg mb-4"
                                 />

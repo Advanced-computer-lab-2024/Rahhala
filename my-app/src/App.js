@@ -26,43 +26,45 @@ import ActivityCategories from './components/dashboards/Admin/ActivityCategories
 import AdminComplaints from './components/dashboards/Admin/Complaints';
 import AdminDashboard from './components/dashboards/Admin/AdminDashboard';
 import DeleteAccount from './components/dashboards/Admin/DeleteAccount';
+import AdminProducts from './components/dashboards/Admin/AdminProducts';
+import FlagItinerary from './components/dashboards/Admin/FlagItinerary';
 function App() {
-  return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-            <Route path="/" element={<Navigate to="/signup" replace />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/guest" element={<Guest />} />
-            <Route path="/tourist" element={<Tourist />} />
-            <Route path="/governor" element={<Governor />} />
-            <Route path="/tourist-profile" element={<TouristProfile />} />
-            <Route path="/tourist-booking" element={<TouristBook />} />
-            <Route path="/tourist-wallet" element={<TouristWallet />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/redeem" element={<Redeem />} />
-            <Route path="/complaints" element={<Complaints />} />
-            <Route path="/tour-guide" element={<TourGuide />} />
-            <Route path="/tour-guide-profile" element={<TourGProfile />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/management" element={<AdminManagment />} />
-            <Route path="/admin/new-account-requests" element={<NewAccountRequests />} />
-            <Route path="/admin/account-deletion-requests" element={<AccountDeletionRequest />} />
-            <Route path="/admin/preference-tags" element={<PreferenceTags />} />
-            <Route path="/admin/add-user" element={<AddUser />} />
-            <Route path="/admin/activity-categories" element={<ActivityCategories />} />
-            <Route path="/admin/complaints" element={<AdminComplaints />} />
-            <Route path="/admin/delete-account" element={<DeleteAccount />} />
-          <Route path="/ResetPassword" element={<ResetPassword />} />
-          <Route path="/TourGuideSales" element={<SalesReport />} />
-          <Route path="/Notifications" element={<Notifications />} />
-
-
-        </Routes>
-      </Router>
+    return (
+        <AuthProvider>
+        <Router>
+            <Routes>
+                <Route path="/" element={<Navigate to="/signup" replace />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/guest" element={<Guest />} />
+                <Route path="/tourist" element={<Tourist />} />
+                <Route path="/governor" element={<Governor />} />
+                <Route path="/tourist-profile" element={<TouristProfile />} />
+                <Route path="/tourist-booking" element={<TouristBook />} />
+                <Route path="/tourist-wallet" element={<TouristWallet />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/redeem" element={<Redeem />} />
+                <Route path="/complaints" element={<Complaints />} />
+                <Route path="/tour-guide" element={<TourGuide />} />
+                <Route path="/tour-guide-profile" element={<TourGProfile />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin/management" element={<AdminManagment />} />
+                <Route path="/admin/new-account-requests" element={<NewAccountRequests />} />
+                <Route path="/admin/account-deletion-requests" element={<AccountDeletionRequest />} />
+                <Route path="/admin/preference-tags" element={<PreferenceTags />} />
+                <Route path="/admin/add-user" element={<AddUser />} />
+                <Route path="/admin/activity-categories" element={<ActivityCategories />} />
+                <Route path="/admin/complaints" element={<AdminComplaints />} />
+                <Route path="/admin/delete-account" element={<DeleteAccount />} />
+                <Route path="/admin/products" element={<AdminProducts />} />
+                <Route path="/admin/flag-itinerary" element={<FlagItinerary />} />
+                <Route path="/ResetPassword" element={<ResetPassword />} />
+                <Route path="/TourGuideSales" element={<SalesReport />} />
+                <Route path="/Notifications" element={<Notifications />} />
+            </Routes>
+        </Router>
     </AuthProvider>
-  );
+    );
 }
 
 export default App;

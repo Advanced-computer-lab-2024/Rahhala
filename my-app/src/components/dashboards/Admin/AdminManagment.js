@@ -56,6 +56,13 @@ const AdminManagment = () => {
                 Activity Categories
             </button>
             <button
+                className="w-full px-4 py-2 bg-green-600 text-white rounded"
+                onClick={() => handleButtonClick('/admin/products')}
+            >
+                Products
+            </button>
+
+            <button
                 className="w-full px-4 py-2 bg-yellow-600 text-white rounded"
                 onClick={() => handleButtonClick('/admin/complaints')}
             >

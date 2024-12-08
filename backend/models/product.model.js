@@ -10,7 +10,13 @@ const productSchema = mongoose.Schema(
       // Show seller
       type: mongoose.Schema.Types.ObjectId,
       ref: "seller",
-      required: true,
+      required: false,
+    },
+    adminId: {
+      // Show admin
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "admin",
+      required: false,
     },
     quantity: { type: Number, required: true }, // Field for available quantity
     sales: { type: Number, default: 0 }, // Field for total sales
