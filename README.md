@@ -31,15 +31,16 @@ Authentication:
 
 
 ## Code Examples
+
 ## Installations
 
-## Prerequisites
+### Prerequisites
 Ensure all the following technologies are installed on your device:
 - Node.js
 - Git
 - npm
 
-## Installation Steps
+### Installation Steps
 1. Copy the repository URL link. Open VS Code and clone the repository using the URL you copied.
 2. Create a new file called .env and store the following values in it.
 ```javascript
