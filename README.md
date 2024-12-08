@@ -120,6 +120,7 @@ npm run dev
 npm start
 ```  
 ## API Reference
+Amadeus Self-Service API has been used to implement the flight and hotel search and booking services for tourists using the system.
 ## Credits
 Yahya Al-Azhary
 Youssef Hazem
