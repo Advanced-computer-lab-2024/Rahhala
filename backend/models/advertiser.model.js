@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 const advertiserSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -29,33 +30,9 @@ const advertiserSchema = new mongoose.Schema({
     hotline: {
         type: String,
         required: true
-    },
-    companyProfile: {
-        type: String,
-        required: true
-    },
-    logo: {
-        type: String, // Store the logo as a Base64 string
-        required: true
-    },
-    acceptedTermsAndConditions: {
-        type: Boolean,
-        default: false
-    },
-    status: {
-        type: String,
-        enum: ['accepted', 'rejected', 'pending'],
-        default: 'pending'
-    },
-    resetPasswordOTP: {
-        type: String,
-      },
-        resetPasswordExpires: {
-        type: Date,
-      },
-    
-});
+    }
+}, { timestamps: true });
 
-const advertiserModel = mongoose.model('Advertiser', advertiserSchema);
+const Advertiser = mongoose.model('Advertiser', advertiserSchema);
 
-export default advertiserModel;
+export default Advertiser;

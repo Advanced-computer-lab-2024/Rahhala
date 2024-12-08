@@ -7,10 +7,12 @@ const AdminSalesReport = () => {
     const { auth } = useContext(AuthContext);
     const [totalSales, setTotalSales] = useState(null);
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [showActivities, setShowActivities] = useState(true);
+    const [showActivities, setShowActivities] = useState(false);
+    const [showUserStats, setshowUserStats] = useState(false);
+
     const [showItineraries, setShowItineraries] = useState(true);
     const [showProducts, setShowProducts] = useState(true);
-
+    const [userStatistics, setUserStatistics] = useState(null);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const navigate = useNavigate();
@@ -25,6 +27,20 @@ const AdminSalesReport = () => {
             }
         };
         fetchTotalSales();
+    }, [auth]);
+
+    useEffect(() => {
+        const fetchUserStatistics = async () => {
+            try {
+                const response = await axiosInstance.get('/api/admin/userStats');
+                console.log("response is", response.data);
+                setUserStatistics(response.data);
+                console.log("user stats", userStatistics);
+            } catch (error) {
+                console.log('Error:', error);
+            }
+        };
+        fetchUserStatistics();
     }, [auth]);
 
     const handleFilter = async () => {
@@ -43,6 +59,8 @@ const AdminSalesReport = () => {
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
     };
+
+  
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col">
@@ -96,6 +114,13 @@ const AdminSalesReport = () => {
                             className={`px-4 py-2 rounded ${showProducts ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
                         >
                             Products
+                        </button>
+
+                        <button
+                            onClick={() => setshowUserStats(!showUserStats)}
+                            className={`px-4 py-2 rounded ${showUserStats ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                        >
+                            User Statistics
                         </button>
                         
                         
@@ -165,6 +190,34 @@ const AdminSalesReport = () => {
                                     </div>
                                 </div>
                             )}
+                            {showUserStats && (
+                        <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col w-full text-sm relative">
+                            <h3 className="text-lg font-semibold mb-4">User Statistics</h3>
+                            <div className="space-y-2">
+                            <h3 className="text-lg font-semibold mb-4">Total Users</h3>
+                            <div className="flex space-x-4">
+                            <div><strong>Tourists : {userStatistics.totalUsers.tourists}</strong></div>
+                            <div><strong>Tour Guides : {userStatistics.totalUsers.tourguides}</strong></div>
+                            <div><strong>Advertisers : {userStatistics.totalUsers.advertisers}</strong></div>
+                            <div><strong>Sellers : {userStatistics.totalUsers.sellers}</strong></div>
+                        </div>
+                                <h4 className="text-md font-semibold">New Users Per Month</h4>
+                                {Object.entries(userStatistics.newUsersPerMonth).map(([key, value]) => (
+                                    <div key={key}>
+                                        <strong>{key}:</strong>
+                                        <div className="flex space-x-4">
+                                            {value.map((monthData, index) => (
+                                                <div key={index}>
+                                                    <strong>{monthData._id}:</strong>
+                                                    <p>{monthData.count}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                         </>
                     ) : (
                         <p>No sales report available.</p>

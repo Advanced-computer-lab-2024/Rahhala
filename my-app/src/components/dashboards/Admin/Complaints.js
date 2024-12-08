@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../utils/axiosConfig';
 import { AuthContext } from '../../../context/AuthContext';
 import AdminHeader from './AdminHeader';
-import { set } from 'mongoose';
 
 const AdminComplaints = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);

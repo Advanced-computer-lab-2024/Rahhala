@@ -15,7 +15,8 @@ import {
   rejectTourGuide,
   viewUsersInfo, 
   getAdmin,
-  getUsers
+  getUsers,
+  viewUserStatistics
 } from "../controllers/admin.controller.js";
 
 const router = express.Router();
@@ -35,6 +36,7 @@ router.put("/acceptTourGuide/:_id", verifyToken, acceptTourGuide);
 router.put("/rejectTourGuide/:_id", verifyToken, rejectTourGuide);
 router.get("/viewUsersInfo", verifyToken, viewUsersInfo);
 router.get("/users", verifyToken, getUsers);
+router.get("/userStats", viewUserStatistics);
 
 
 export default router;
