@@ -95,6 +95,7 @@ const TouristProfile = () => {
       }
     }
   };
+  const [newAddress, setNewAddress] = useState('');
 
   useEffect(() => {
     if (auth.isAuthenticated && auth.user) {
@@ -292,6 +293,23 @@ const TouristProfile = () => {
     } finally {
       setIsUploadingImage(false);
     }
+  };
+
+  const handleAddAddress = () => {
+    if (newAddress.trim()) {
+      setUpdatedUser((prev) => ({
+        ...prev,
+        deliveryAddresses: [...prev.deliveryAddresses, newAddress.trim()],
+      }));
+      setNewAddress('');
+    }
+  };
+
+  const handleRemoveAddress = (index) => {
+    setUpdatedUser((prev) => ({
+      ...prev,
+      deliveryAddresses: prev.deliveryAddresses.filter((_, i) => i !== index),
+    }));
   };
 
   const getPointsMultiplier = (level) => {
@@ -667,6 +685,73 @@ const TouristProfile = () => {
                             </button>
                           ))}
                       </div>
+                    </div>
+                    <div className="flex justify-between">
+                        <label className="font-bold" htmlFor="profilePicture">Profile Picture:</label>
+                        <input
+                            type="file"
+                            id="profilePicture"
+                            name="profilePicture"
+                            accept="image/*"
+                            onChange={handleProfilePictureChange}
+                            className="p-2 border rounded"
+                        />
+                    </div>
+                    <div className="flex justify-between">
+                        <label className="font-bold" htmlFor="deliveryAddresses">Delivery Addresses:</label>
+                        <div>
+                            {updatedUser.deliveryAddresses.map((address, index) => (
+                                <div key={index} className="flex items-center">
+                                    <input
+                                        type="text"
+                                        value={address}
+                                        onChange={(e) => {
+                                            const newAddresses = [...updatedUser.deliveryAddresses];
+                                            newAddresses[index] = e.target.value;
+                                            setUpdatedUser((prev) => ({ ...prev, deliveryAddresses: newAddresses }));
+                                        }}
+                                        className="p-2 border rounded mr-2"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveAddress(index)}
+                                        className="py-1 px-2 bg-red-500 text-white rounded-md"
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            ))}
+                            <div className="flex items-center mt-2">
+                                <input
+                                    type="text"
+                                    value={newAddress}
+                                    onChange={(e) => setNewAddress(e.target.value)}
+                                    className="p-2 border rounded mr-2"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleAddAddress}
+                                    className="py-1 px-2 bg-green-500 text-white rounded-md"
+                                >
+                                    Add Address
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex justify-center mt-6 space-x-4">
+                        <button
+                            type="submit"
+                            className="py-2 px-4 bg-green-500 text-white rounded-md"
+                        >
+                            Save Changes
+                        </button>
+                        <button
+                            onClick={() => setIsEditing(false)}
+                            type="button"
+                            className="py-2 px-4 bg-gray-500 text-white rounded-md"
+                        >
+                            Cancel
+                        </button>
                     </div>
                     <p className="mt-1 text-sm text-gray-500">Click to add or remove preferences</p>
                   </div>

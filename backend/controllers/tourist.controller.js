@@ -163,16 +163,8 @@ export const editTourist = async (req, res) => {
   console.log("entered editTourist");
   console.log(req.body);
   const id = req.user.id; // Get the user ID from the verified JWT payload
-  const {
-    email,
-    mobileNumber,
-    nationality,
-    dob,
-    occupation,
-    profilePicture,
-    currency,
-    preferences,
-  } = req.body;
+  const { email, mobileNumber, nationality, dob, occupation, 
+    profilePicture, currency, preferences, deliveryAddresses } = req.body;
 
   try {
     const tourist = await touristModel.findById(id);
@@ -190,6 +182,7 @@ export const editTourist = async (req, res) => {
     tourist.profilePicture = profilePicture || tourist.profilePicture;
     tourist.currency = currency || tourist.currency;
     tourist.preferences = preferences || tourist.preferences;
+    tourist.deliveryAddresses = deliveryAddresses || tourist.deliveryAddresses;
 
     await tourist.save();
     res.status(200).json({
@@ -429,29 +422,26 @@ export const purchaseProduct = async (req, res) => {
     // Increase the product sales
     product.sales += quantity;
 
-    // Check if the product is already in the purchasedProducts array
-    const existingProductIndex = tourist.purchasedProducts.findIndex(
-      (p) => p.productId.toString() === productId
-    );
+        // Check if the product is already in the purchasedProducts array
+        const existingProductIndex = tourist.purchasedProducts.findIndex(p => p.productId.toString() === productId);
+        if (existingProductIndex !== -1) {
+            // If the product is already in the array, update the quantity
+            tourist.purchasedProducts[existingProductIndex].quantity += Number(quantity);
+        } else {
 
-    if (existingProductIndex !== -1) {
-      // If the product is already in the array, update the quantity
-      tourist.purchasedProducts[existingProductIndex].quantity += quantity;
-    } else {
-      // If the product is not in the array, add it with the specified quantity
-      tourist.purchasedProducts.push({ productId, quantity });
-    }
-
-    await tourist.save();
-    await product.save();
-    await recordSale({
-      saleId: productId,
-      type: "Product",
-      sellerId: product.sellerId,
-      buyerId: touristId,
-      price: product.price,
-      quantity: quantity,
-    });
+            // If the product is not in the array, add it with the specified quantity
+            tourist.purchasedProducts.push({ productId, quantity });
+        }
+        await tourist.save();
+        await product.save();
+        await recordSale({
+          saleId: productId,
+          type: 'Product',
+          sellerId: product.sellerId,
+          buyerId: touristId,
+          price: product.price,
+          quantity: quantity,
+        });
 
     res
       .status(200)
@@ -897,9 +887,10 @@ export const removeProductFromWishlist = async (req, res) => {
 };
 
 export const addItemToCart = async (req, res) => {
-  const touristId = req.user.id;
+    console.log("Adding item to cart");
+  const touristId = req.user.id; 
   const { productId, quantity } = req.params;
-
+  console.log(req.params);
   // Validate ObjectId format for tourist and product
   if (!mongoose.Types.ObjectId.isValid(touristId)) {
     return res.status(400).json({ error: "Invalid tourist ID" });
@@ -933,13 +924,13 @@ export const addItemToCart = async (req, res) => {
       (item) => item.product.toString() === productId
     );
 
-    if (productIndex !== -1) {
-      // If the product is already in the cart, update the quantity
-      tourist.cart[productIndex].quantity += quantity;
-    } else {
-      // If the product is not in the cart, add it to the cart
-      tourist.cart.push({ product: productId, quantity });
-    }
+      if (productIndex !== -1) {
+          // If the product is already in the cart, update the quantity
+          tourist.cart[productIndex].quantity += Number(quantity);
+      } else {
+          // If the product is not in the cart, add it to the cart
+          tourist.cart.push({ product: productId, quantity });
+      }
 
     // Save the updated tourist document
     await tourist.save();
@@ -1029,8 +1020,8 @@ export const changeItemQuantityInCart = async (req, res) => {
   }
 };
 export const checkoutOrder = async (req, res) => {
-  const touristId = req.user.id;
-  const { deliveryAddress } = req.params;
+  const touristId = req.user.id; 
+  const { deliveryAddress } = req.body;
 
   try {
     // Find the tourist
@@ -1083,21 +1074,20 @@ export const checkoutOrder = async (req, res) => {
     // Deduct totalAmount from wallet
     tourist.wallet -= totalAmount;
 
-    // Add the order to the orders array
-    const newOrder = {
-      orderId: new mongoose.Types.ObjectId().toString(),
-      status: "pending",
-      paymentStatus: "completed",
-      totalAmount,
-      paymentMethod: "wallet", // Assuming wallet payment here
-      items: updatedCart.map((item) => ({
-        productId: item.product,
-        quantity: item.quantity,
-        price: item.totalPrice,
-      })),
-      deliveryAddress: deliveryAddress || "", // Use the provided address or empty string
-    };
-    tourist.orders.push(newOrder);
+      // Add the order to the orders array
+      const newOrder = {
+          status: 'pending',
+          paymentStatus: 'completed',
+          totalAmount,
+          paymentMethod: 'wallet', // Assuming wallet payment here
+          items: updatedCart.map(item => ({
+              productId: item.product,
+              quantity: item.quantity,
+              price: item.totalPrice
+          })),
+          deliveryAddress: deliveryAddress || '', // Use the provided address or empty string
+      };
+      tourist.orders.push(newOrder);
 
     // Clear the cart after successful checkout
     tourist.cart = [];
@@ -1155,10 +1145,8 @@ export const cancelOrder = async (req, res) => {
       return res.status(404).json({ error: "Tourist not found" });
     }
 
-    // Find the order in the tourist's orders array
-    const orderIndex = tourist.orders.findIndex(
-      (order) => order.orderId === orderId
-    );
+      // Find the order in the tourist's orders array
+      const orderIndex = tourist.orders.findIndex(order => order._id === orderId);
 
     if (orderIndex === -1) {
       return res.status(404).json({ error: "Order not found" });

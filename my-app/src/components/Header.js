@@ -31,6 +31,7 @@ const Header = () => {
               <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => navigate('/flights')}>Flights</li>
               <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => navigate('/tourist-wallet')}>Wallet</li>
               <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => navigate('/products')}>Products</li>
+              <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => navigate('/tourist-orders')}>My Orders</li>
               <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => navigate('/redeem')}>Redeem</li>
               <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => navigate('/complaints')}>Complaints</li>
               <li className="px-4 py-2 hover:bg-red-200 cursor-pointer text-red-600" onClick={() => (handleLogout())}>Sign Out</li>
