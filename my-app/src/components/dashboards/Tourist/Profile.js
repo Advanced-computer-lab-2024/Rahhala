@@ -21,6 +21,7 @@ const TouristProfile = () => {
   const [userPreferences, setUserPreferences] = useState([]);
   const [showImageModal, setShowImageModal] = useState(false);
   const [modalImageSrc, setModalImageSrc] = useState('');
+  const [newAddress, setNewAddress] = useState('');
 
   useEffect(() => {
     if (auth.isAuthenticated && auth.user) {
@@ -164,6 +165,23 @@ const TouristProfile = () => {
     }
   };
 
+  const handleAddAddress = () => {
+    if (newAddress.trim()) {
+      setUpdatedUser((prev) => ({
+        ...prev,
+        deliveryAddresses: [...prev.deliveryAddresses, newAddress.trim()],
+      }));
+      setNewAddress('');
+    }
+  };
+
+  const handleRemoveAddress = (index) => {
+    setUpdatedUser((prev) => ({
+      ...prev,
+      deliveryAddresses: prev.deliveryAddresses.filter((_, i) => i !== index),
+    }));
+  };
+
   if (auth.loading || !user) {
     return <div>Loading user data...</div>;
   }
@@ -222,11 +240,23 @@ return (
                     <div className="flex justify-between">
                         <p className="font-bold">Profile Picture:</p>
                         <img
-                            src={user.profilePicture || '/path/to/default/image.jpg'}
+                            src={user.profilePicture}
                             alt="Profile"
                             className="w-16 h-16 rounded-full cursor-pointer"
-                            onClick={() => handleImageClick(user.profilePicture || '/path/to/default/image.jpg')}
+                            onClick={() => handleImageClick( user.profilePicture || '/path/to/default/image.jpg')}
                         />
+                    </div>
+                    <div className="flex justify-between">
+                        <p className="font-bold">Delivery Addresses:</p>
+                        <div>
+                            {user.deliveryAddresses.length > 0 ? (
+                                user.deliveryAddresses.map((address, index) => (
+                                    <p key={index}>{address}</p>
+                                ))
+                            ) : (
+                                <p>None</p>
+                            )}
+                        </div>
                     </div>
                     <p className="text-center text-gray-700">You are a level {level} wanderer!</p>
                     <div className="flex justify-center space-x-4 mt-4">
@@ -328,6 +358,47 @@ return (
                             onChange={handleProfilePictureChange}
                             className="p-2 border rounded"
                         />
+                    </div>
+                    <div className="flex justify-between">
+                        <label className="font-bold" htmlFor="deliveryAddresses">Delivery Addresses:</label>
+                        <div>
+                            {updatedUser.deliveryAddresses.map((address, index) => (
+                                <div key={index} className="flex items-center">
+                                    <input
+                                        type="text"
+                                        value={address}
+                                        onChange={(e) => {
+                                            const newAddresses = [...updatedUser.deliveryAddresses];
+                                            newAddresses[index] = e.target.value;
+                                            setUpdatedUser((prev) => ({ ...prev, deliveryAddresses: newAddresses }));
+                                        }}
+                                        className="p-2 border rounded mr-2"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveAddress(index)}
+                                        className="py-1 px-2 bg-red-500 text-white rounded-md"
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            ))}
+                            <div className="flex items-center mt-2">
+                                <input
+                                    type="text"
+                                    value={newAddress}
+                                    onChange={(e) => setNewAddress(e.target.value)}
+                                    className="p-2 border rounded mr-2"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleAddAddress}
+                                    className="py-1 px-2 bg-green-500 text-white rounded-md"
+                                >
+                                    Add Address
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div className="flex justify-center mt-6 space-x-4">
                         <button
