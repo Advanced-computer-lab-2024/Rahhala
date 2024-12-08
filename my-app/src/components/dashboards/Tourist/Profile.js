@@ -19,6 +19,8 @@ const TouristProfile = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [userPreferences, setUserPreferences] = useState([]);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [modalImageSrc, setModalImageSrc] = useState('');
 
   useEffect(() => {
     if (auth.isAuthenticated && auth.user) {
@@ -58,38 +60,33 @@ const TouristProfile = () => {
 
   const handleCheckboxChange = (tagId) => {
     setUpdatedUser((prev) => {
-      const preferencesArray = prev.preferences.split(', ').filter(Boolean);
-      const newPreferences = preferencesArray.includes(tagId)
-        ? preferencesArray.filter((id) => id !== tagId)
-        : [...preferencesArray, tagId];
-      return { ...prev, preferences: newPreferences.join(', ') };
+        const newPreferences = prev.preferences.some((tag) => tag._id === tagId)
+            ? prev.preferences.filter((tag) => tag._id !== tagId)
+            : [...prev.preferences, preferenceTags.find((tag) => tag._id === tagId)];
+        return { ...prev, preferences: newPreferences };
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const preferencesIds = updatedUser.preferences.split(', ').map((name) => {
-        const tag = preferenceTags.find((tag) => tag.name === name);
-        return tag ? tag._id : name;
-      });
+        const preferencesIds = updatedUser.preferences.map((tag) => tag._id);
+        const updatedUserWithIds = { ...updatedUser, preferences: preferencesIds };
 
-      const updatedUserWithIds = { ...updatedUser, preferences: preferencesIds.join(', ') };
+        await axiosInstance.put(`/api/tourist/edit/${auth.user._id}`, updatedUserWithIds);
+        const response = await axiosInstance.get('/api/tourist/');
+        const preferenceTagsResponse = await axiosInstance.get('/api/preferenceTag');
+        const preferenceTags = preferenceTagsResponse.data;
+        response.data.profile.preferences = response.data.profile.preferences.map((preferenceId) => {
+            const tag = preferenceTags.find((tag) => tag._id === preferenceId);
+            return tag ? tag.name : preferenceId;
+        });
 
-      await axiosInstance.put(`/api/tourist/edit/${auth.user._id}`, updatedUserWithIds);
-      const response = await axiosInstance.get('/api/tourist/');
-      const preferenceTagsResponse = await axiosInstance.get('/api/preferenceTag');
-      const preferenceTags = preferenceTagsResponse.data;
-      response.data.profile.preferences = response.data.profile.preferences.map((preferenceId) => {
-        const tag = preferenceTags.find((tag) => tag._id === preferenceId);
-        return tag ? tag.name : preferenceId;
-      }).join(', ');
-
-      setUser(response.data.profile);
-      setUpdatedUser(response.data.profile);
-      setIsEditing(false);
+        setUser(response.data.profile);
+        setUpdatedUser(response.data.profile);
+        setIsEditing(false);
     } catch (err) {
-      setError('Failed to update profile.');
+        setError('Failed to update profile.');
     }
   };
 
@@ -131,267 +128,275 @@ const TouristProfile = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
+  const handleImageClick = (src) => {
+    setModalImageSrc(src);
+    setShowImageModal(true);
+  };
+
   if (auth.loading || !user) {
     return <div>Loading user data...</div>;
   }
 
-  return (
+return (
     <div className="min-h-screen bg-gray-100">
-      <Header toggleDropdown={toggleDropdown} dropdownOpen={dropdownOpen} />
-      <button
-        onClick={() => navigate(-1)}
-        className="text-blue-500 mt-4 ml-4 flex items-center"
-      >
-        ← Back
-      </button>
+        <Header toggleDropdown={toggleDropdown} dropdownOpen={dropdownOpen} />
+        <button
+            onClick={() => navigate(-1)}
+            className="text-blue-500 mt-4 ml-4 flex items-center"
+        >
+            ← Back
+        </button>
 
-      <div className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg mt-8">
-        <h1 className="text-2xl font-semibold mb-6">Profile Information</h1>
+        <div className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg mt-8">
+            <h1 className="text-2xl font-semibold mb-6">Profile Information</h1>
 
-        {error && <div className="text-red-500 mb-4">{error}</div>}
+            {error && <div className="text-red-500 mb-4">{error}</div>}
 
-        {!isEditing ? (
-          <div className="space-y-4">
-            <div className="flex justify-between">
-              <p className="font-bold">Username:</p>
-              <p>{user.username}</p>
-            </div>
-            <div className="flex justify-between">
-              <p className="font-bold">Email:</p>
-              <p>{user.email}</p>
-            </div>
-            <div className="flex justify-between">
-              <p className="font-bold">Mobile Number:</p>
-              <p>{user.mobileNumber}</p>
-            </div>
-            <div className="flex justify-between">
-              <p className="font-bold">Nationality:</p>
-              <p>{user.nationality}</p>
-            </div>
-            <div className="flex justify-between">
-              <p className="font-bold">Date of Birth:</p>
-              <p>{new Date(user.dob).toLocaleDateString()}</p>
-            </div>
-            <div className="flex justify-between">
-              <p className="font-bold">Occupation:</p>
-              <p>{user.occupation}</p>
-            </div>
-            <div className="flex justify-between">
-              <p className="font-bold">Preferences:</p>
-              {(user.preferences?.length > 0) ? (
-                user.preferences.map((preference) => (
-                    <p key={preference._id}>{preference.name}</p>
-                    ))
-
-              ) : ("None")}
-
-            </div>
-            <div className="flex justify-between">
-              <p className="font-bold">Profile Picture:</p>
-              <img
-                src={user.profilePicture ? user.profilePicture : '/path/to/default/image.jpg'}
-                alt="Profile"
-                className="w-16 h-16 rounded-full"
-              />
-            </div>
-            <p className="text-center text-gray-700">You are a level {level} wanderer!</p>
-            <div className="flex justify-center space-x-4 mt-4">
-              <button
-                onClick={() => setIsEditing(true)}
-                className="py-2 px-4 bg-blue-500 text-white rounded-md"
-              >
-                Update Account
-              </button>
-              <button
-                onClick={() => setShowPasswordModal(true)}
-                className="py-2 px-4 bg-blue-500 text-white rounded-md"
-              >
-                Change Password
-              </button>
-              <button
-                onClick={handleRequestAccountDeletion}
-                className="py-2 px-4 bg-red-500 text-white rounded-md"
-              >
-                Request Account Deletion
-              </button>
-            </div>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex justify-between">
-              <label className="font-bold" htmlFor="email">Email:</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={updatedUser.email}
-                onChange={handleInputChange}
-                className="p-2 border rounded"
-                required
-              />
-            </div>
-            <div className="flex justify-between">
-              <label className="font-bold" htmlFor="mobileNumber">Mobile Number:</label>
-              <input
-                type="text"
-                id="mobileNumber"
-                name="mobileNumber"
-                value={updatedUser.mobileNumber}
-                onChange={handleInputChange}
-                className="p-2 border rounded"
-                required
-              />
-            </div>
-            <div className="flex justify-between">
-              <label className="font-bold" htmlFor="nationality">Nationality:</label>
-              <input
-                type="text"
-                id="nationality"
-                name="nationality"
-                value={updatedUser.nationality}
-                onChange={handleInputChange}
-                className="p-2 border rounded"
-                required
-              />
-            </div>
-            <div className="flex justify-between">
-              <label className="font-bold" htmlFor="dob">Date of Birth:</label>
-              <input
-                type="date"
-                id="dob"
-                name="dob"
-                value={updatedUser.dob}
-                onChange={handleInputChange}
-                className="p-2 border rounded"
-                required
-              />
-            </div>
-            <div className="flex justify-between">
-              <label className="font-bold" htmlFor="occupation">Occupation:</label>
-              <input
-                type="text"
-                id="occupation"
-                name="occupation"
-                value={updatedUser.occupation}
-                onChange={handleInputChange}
-                className="p-2 border rounded"
-              />
-            </div>
-            <div className="flex justify-between">
-              <label className="font-bold" htmlFor="preferences">Preferences:</label>
-              <div className="grid grid-cols-2 gap-4">
-                {preferenceTags.map((tag) => (
-                  <div key={tag._id} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id={tag._id}
-                      name="preferences"
-                      value={tag._id}
-                      checked={updatedUser.preferences.split(', ').includes(tag._id)}
-                      onChange={() => handleCheckboxChange(tag._id)}
-                      className="mr-2"
-                    />
-                    <label htmlFor={tag._id} className="text-sm">{tag.name}</label>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="flex justify-between">
-              <label className="font-bold" htmlFor="profilePicture">Profile Picture:</label>
-              <input
-                type="file"
-                id="profilePicture"
-                name="profilePicture"
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  if (file) {
-                    setUpdatedUser((prev) => ({
-                      ...prev,
-                      profilePicture: URL.createObjectURL(file),
-                    }));
-                  }
-                }}
-                className="p-2 border rounded"
-              />
-            </div>
-            <div className="flex justify-center mt-6 space-x-4">
-              <button
-                type="submit"
-                className="py-2 px-4 bg-green-500 text-white rounded-md"
-              >
-                Save Changes
-              </button>
-              <button
-                onClick={() => setIsEditing(false)}
-                type="button"
-                className="py-2 px-4 bg-gray-500 text-white rounded-md"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        )}
-      </div>
-
-      {showPasswordModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-xl font-semibold mb-4">Change Password</h2>
-            <form onSubmit={handleChangePassword} className="space-y-4">
-              <div>
-                <label className="block font-bold mb-1" htmlFor="currentPassword">Current Password:</label>
-                <input
-                  type="password"
-                  id="currentPassword"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="p-2 border rounded w-full"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block font-bold mb-1" htmlFor="newPassword">New Password:</label>
-                <input
-                  type="password"
-                  id="newPassword"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="p-2 border rounded w-full"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block font-bold mb-1" htmlFor="confirmNewPassword">Confirm New Password:</label>
-                <input
-                  type="password"
-                  id="confirmNewPassword"
-                  value={confirmNewPassword}
-                  onChange={(e) => setConfirmNewPassword(e.target.value)}
-                  className="p-2 border rounded w-full"
-                  required
-                />
-              </div>
-              <div className="flex justify-end space-x-4">
-                <button
-                  type="submit"
-                  className="py-2 px-4 bg-green-500 text-white rounded-md"
-                >
-                  Save
-                </button>
-                <button
-                  onClick={() => setShowPasswordModal(false)}
-                  type="button"
-                  className="py-2 px-4 bg-gray-500 text-white rounded-md"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
+            {!isEditing ? (
+                <div className="space-y-4">
+                    <div className="flex justify-between">
+                        <p className="font-bold">Username:</p>
+                        <p>{user.username}</p>
+                    </div>
+                    <div className="flex justify-between">
+                        <p className="font-bold">Email:</p>
+                        <p>{user.email}</p>
+                    </div>
+                    <div className="flex justify-between">
+                        <p className="font-bold">Mobile Number:</p>
+                        <p>{user.mobileNumber}</p>
+                    </div>
+                    <div className="flex justify-between">
+                        <p className="font-bold">Nationality:</p>
+                        <p>{user.nationality}</p>
+                    </div>
+                    <div className="flex justify-between">
+                        <p className="font-bold">Date of Birth:</p>
+                        <p>{new Date(user.dob).toLocaleDateString()}</p>
+                    </div>
+                    <div className="flex justify-between">
+                        <p className="font-bold">Occupation:</p>
+                        <p>{user.occupation}</p>
+                    </div>
+                    <div className="flex justify-between">
+                        <p className="font-bold">Preferences:</p>
+                        <div>
+                            {(user.preferences?.length > 0) ? (
+                                user.preferences.map((preference) => (
+                                    <p key={preference._id}>{preference.name}</p>
+                                ))
+                            ) : ("None")}
+                        </div>
+                    </div>
+                    <div className="flex justify-between">
+                        <p className="font-bold">Profile Picture:</p>
+                        <img
+                            src={user.profilePicture ? user.profilePicture : '/path/to/default/image.jpg'}
+                            alt="Profile"
+                            className="w-16 h-16 rounded-full cursor-pointer"
+                            onClick={() => handleImageClick(user.profilePicture ? user.profilePicture : '/path/to/default/image.jpg')}
+                        />
+                    </div>
+                    <p className="text-center text-gray-700">You are a level {level} wanderer!</p>
+                    <div className="flex justify-center space-x-4 mt-4">
+                        <button
+                            onClick={() => setIsEditing(true)}
+                            className="py-2 px-4 bg-blue-500 text-white rounded-md"
+                        >
+                            Update Account
+                        </button>
+                        <button
+                            onClick={() => setShowPasswordModal(true)}
+                            className="py-2 px-4 bg-blue-500 text-white rounded-md"
+                        >
+                            Change Password
+                        </button>
+                        <button
+                            onClick={handleRequestAccountDeletion}
+                            className="py-2 px-4 bg-red-500 text-white rounded-md"
+                        >
+                            Request Account Deletion
+                        </button>
+                    </div>
+                </div>
+            ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="flex justify-between">
+                        <label className="font-bold" htmlFor="email">Email:</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={updatedUser.email}
+                            onChange={handleInputChange}
+                            className="p-2 border rounded"
+                            required
+                        />
+                    </div>
+                    <div className="flex justify-between">
+                        <label className="font-bold" htmlFor="mobileNumber">Mobile Number:</label>
+                        <input
+                            type="text"
+                            id="mobileNumber"
+                            name="mobileNumber"
+                            value={updatedUser.mobileNumber}
+                            onChange={handleInputChange}
+                            className="p-2 border rounded"
+                            required
+                        />
+                    </div>
+                    <div className="flex justify-between">
+                        <label className="font-bold" htmlFor="nationality">Nationality:</label>
+                        <input
+                            type="text"
+                            id="nationality"
+                            name="nationality"
+                            value={updatedUser.nationality}
+                            onChange={handleInputChange}
+                            className="p-2 border rounded"
+                            required
+                        />
+                    </div>
+                    <div className="flex justify-between">
+                        <label className="font-bold" htmlFor="dob">Occupation:</label>
+                        <input
+                            type="text"
+                            id="occupation"
+                            name="occupation"
+                            value={updatedUser.occupation}
+                            onChange={handleInputChange}
+                            className="p-2 border rounded"
+                        />
+                    </div>
+                    <div className="flex justify-between">
+                        <label className="font-bold" htmlFor="preferences">Preferences:</label>
+                        <div className="grid grid-cols-2 gap-4">
+                            {preferenceTags.map((tag) => (
+                                <div key={tag._id} className="flex items-center">
+                                    <input
+                                        type="checkbox"
+                                        id={tag._id}
+                                        name="preferences"
+                                        value={tag._id}
+                                        checked={updatedUser.preferences.some((preference) => preference._id === tag._id)}
+                                        onChange={() => handleCheckboxChange(tag._id)}
+                                        className="mr-2"
+                                    />
+                                    <label htmlFor={tag._id} className="text-sm">{tag.name}</label>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="flex justify-between">
+                        <label className="font-bold" htmlFor="profilePicture">Profile Picture:</label>
+                        <input
+                            type="file"
+                            id="profilePicture"
+                            name="profilePicture"
+                            onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                    setUpdatedUser((prev) => ({
+                                        ...prev,
+                                        profilePicture: URL.createObjectURL(file),
+                                    }));
+                                }
+                            }}
+                            className="p-2 border rounded"
+                        />
+                    </div>
+                    <div className="flex justify-center mt-6 space-x-4">
+                        <button
+                            type="submit"
+                            className="py-2 px-4 bg-green-500 text-white rounded-md"
+                        >
+                            Save Changes
+                        </button>
+                        <button
+                            onClick={() => setIsEditing(false)}
+                            type="button"
+                            className="py-2 px-4 bg-gray-500 text-white rounded-md"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            )}
         </div>
-      )}
+
+        {showPasswordModal && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 className="text-xl font-semibold mb-4">Change Password</h2>
+                    <form onSubmit={handleChangePassword} className="space-y-4">
+                        <div>
+                            <label className="block font-bold mb-1" htmlFor="currentPassword">Current Password:</label>
+                            <input
+                                type="password"
+                                id="currentPassword"
+                                value={currentPassword}
+                                onChange={(e) => setCurrentPassword(e.target.value)}
+                                className="p-2 border rounded w-full"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block font-bold mb-1" htmlFor="newPassword">New Password:</label>
+                            <input
+                                type="password"
+                                id="newPassword"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                className="p-2 border rounded w-full"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block font-bold mb-1" htmlFor="confirmNewPassword">Confirm New Password:</label>
+                            <input
+                                type="password"
+                                id="confirmNewPassword"
+                                value={confirmNewPassword}
+                                onChange={(e) => setConfirmNewPassword(e.target.value)}
+                                className="p-2 border rounded w-full"
+                                required
+                            />
+                        </div>
+                        <div className="flex justify-end space-x-4">
+                            <button
+                                type="submit"
+                                className="py-2 px-4 bg-green-500 text-white rounded-md"
+                            >
+                                Save
+                            </button>
+                            <button
+                                onClick={() => setShowPasswordModal(false)}
+                                type="button"
+                                className="py-2 px-4 bg-gray-500 text-white rounded-md"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        )}
+
+        {showImageModal && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="bg-white p-6 rounded-lg shadow-lg">
+                    <img src={modalImageSrc} alt="Profile" className="max-w-full max-h-full" />
+                    <button
+                        onClick={() => setShowImageModal(false)}
+                        className="mt-4 py-2 px-4 bg-gray-500 text-white rounded-md"
+                    >
+                        Close
+                    </button>
+                </div>
+            </div>
+        )}
     </div>
-  );
+);
 };
 
 export default TouristProfile;

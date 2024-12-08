@@ -12,8 +12,6 @@ const UpdateAdvertiserAccount = () => {
         email: '',
         websiteLink: '',
         hotline: '',
-        idCardImage: '',
-        taxationRegistryImage: '',
         logo: ''
     });
     const [error, setError] = useState(null); // State to handle errors
@@ -22,11 +20,10 @@ const UpdateAdvertiserAccount = () => {
     const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
     useEffect(() => {
-        if (!auth.isAuthenticated) {
-            navigate('/login');
-        }
 
         // Only fetch profile if the user is authenticated
         if (auth.isAuthenticated && auth.user) {
@@ -39,8 +36,6 @@ const UpdateAdvertiserAccount = () => {
                         email: profile.email,
                         websiteLink: profile.websiteLink,
                         hotline: profile.hotline,
-                        idCardImage: profile.idCardImage,
-                        taxationRegistryImage: profile.taxationRegistryImage,
                         logo: profile.logo
                     });
                 } catch (err) {
@@ -83,6 +78,10 @@ const UpdateAdvertiserAccount = () => {
 
     const handleChangePassword = async (e) => {
         e.preventDefault();
+        if (newPassword !== confirmPassword) {
+            alert('New passwords do not match.');
+            return;
+        }
         try {
             await axiosInstance.put(`/api/advertiser/changePassword`, {
                 oldPassword,
@@ -91,14 +90,15 @@ const UpdateAdvertiserAccount = () => {
             setShowChangePasswordForm(false);
             setOldPassword('');
             setNewPassword('');
-            setSuccess('Password changed successfully.');
+            setConfirmPassword('');
+            alert('Password changed successfully.');
         } catch (err) {
-            setError('Error changing password.');
+            alert(err.response?.data?.message || err.response?.data?.error || 'Error changing password.');
         }
     };
 
     const toggleChangePasswordForm = () => {
-        setShowChangePasswordForm(!showChangePasswordForm);
+        setIsPasswordModalOpen(!isPasswordModalOpen);
         setError(null);
         setSuccess(null);
     };
@@ -164,26 +164,6 @@ const UpdateAdvertiserAccount = () => {
                             />
                         </div>
                         <div>
-                            <label className="block text-gray-700">ID Card Image:</label>
-                            <input
-                                type="text"
-                                name="idCardImage"
-                                value={formData.idCardImage}
-                                onChange={handleChange}
-                                className="w-full px-3 py-2 border rounded"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-gray-700">Taxation Registry Image:</label>
-                            <input
-                                type="text"
-                                name="taxationRegistryImage"
-                                value={formData.taxationRegistryImage}
-                                onChange={handleChange}
-                                className="w-full px-3 py-2 border rounded"
-                            />
-                        </div>
-                        <div>
                             <label className="block text-gray-700">Logo:</label>
                             
                             <input
@@ -201,34 +181,75 @@ const UpdateAdvertiserAccount = () => {
                         onClick={toggleChangePasswordForm}
                         className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded mt-4"
                     >
-                        {showChangePasswordForm ? 'Cancel' : 'Change Password'}
+                        Change Password
                     </button>
-                    {showChangePasswordForm && (
-                        <form onSubmit={handleChangePassword} className="mt-4">
-                            <div>
-                                <label className="block text-gray-700">Old Password:</label>
-                                <input
-                                    type="password"
-                                    name="oldPassword"
-                                    value={oldPassword}
-                                    onChange={(e) => setOldPassword(e.target.value)}
-                                    className="w-full px-3 py-2 border rounded"
-                                />
+                    {isPasswordModalOpen && (
+                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                            <div className="bg-white p-6 rounded-lg shadow-lg">
+                                <h2 className="text-xl font-semibold mb-4">Change Password</h2>
+                                <form onSubmit={handleChangePassword} className="space-y-4">
+                                    <div className="flex justify-between">
+                                        <label className="font-bold" htmlFor="oldPassword">Old Password:</label>
+                                        <input
+                                            type="password"
+                                            id="oldPassword"
+                                            name="oldPassword"
+                                            placeholder='Old Password'
+                                            value={oldPassword}
+                                            onChange={(e) => setOldPassword(e.target.value)}
+                                            className="p-2 border rounded"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <label className="font-bold" htmlFor="newPassword">New Password:</label>
+                                        <input
+                                            type="password"
+                                            id="newPassword"
+                                            name="newPassword"
+                                            placeholder='New Password'
+                                            value={newPassword}
+                                            onChange={(e) => setNewPassword(e.target.value)}
+                                            className="p-2 border rounded"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="flex justify-between gap-6">
+                                        <label className="font-bold" htmlFor="confirmPassword">Confirm Password:</label>
+                                        <input
+                                            type="password"
+                                            id="confirmPassword"
+                                            name="confirmPassword"
+                                            placeholder='Confirm Password'
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            className="p-2 border rounded"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="flex justify-center mt-6 space-x-4">
+                                        <button
+                                            type="submit"
+                                            className="py-2 px-4 bg-blue-500 text-white rounded-md"
+                                        >
+                                            Change Password
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setIsPasswordModalOpen(false);
+                                                setOldPassword('');
+                                                setNewPassword('');
+                                                setConfirmPassword('');
+                                            }}
+                                            type="button"
+                                            className="py-2 px-4 bg-gray-500 text-white rounded-md"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
-                            <div>
-                                <label className="block text-gray-700">New Password:</label>
-                                <input
-                                    type="password"
-                                    name="newPassword"
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    className="w-full px-3 py-2 border rounded"
-                                />
-                            </div>
-                            <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mt-4">
-                                Change Password
-                            </button>
-                        </form>
+                        </div>
                     )}
                 </div>
             </div>

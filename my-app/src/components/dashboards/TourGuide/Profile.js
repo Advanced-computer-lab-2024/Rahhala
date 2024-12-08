@@ -8,6 +8,7 @@ const TouristGuideProfile = () => {
     const { auth } = useContext(AuthContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState('');
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
     const [user, setUser ] = useState({
         id: 1,
@@ -113,7 +114,7 @@ const TouristGuideProfile = () => {
             try{
                 await axiosInstance.put("/api/tourGuide/edit/changePassword",{oldPassword:passwordData.oldPassword,newPassword:passwordData.newPassword})
                 alert('Password changed successfully');
-                setIsChangingPassword(false);
+                setIsPasswordModalOpen(false);
                 setPasswordData({ oldPassword: '', newPassword: '', confirmNewPassword: '' });
 
             } catch (err) {
@@ -234,19 +235,19 @@ const TouristGuideProfile = () => {
                 onClick={() => {setIsEditing(true)
                     setUpdatedUser({...updatedUser, certificationImages:[]})
                 }}
-                className="mt-4 py-2 px-4 bg-blue-500 text-white rounded-md"
+                className="w-1/2 py-2 px-4 bg-blue-500 text-white rounded-md"
                 >
                 Update Account
                 </button>
                 <button
                 onClick={handleRequestAccountDeletion}
-                className="mt-4 ml-4 py-2 px-4 bg-red-500 text-white rounded-md"
+                className=" ml-4 py-2 px-4 bg-red-500 text-white rounded-md"
                 >
                 Request Account Deletion
                 </button>
                 <button
-                onClick={() => setIsChangingPassword(true)}
-                className="py-2 px-4 bg-white text-blue-500 border-2 border-blue-500 rounded-md"
+                onClick={() => setIsPasswordModalOpen(true)}
+                className="w-1/2 py-2 px-4 bg-white text-blue-500 border-2 border-blue-500 rounded-md"
                 >
                 Change Password
                 </button>
@@ -369,63 +370,71 @@ const TouristGuideProfile = () => {
             </form>
             )}
 
-            {isChangingPassword && (
-            <form onSubmit={handleChangePassword} className="space-y-4 mt-6">
-                <h2 className="text-xl font-semibold">Change Password</h2>
-                <div className="flex justify-between">
-                <label className="font-bold" htmlFor="oldPassword">Old Password:</label>
-                <input
-                    type="password"
-                    id="oldPassword"
-                    name="oldPassword"
-                    value={passwordData.oldPassword}
-                    onChange={(e) => setPasswordData({ ...passwordData, oldPassword: e.target.value })}
-                    className="p-2 border rounded"
-                    required
-                />
+            {isPasswordModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg">
+                        <h2 className="text-xl font-semibold mb-4">Change Password</h2>
+                        <form onSubmit={handleChangePassword} className="space-y-4">
+                            <div className="flex justify-between">
+                                <label className="font-bold" htmlFor="oldPassword">Old Password:</label>
+                                <input
+                                    type="password"
+                                    id="oldPassword"
+                                    name="oldPassword"
+                                    placeholder='Old Password'
+                                    value={passwordData.oldPassword}
+                                    onChange={(e) => setPasswordData({ ...passwordData, oldPassword: e.target.value })}
+                                    className="p-2 border rounded"
+                                    required
+                                />
+                            </div>
+                            <div className="flex justify-between">
+                                <label className="font-bold" htmlFor="newPassword">New Password:</label>
+                                <input
+                                    type="password"
+                                    id="newPassword"
+                                    name="newPassword"
+                                    placeholder='New Password'
+                                    value={passwordData.newPassword}
+                                    onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                                    className="p-2 border rounded"
+                                    required
+                                />
+                            </div>
+                            <div className="flex justify-between gap-6">
+                                <label className="font-bold" htmlFor="confirmNewPassword">Confirm Password:</label>
+                                <input
+                                    type="password"
+                                    id="confirmNewPassword"
+                                    name="confirmNewPassword"
+                                    placeholder='Confirm New Password'
+                                    value={passwordData.confirmNewPassword}
+                                    onChange={(e) => setPasswordData({ ...passwordData, confirmNewPassword: e.target.value })}
+                                    className="p-2 border rounded"
+                                    required
+                                />
+                            </div>
+                            <div className="flex justify-center mt-6 space-x-4">
+                                <button
+                                    type="submit"
+                                    className="py-2 px-4 bg-blue-500 text-white rounded-md"
+                                >
+                                    Change Password
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setIsPasswordModalOpen(false);
+                                        setPasswordData({ oldPassword: '', newPassword: '', confirmNewPassword: '' });
+                                    }}
+                                    type="button"
+                                    className="py-2 px-4 bg-gray-500 text-white rounded-md"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div className="flex justify-between">
-                <label className="font-bold" htmlFor="newPassword">New Password:</label>
-                <input
-                    type="password"
-                    id="newPassword"
-                    name="newPassword"
-                    value={passwordData.newPassword}
-                    onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                    className="p-2 border rounded"
-                    required
-                />
-                </div>
-                <div className="flex justify-between">
-                <label className="font-bold" htmlFor="confirmNewPassword">Confirm New Password:</label>
-                <input
-                    type="password"
-                    id="confirmNewPassword"
-                    name="confirmNewPassword"
-                    value={passwordData.confirmNewPassword}
-                    onChange={(e) => setPasswordData({ ...passwordData, confirmNewPassword: e.target.value })}
-                    className="p-2 border rounded"
-                    required
-                />
-                </div>
-                <div className="flex justify-center mt-6 space-x-4">
-                <button
-                    type="submit"
-                    className="py-2 px-4 bg-blue-500 text-white rounded-md"
-                >
-                    Change Password
-                </button>
-                <button
-                    onClick={() => {setIsChangingPassword(false)
-                    setPasswordData({ oldPassword: '', newPassword: '', confirmNewPassword: '' });
-                    }}
-                    type="button"
-                    className="py-2 px-4 bg-gray-500 text-white rounded-md"
-                >
-                    Cancel
-                </button>
-                </div>
-            </form>
             )}
              {isModalOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">

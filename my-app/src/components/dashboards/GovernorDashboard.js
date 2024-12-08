@@ -43,8 +43,7 @@ function GovernorDashboard() {
         name: `${tag.type} - ${tag.historicalPeriod}`
       })));
     } catch (err) {
-      setErrorMessage('Failed to fetch tags.');
-      setTimeout(() => setErrorMessage(''), 3000);
+      alert('Failed to fetch tags.');
     }
   };
 
@@ -59,8 +58,7 @@ function GovernorDashboard() {
       setShowMuseums(!showMuseums);
       setActiveForm('museums');
     } catch (err) {
-      setErrorMessage('Failed to fetch museums.');
-      setTimeout(() => setErrorMessage(''), 3000);
+      alert('Failed to fetch museums.');
     }
   };
   const [expandedMuseum, setExpandedMuseum] = useState(null);
@@ -138,8 +136,7 @@ function GovernorDashboard() {
       
     } catch (err) {
       console.error('Error creating museum:', err);
-      setErrorMessage('Failed to create museum.');
-      setTimeout(() => setErrorMessage(''), 3000);
+      alert('Failed to create museum.');
     }
   };
 
@@ -189,8 +186,7 @@ function GovernorDashboard() {
       }
     } catch (err) {
       console.error('Error updating museum:', err.response?.data || err);
-      setErrorMessage(err.response?.data?.message || 'Failed to update museum.');
-      setTimeout(() => setErrorMessage(''), 3000);
+      alert(err.response?.data?.message || 'Failed to update museum.');
     }
   };
 
@@ -204,8 +200,7 @@ function GovernorDashboard() {
       handleShowMuseums(); // Refresh list
     } catch (err) {
       console.error('Error deleting museum:', err);
-      setErrorMessage(err.response?.data?.message || 'Failed to delete museum.');
-      setTimeout(() => setErrorMessage(''), 3000);
+      alert(err.response?.data?.message || 'Failed to delete museum.');
     }
   };
 
@@ -216,13 +211,13 @@ function GovernorDashboard() {
         oldPassword,
         newPassword
       });
-      setSuccessMessage('Password changed successfully');
+      alert('Password changed successfully');
       setErrorMessage(null);
       setOldPassword('');
       setNewPassword('');
       setActiveForm(null);
     } catch (err) {
-      setErrorMessage(err.response?.data?.message || 'Failed to change password');
+      alert(err.response?.data?.message || 'Failed to change password');
       setSuccessMessage(null);
     }
   };
@@ -308,8 +303,7 @@ function GovernorDashboard() {
       setEditingTag(null);
       fetchTags();
     } catch (error) {
-      setErrorMessage('Failed to save museum tag');
-      setTimeout(() => setErrorMessage(''), 3000);
+      alert('Failed to save museum tag');
     }
   };
 
@@ -329,8 +323,7 @@ function GovernorDashboard() {
       setSuccessMessage('Tag deleted successfully');
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
-      setErrorMessage('Failed to delete museum tag');
-      setTimeout(() => setErrorMessage(''), 3000);
+      alert('Failed to delete museum tag');
     }
   };
 
