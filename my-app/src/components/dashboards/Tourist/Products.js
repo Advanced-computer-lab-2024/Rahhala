@@ -85,6 +85,8 @@ function ProductsPage() {
             review.reviewedEntity.toString() === productId && 
             review.reviewedEntityType === 'Product'
         );
+
+        if (productReviews.length === 0) return null;
         
         const averageRating = productReviews.length > 0
             ? (productReviews.reduce((sum, review) => sum + review.rating, 0) / productReviews.length).toFixed(1)
