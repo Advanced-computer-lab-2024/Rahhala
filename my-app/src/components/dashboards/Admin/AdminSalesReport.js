@@ -7,8 +7,8 @@ const AdminSalesReport = () => {
     const { auth } = useContext(AuthContext);
     const [totalSales, setTotalSales] = useState(null);
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [showActivities, setShowActivities] = useState(false);
-    const [showUserStats, setshowUserStats] = useState(false);
+    const [showActivities, setShowActivities] = useState(true);
+    const [showUserStats, setshowUserStats] = useState(true);
 
     const [showItineraries, setShowItineraries] = useState(true);
     const [showProducts, setShowProducts] = useState(true);
@@ -190,7 +190,7 @@ const AdminSalesReport = () => {
                                     </div>
                                 </div>
                             )}
-                            {showUserStats && (
+                            {showUserStats && userStatistics &&  (
                         <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col w-full text-sm relative">
                             <h3 className="text-lg font-semibold mb-4">User Statistics</h3>
                             <div className="space-y-2">
