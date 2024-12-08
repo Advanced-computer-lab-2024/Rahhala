@@ -22,6 +22,7 @@ There is also middlware file for user verifications.
 The frontend consists of dashboards for every type of users.
 
 ## Screenshots
+
 ## Technologies Used
 
 Frontend:
@@ -120,6 +121,15 @@ npm start
 ```  
 ## API Reference
 ## Credits
+Yahya Al-Azhary
+Youssef Hazem
+Mahmoud Ayman 
+Abdelrahman Gaballa
+Youssef Hendawy
+Mohamed Hefny
+Omar Elsherif
+Moazz Ahmed Abdellatif
+Marawan Tawhed Fathy Abdelhady
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
