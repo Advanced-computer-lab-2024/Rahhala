@@ -3,6 +3,7 @@ import { AuthContext } from '../context/AuthContext';
 import axiosInstance from '../utils/axiosConfig';
 import NavigateButton from '../components/UpdateProfileButton';
 import { useNavigate } from 'react-router-dom';
+//import { set } from 'mongoose';
 
 const TouristBookings = () => {
     const navigate = useNavigate();
@@ -10,7 +11,6 @@ const TouristBookings = () => {
     const [bookings, setBookings] = useState({
         activities: [],
         itineraries: [],
-        museums: []
     });
     const [error, setError] = useState(null); // State to handle errors
 
@@ -20,7 +20,7 @@ const TouristBookings = () => {
             const fetchBookings = async () => {
                 try {
                     const response = await axiosInstance.get('/api/tourist/');
-                    const { bookedActivities, bookedItineraries, bookedMuseums } = response.data.profile;
+                    const { bookedActivities, bookedItineraries} = response.data.profile;
 
                     const activities = await Promise.all(bookedActivities.map(async (id) => {
                         const res = await axiosInstance.get(`/api/activity/getActivity/${id}`);
@@ -32,12 +32,8 @@ const TouristBookings = () => {
                         return res.data;
                     }));
 
-                    const museums = await Promise.all(bookedMuseums.map(async (id) => {
-                        const res = await axiosInstance.get(`/api/museum/${id}`);
-                        return res.data;
-                    }));
-
-                    setBookings({ activities, itineraries, museums });
+                    setBookings({ activities, itineraries });
+                    setError(null);
                 } catch (err) {
                     setError('Failed to load bookings.');
                 }
@@ -65,18 +61,6 @@ const TouristBookings = () => {
             setBookings((prevBookings) => ({
                 ...prevBookings,
                 itineraries: prevBookings.itineraries.filter(itinerary => itinerary._id !== itineraryId)
-            }));
-        } catch (err) {
-            setError(err.response.data.error);
-        }
-    };
-
-    const handleUnbookMuseum = async (museumId) => {
-        try {
-            await axiosInstance.put('/api/tourist/cancelMuseumBooking', { museumId });
-            setBookings((prevBookings) => ({
-                ...prevBookings,
-                museums: prevBookings.museums.filter(museum => museum._id !== museumId)
             }));
         } catch (err) {
             setError(err.response.data.error);
@@ -181,28 +165,6 @@ const TouristBookings = () => {
                 <div>No booked itineraries.</div>
             )}
 
-            <h2>Booked Museums</h2>
-            {bookings.museums.length > 0 ? (
-                bookings.museums.map((museum) => (
-                    <div key={museum._id} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
-                        {Object.entries(museum).map(([key, value]) => (
-                            <div key={key}>
-                                <strong>{key}:</strong> {Array.isArray(value) ? value.join(', ') : value.toString()}
-                            </div>
-                        ))}
-                        {isPastDate(museum.openingHours) ? (
-                            <div>
-                                <div style={{ color: 'green', fontWeight: 'bold' }}>Done</div>
-                                {renderReviewForm(museum._id, 'Museum')}
-                            </div>
-                        ) : (
-                            <button onClick={() => handleUnbookMuseum(museum._id)} style={{ backgroundColor: 'red', color: 'white' }}>Unbook</button>
-                        )}
-                    </div>
-                ))
-            ) : (
-                <div>No booked museums.</div>
-            )}
             {error && <div style={{ color: 'red', fontWeight: 'bold' }}>{error}</div>}
         </div>
     );

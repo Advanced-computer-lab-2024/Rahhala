@@ -14,16 +14,6 @@ const TourGuideForm = ({ formData, handleChange, handlePreviousWorkChange, addPr
                 />
             </div>
             <div>
-                <label>Years of Experience:</label>
-                <input
-                    type="number"
-                    name="yearsOfExperience"
-                    value={formData.yearsOfExperience}
-                    onChange={handleChange}
-                    required
-                />
-            </div>
-            <div>
                 <label>Previous Work:</label>
                 {formData.previousWork.map((work, index) => (
                     <div key={index}>
@@ -55,7 +45,7 @@ const TourGuideForm = ({ formData, handleChange, handlePreviousWorkChange, addPr
                     name="certificationImages"
                     onChange={handleFileChange}
                     multiple
-                    required
+                    
                 />
             </div>
             <div>
@@ -64,7 +54,7 @@ const TourGuideForm = ({ formData, handleChange, handlePreviousWorkChange, addPr
                     type="file"
                     name="idCardImage"
                     onChange={handleFileChange}
-                    required
+                    
                 />
             </div>
             <div>

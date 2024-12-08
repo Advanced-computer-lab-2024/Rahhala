@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 const advertiserSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -10,6 +11,10 @@ const advertiserSchema = new mongoose.Schema({
         required: true
     },
     taxationRegistryImage: {
+        type: String,
+        required: true
+    },
+    companyProfile: {
         type: String,
         required: true
     },
@@ -30,25 +35,13 @@ const advertiserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    companyProfile: {
-        type: String,
-        required: true
-    },
     logo: {
-        type: String, // Store the logo as a Base64 string
-        required: true
-    },
-    acceptedTermsAndConditions: {
-        type: Boolean,
-        default: false
-    },
-    status: {
-        type: String,
-        enum: ['accepted', 'rejected', 'pending'],
-        default: 'pending'
+        type: String // This field will store the base64 string
     }
-});
 
-const advertiserModel = mongoose.model('Advertiser', advertiserSchema);
+    
+}, { timestamps: true });
 
-export default advertiserModel;
+const Advertiser = mongoose.model('Advertiser', advertiserSchema);
+
+export default Advertiser;

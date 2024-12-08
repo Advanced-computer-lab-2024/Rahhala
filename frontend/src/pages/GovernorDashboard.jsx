@@ -3,6 +3,7 @@ import { AuthContext } from '../context/AuthContext';
 import axiosInstance from '../utils/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import LogoutButton from '../components/LogoutButton'; // Import the LogoutButton
+import { m } from 'framer-motion';
 
 function GovernorDashboard() {
   const navigate = useNavigate(); // Hook to access navigate function
@@ -13,9 +14,11 @@ function GovernorDashboard() {
     location: '',
     description: '',
     openingHours: '',
-    ticketPrice: '',
     pictures: '',
-    tags: '' // Added tags to state
+    tags: '',
+    foreignerPrice: 0,
+    nativePrice: 0,
+    studentPrice: 0,
   });
   const [deleteMuseumName, setDeleteMuseumName] = useState(''); // State for museum name to delete
   const [successMessage, setSuccessMessage] = useState('');
@@ -30,6 +33,10 @@ function GovernorDashboard() {
     navigate('/showAllMuseums'); // Redirect to the museums list page
   };
 
+  const handleShowMuseumTags = () => {
+    navigate('/museumTags'); // Redirect to the museum tags page
+  };
+
   const handleInputChange = (e) => {
     setMuseumData({
       ...museumData,
@@ -40,11 +47,13 @@ function GovernorDashboard() {
   const handleCreateMuseumSubmit = async (e) => {
     e.preventDefault();
     try {
+        
       const formattedData = {
         ...museumData,
         pictures: museumData.pictures.split(',').map(picture => picture.trim())
       };
-      await axiosInstance.post('/createMuseum', formattedData); // Assuming you have this API endpoint
+      console.log(formattedData);
+      await axiosInstance.post('/api/museum/', formattedData); // Assuming you have this API endpoint
       setShowCreateMuseumForm(false);
       setSuccessMessage('Museum created successfully!');
       setTimeout(() => setSuccessMessage(''), 3000);
@@ -117,6 +126,7 @@ function GovernorDashboard() {
       <button onClick={() => setShowChangePasswordForm(!showChangePasswordForm)}>
         {showChangePasswordForm ? 'Cancel' : 'Change My Password'}
       </button>
+      <button onClick={handleShowMuseumTags}>Manage Museum Tags</button> {/* Button to navigate to MuseumTags */}
       {showChangePasswordForm && (
         <form onSubmit={handleChangePassword}>
           <div>
@@ -197,11 +207,31 @@ function GovernorDashboard() {
                 />
               </div>
               <div>
-                <label>Ticket Price:</label>
+                <label>Foreigner Price:</label>
                 <input
                   type="number"
-                  name="ticketPrice"
-                  value={museumData.ticketPrice}
+                  name="foreignerPrice"
+                  value={museumData.foreignerPrice}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <label>Native Price:</label>
+                <input
+                  type="number"
+                  name="nativePrice"
+                  value={museumData.nativePrice}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <label>Student Price:</label>
+                <input
+                  type="number"
+                  name="studentPrice"
+                  value={museumData.studentPrice}
                   onChange={handleInputChange}
                   required
                 />

@@ -13,12 +13,16 @@ import {
   viewPendingTourGuides,
   acceptTourGuide,
   rejectTourGuide,
-  viewUsersInfo
+  viewUsersInfo, 
+  getAdmin,
+  getUsers,
+  viewUserStatistics
 } from "../controllers/admin.controller.js";
 
 const router = express.Router();
 
 router.post("/", verifyToken, addAdmin);
+router.get("/", verifyToken, getAdmin);
 router.delete("/:entityType/:id", verifyToken, deleteEntity);
 router.put("/changePassword", verifyToken, changePassword);
 router.get("/pendingAdvertisers", verifyToken, viewPendingAdvertisers);
@@ -31,5 +35,8 @@ router.get("/pendingTourGuides", verifyToken, viewPendingTourGuides);
 router.put("/acceptTourGuide/:_id", verifyToken, acceptTourGuide);
 router.put("/rejectTourGuide/:_id", verifyToken, rejectTourGuide);
 router.get("/viewUsersInfo", verifyToken, viewUsersInfo);
+router.get("/users", verifyToken, getUsers);
+router.get("/userStats", viewUserStatistics);
+
 
 export default router;

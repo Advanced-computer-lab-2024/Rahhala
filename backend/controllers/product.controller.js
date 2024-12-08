@@ -37,11 +37,9 @@ export const viewProductsQuantitiesAndSales = async (req, res) => {
 export const createProduct = async (req, res) => {
   console.log("entered createProduct");
   const id = req.user.id;
-  console.log("id: ", id); // Debugging
+  const userType = req.user.userType;
 
-  const { description, price, name, quantity, averageRating, picture } =
-    req.body;
-  console.log("req.body: ", req.body); // Debugging
+  const { description, price, name, quantity, picture } = req.body;
 
   // Validate required fields
   if (!price || !quantity || !description || !picture) {
@@ -51,17 +49,28 @@ export const createProduct = async (req, res) => {
   }
 
   try {
-    // Create a new product document
-    const newProduct = new productModel({
-      sellerId: id,
-      name,
-      picture,
-      price,
-      description,
-      quantity,
-      sales: 0, // Set sales to 0 by default
-      averageRating: averageRating || 0, // Default to 0 if not provided
-    });
+    let newProduct;
+    if(userType.toLowerCase() === "admin") {
+        newProduct = new productModel({
+            adminId: id,
+            name,
+            picture,
+            price,
+            description,
+            quantity,
+          });
+      
+    } else if(userType.toLowerCase() === "seller") {
+        newProduct = new productModel({
+            sellerId: id,
+            name,
+            picture,
+            price,
+            description,
+            quantity,
+          });
+      
+    }
 
     // Save the product to the database
     await newProduct.save();
@@ -166,19 +175,21 @@ export const searchProductByName = async (req, res) => {
 export const editProduct = async (req, res) => {
   console.log("entered editProduct");
 
-  const { productId } = req.params;
-  const { description, price, quantity } = req.body; // Include quantity in the request body
-  if (!mongoose.Types.ObjectId.isValid(productId)) {
-    return res.status(400).json({ error: "Invalid product ID format" });
-  }
+  const { id } = req.params;
+  const { description, price, quantity, picture } = req.body; // Include quantity in the request body
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        console.log("Invalid product ID format", id);
+        return res.status(400).json({ error: "Invalid product ID format" });
+    }
   try {
     const updateFields = {};
     if (description) updateFields.description = description;
     if (price) updateFields.price = price;
     if (quantity !== undefined) updateFields.quantity = quantity; // Update quantity if provided
+    if (picture) updateFields.picture = picture
 
     const product = await productModel.findByIdAndUpdate(
-      productId,
+        id,
       updateFields,
       { new: true }
     );

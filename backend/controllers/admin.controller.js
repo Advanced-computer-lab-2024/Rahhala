@@ -1,9 +1,10 @@
 import adminModel from "../models/admin.model.js";
-import advertiserModel from "../models/advertiser.model.js";
+import advertiserModel from "../models/advertiser.model.js";  
 import sellerModel from "../models/seller.model.js";
 import tourGuideModel from "../models/tourGuide.model.js";
 import governorModel from "../models/governor.model.js";
 import touristModel from "../models/tourist.model.js";
+import Sale from '../models/sale.model.js';
 
 // Add Admin to the Database
 export const addAdmin = async (req, res) => {
@@ -27,6 +28,23 @@ export const addAdmin = async (req, res) => {
     console.error("Error adding admin:", error);
     res.status(500).json({ message: "Error adding admin" });
   }
+};
+
+// get admin by id
+export const getAdmin = async (req, res) => {
+    console.log("entered getAdmin");
+    const id = req.user.id;
+    try {
+        const admin = await adminModel.findById(id);
+        console.log(id);
+        if (!admin) {
+            return res.status(404).json({ message: "Admin not found" });
+        }
+        res.status(200).json({ admin });
+    } catch (error) {
+        console.error("Error getting admin:", error);
+        res.status(500).json({ message: "Error getting admin" });
+    }
 };
 
 //Delete Admin from the Database
@@ -275,5 +293,68 @@ export const viewUsersInfo = async (req, res) => {
   } catch (error) {
     console.error("Error viewing uploaded documents:", error);
     res.status(500).json({ message: "Error viewing uploaded documents" });
+  }
+};
+
+// get all users
+export const getUsers = async (req, res) => {
+    console.log("entered getUsers");
+    try {
+      const tourists = await touristModel.find({}, '-profilePicture');
+      const tourGuides = await tourGuideModel.find({}, '-idCardImage -certificationImages -profilePhoto');
+      const sellers = await sellerModel.find({}, '-idCardImage -taxationRegistryImage -logo');
+      const advertisers = await advertiserModel.find({}, '-idCardImage -taxationRegistryImage -logo -companyProfile');
+      const governors = await governorModel.find();
+  
+      res.status(200).json({
+        tourists,
+        tourGuides,
+        sellers,
+        advertisers,
+        governors
+      });
+  
+    } catch (error) {
+      console.error("Error getting users:", error);
+      res.status(500).json({ message: "Error getting users" });
+    }
+  };
+
+
+// View the number of users in total and the number of new users per month
+export const viewUserStatistics = async (req, res) => {
+  try {
+    console.log("entered viewUserStatistics");
+    const collections = [touristModel, tourGuideModel, advertiserModel, sellerModel];
+    const totalUsers = {};
+    const newUsersPerMonth = {};
+
+    for (const collection of collections) {
+      const collectionName = collection.collection.collectionName;
+
+      // Get total number of users
+      const total = await collection.countDocuments();
+      totalUsers[collectionName] = total;
+
+      // Get number of new users per month
+      const newUsers = await collection.aggregate([
+        {
+          $group: {
+            _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
+            count: { $sum: 1 }
+          }
+        },
+        {
+          $sort: { _id: 1 }
+        }
+      ]);
+
+      newUsersPerMonth[collectionName] = newUsers;
+    }
+
+    res.status(200).json({ totalUsers, newUsersPerMonth });
+  } catch (error) {
+    console.error('Error viewing user statistics:', error);
+    res.status(500).json({ error: 'Error viewing user statistics' });
   }
 };

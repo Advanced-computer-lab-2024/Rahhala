@@ -12,9 +12,14 @@ const ViewAll = () => {
         const fetchData = async () => {
             try {
                 const itinerariesResponse = await axiosInstance.get('/api/itinerary');
+                itinerariesResponse.data = itinerariesResponse.data.filter(itinerary => itinerary.flagged===false);
+                itinerariesResponse.data = itinerariesResponse.data.filter(itinerary => itinerary.isActive);
+
                 setItineraries(itinerariesResponse.data);
 
                 const activitiesResponse = await axiosInstance.get('/api/activity');
+                activitiesResponse.data = activitiesResponse.data.filter(activity => activity.bookingOpen);
+                
                 setActivities(activitiesResponse.data);
 
                 const museumsResponse = await axiosInstance.get('/api/museum');

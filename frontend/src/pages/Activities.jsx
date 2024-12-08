@@ -8,7 +8,7 @@ import '../table.css';
 
 const Activities = () => {
     const [activities, setActivities] = useState([]);
-    const [editActivity, setEditActivity] = useState({ id: '', name: '', price: '', date: '', category: '', tags: '' });
+    const [editActivity, setEditActivity] = useState({ id: '', name: '', price: '', date: '', category: '', tags: '', bookingOpen: true });
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
     const [budget, setBudget] = useState('');
@@ -34,6 +34,9 @@ const Activities = () => {
     const fetchActivities = async () => {
         try {
             const response = await axiosInstance.get('/api/activity');
+            if (auth.user.type === 'tourist') {
+                response.data = response.data.filter(activity => activity.bookingOpen);
+            }
             setActivities(response.data);
         } catch (err) {
             setError('Failed to fetch activities');
@@ -42,9 +45,10 @@ const Activities = () => {
 
     const updateActivity = async () => {
         try {
+            console.log(editActivity.bookingOpen);
             await axiosInstance.put(`/api/activity/${editActivity.id}`, editActivity);
             setMessage('Activity updated successfully!');
-            setEditActivity({ id: '', name: '', price: '', date: '', category: '', tags: '' });
+            setEditActivity({ id: '', name: '', price: '', date: '', category: '', tags: '', bookingOpen: true });
             fetchActivities();
         } catch (error) {
             setMessage('Error updating activity.');
@@ -178,8 +182,12 @@ const Activities = () => {
                                 <td>{activity.category}</td>
                                 <td>{activity.tags.join(', ')}</td>
                                 <td>
-                                    <button onClick={() => setEditActivity({ id: activity._id, name: activity.name, price: activity.price, date: activity.date, category: activity.category, tags: activity.tags.join(', ') })}>Edit</button>
-                                    <button onClick={() => deleteActivity(activity._id)}>Delete</button>
+                                    {auth.user && auth.user.type !== 'tourist' && (
+                                        <>
+                                            <button onClick={() => setEditActivity({ id: activity._id, name: activity.name, price: activity.price, date: activity.date, category: activity.category, tags: activity.tags.join(', '), bookingOpen: activity.bookingOpen })}>Edit</button>
+                                            <button onClick={() => deleteActivity(activity._id)}>Delete</button>
+                                        </>
+                                    )}
                                     <button onClick={() => navigate(`/getActivity/${activity._id}`)}>More Info</button>
                                 </td>
                             </tr>
@@ -233,6 +241,15 @@ const Activities = () => {
                             value={editActivity.tags}
                             onChange={(e) => setEditActivity({ ...editActivity, tags: e.target.value })}
                             placeholder="Tags"
+                        />
+                    </label>
+                    <label>
+                        Bookable? :
+                        <input
+                            type="checkbox"
+                            checked={editActivity.bookingOpen}
+                            value={editActivity.bookingOpen}
+                            onChange={(e) => setEditActivity({ ...editActivity, bookingOpen: e.target.checked })}
                         />
                     </label>
                     <button onClick={updateActivity}>Update Activity</button>

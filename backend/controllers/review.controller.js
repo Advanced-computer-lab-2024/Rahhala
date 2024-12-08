@@ -3,13 +3,16 @@ import Review from "../models/review.model.js";
 // Add Review to the Database
 export const addReview = async (req, res) => {
     console.log("entered addReview");
-
+    console.log(req.body);
     const touristId = req.user.id;
-    const { rating, title, body, reviewedEntity, reviewedEntityType } = req.body;
+    let { rating, title, body, reviewedEntity, reviewedEntityType } = req.body;
+    
     try {
         if (!rating) return res.status(400).json({ message: "Missing rating" });
         if (!reviewedEntity) return res.status(400).json({ message: "Missing reviewed entity" });
         if (!reviewedEntityType) return res.status(400).json({ message: "Missing reviewed entity type" });
+
+        reviewedEntityType = reviewedEntityType.charAt(0).toUpperCase() + reviewedEntityType.slice(1).toLowerCase();
 
         const review = await Review.create({
             tourist: touristId,
@@ -21,6 +24,7 @@ export const addReview = async (req, res) => {
         });
         res.status(201).json(review);
     } catch (err) {
+        console.error("Error adding review:", err);
         res.status(500).json(err);
     }
 };

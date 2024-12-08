@@ -1,4 +1,39 @@
 import tourGuideModel from "../models/tourGuide.model.js";
+import { generateToken, comparePasswords } from "../utils/jwt.js";
+import nodemailer from 'nodemailer';
+import crypto from 'crypto';
+import dotenv from 'dotenv';
+import itineraryModel from "../models/itinerary.model.js";
+
+
+dotenv.config({ path: "../../.env" }); // Adjust path if needed
+
+
+// Generate OTP
+const generateOTP = () => {
+  return crypto.randomBytes(3).toString('hex'); // Generate a 6-digit OTP
+};
+
+// Send OTP Email
+const sendOTPEmail = async (email, otp) => {
+  const transporter = nodemailer.createTransport({
+    host: 'sandbox.smtp.mailtrap.io',
+    port: 587,
+    auth: {
+      user: process.env.MAILTRAP_USER,
+      pass: process.env.MAILTRAP_PASS,
+    },
+  });
+
+  const mailOptions = {
+    from: 'no-reply@example.com',
+    to: email,
+    subject: 'Your OTP for Password Reset',
+    text: `Your OTP for password reset is: ${otp}`,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
 
 // Edit Tour Guide Information
 export const editTourGuide = async (req, res) => {
@@ -6,6 +41,7 @@ export const editTourGuide = async (req, res) => {
   const {
     work,
     yearsOfExperience,
+    previousWork,
     certificationImages,
     email,
     mobileNumber,
@@ -26,13 +62,15 @@ export const editTourGuide = async (req, res) => {
     user.email = email || user.email;
     user.profilePhoto = profilePhoto || user.profilePhoto;
     user.status = status || user.status;
-
-    if (work && yearsOfExperience) {
+    if (previousWork){
+        user.previousWork = previousWork
+    }
+    else if (work && yearsOfExperience) {
       user.previousWork.push({ work, yearsOfExperience });
     }
 
     if (certificationImages && certificationImages.length > 0) {
-      user.certificationImages = certificationImages;
+      user.certificationImages = user.certificationImages.concat(certificationImages);
     }
 
     await user.save();
@@ -211,4 +249,133 @@ export const getTourGuideByIDFromParams = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: "Error fetching tour guide profile" });
     }
+};
+
+// Login Tour Guide
+export const loginTourGuide = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    // Find the tourguide by username
+    const tourGuide = await tourGuideModel.findOne({ username });
+
+
+    if (!tourGuide) {
+      return res.status(404).json({ error: "Tour Guide not found" });
+    }
+
+    // Compare the provided password with the stored password
+    const isMatch = await comparePasswords(tourGuide.password, password);
+
+    if (!isMatch) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    // Generate a JWT token
+    const token = generateToken(tourGuide, "tourguide");
+    console.log("tourguide is ", tourGuide)   
+
+    res.status(200).json({ message: "Login successful", token });
+  } catch (error) {
+    console.error("Error logging in tour guide:", error);
+    res.status(500).json({ error: "Error logging in tour guide" });
+  }
+};
+
+// Request OTP for Password Reset
+export const requestPasswordReset = async (req, res) => {
+  console.log("entered requestPasswordReset");
+  const { email } = req.body;
+  console.log(req.body);
+
+  try {
+    const tourGuide = await tourGuideModel.findOne({ email });
+
+    if (!tourGuide) {
+      return res.status(404).json({ error: 'Tour Guide not found' });
+    }
+
+    const otp = generateOTP();
+    tourGuide.resetPasswordOTP = otp;
+    tourGuide.resetPasswordExpires = Date.now() + 3600000; // OTP expires in 1 hour
+
+    await tourGuide.save();
+
+    await sendOTPEmail(email, otp);
+
+    res.status(200).json({ message: 'OTP sent to your email' });
+  } catch (error) {
+    console.error('Error requesting password reset:', error);
+    res.status(500).json({ error: 'Error requesting password reset' });
+  }
+};
+
+// Verify OTP
+export const verifyOTP = async (req, res) => {
+  const { email }= req.body;
+  const { otp } = req.body;
+
+  try {
+    const tourGuide = await tourGuideModel.findOne({ email });
+
+    if (!tourGuide) {
+      return res.status(404).json({ error: 'Tour Guide not found' });
+    }
+
+    if (tourGuide.resetPasswordOTP !== otp || tourGuide.resetPasswordExpires < Date.now()) {
+      return res.status(400).json({ error: 'Invalid or expired OTP' });
+    }
+
+    res.status(200).json({ message: 'OTP verified successfully' });
+  } catch (error) {
+    console.error('Error verifying OTP:', error);
+    res.status(500).json({ error: 'Error verifying OTP' });
+  }
+};
+// Reset Password
+export const resetPassword = async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+  console.log("entered resetPassword");
+  console.log(req.body);
+
+  try {
+    const tourGuide = await tourGuideModel.findOne({ email });
+
+    if (!tourGuide) {
+      return res.status(404).json({ error: 'Tour Guide not found' });
+    }
+
+    if (tourGuide.resetPasswordOTP !== otp || tourGuide.resetPasswordExpires < Date.now()) {
+      return res.status(400).json({ error: 'Invalid or expired OTP' });
+    }
+
+    tourGuide.password = newPassword;
+    tourGuide.resetPasswordOTP = undefined;
+    tourGuide.resetPasswordExpires = undefined;
+
+    await tourGuide.save();
+
+    res.status(200).json({ message: 'Password reset successfully' });
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    res.status(500).json({ error: 'Error resetting password' });
+  }
+};
+
+
+export const getNotifications = async (req, res) => {
+  try {
+    console.log("entered getNotifications");
+    const itineraries = await itineraryModel.find({ userId: req.user.id, flagged: true });
+    console.log("itineraries are ", itineraries);
+
+    if (!itineraries.length) {
+      return res.status(404).json({ message: 'No flagged itineraries found' });
+    }
+    console.log("itineraries are ", itineraries);
+    res.status(200).json(itineraries);
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+    res.status(500).json({ error: 'Error fetching notifications' });
+  }
 };

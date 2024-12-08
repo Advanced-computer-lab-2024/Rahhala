@@ -16,7 +16,33 @@ const AccountDeletionRequests = () => {
     const fetchRequests = async () => {
         try {
             const response = await axiosInstance.get('/api/accountDeletionRequest');
-            setRequests(response.data);
+            const requestsData = response.data;
+
+            // Fetch activities, itineraries, and museums
+            const [activities, itineraries, museums] = await Promise.all([
+                axiosInstance.get('/api/activity'),
+                axiosInstance.get('/api/itinerary'),
+                axiosInstance.get('/api/museum')
+            ]);
+
+            const updatedRequests = requestsData.map(request => {
+                const userActivities = activities.data.filter(activity => activity.userId === request.userId && new Date(activity.date) > new Date() && activity.bookingOpen);
+                const userItineraries = itineraries.data.filter(itinerary => itinerary.userId === request.userId && itinerary.availableDates.some(date => new Date(date) > new Date()) && itinerary.isActive);
+                const userMuseums = museums.data.filter(museum => museum.userId === request.userId && new Date(museum.openingHours) > new Date() && museum.bookingOpen);
+
+                let reason = request.reason;
+                if (userActivities.length > 0) {
+                    reason = `User has upcoming paid activities: ${userActivities.map(a => a.name).join(', ')}`;
+                } else if (userItineraries.length > 0) {
+                    reason = `User has upcoming paid itineraries: ${userItineraries.map(i => i.name).join(', ')}`;
+                } else if (userMuseums.length > 0) {
+                    reason = `User has upcoming paid museums: ${userMuseums.map(m => m.name).join(', ')}`;
+                }
+
+                return { ...request, reason };
+            });
+
+            setRequests(updatedRequests);
         } catch (error) {
             console.error('Error fetching requests:', error);
         }
@@ -47,8 +73,18 @@ const AccountDeletionRequests = () => {
 
     const deleteAccount = async (userType, userId, requestId) => {
         try {
+            // Update bookingOpen to false for activities related to the user
+            await axiosInstance.put(`/api/activity/updateBookingOpen/${userId}`, { bookingOpen: false });
+    
+            // Update isActive to false for itineraries related to the user
+            await axiosInstance.put(`/api/itinerary/updateIsActive/${userId}`, { isActive: false });
+    
+            // Delete the user account
             await axiosInstance.delete(`/api/admin/${userType}/${userId}`);
+    
+            // Delete the account deletion request
             await deleteRequest(requestId);
+    
             setMessage('Account deleted and request deleted successfully!');
         } catch (error) {
             console.error('Error deleting account:', error);
@@ -76,17 +112,8 @@ const AccountDeletionRequests = () => {
                             <tr key={request._id}>
                                 <td>{request.userType}</td>
                                 <td>{request.userId}</td>
-                                <td>{request.canBeDeleted ? 'Yes' : 'No'}</td>
-                                <td>
-                                    {request.reason}
-                                    {!request.canBeDeleted && (
-                                        <div>
-                                            {request.hasUpcomingEvents && <p>Cannot delete: Upcoming events with paid bookings.</p>}
-                                            {request.hasUpcomingActivities && <p>Cannot delete: Upcoming activities with paid bookings.</p>}
-                                            {request.hasUpcomingItineraries && <p>Cannot delete: Upcoming itineraries with paid bookings.</p>}
-                                        </div>
-                                    )}
-                                </td>
+                                <td>{request.reason ? 'No' : 'Yes'}</td>
+                                <td>{request.reason}</td>
                                 <td>
                                     <button onClick={() => deleteAccount(request.userType, request.userId, request._id)}>Delete Account</button>
                                     <button onClick={() => deleteRequest(request._id)}>Delete Request</button>

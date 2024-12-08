@@ -93,7 +93,7 @@ function App() {
                 <Route path="/touristProducts" element={<PurchasedProducts />} />
  
                 <Route path="/createProduct" element={<CreateProduct />} />
-                <Route path="/museum-tags" element={<MuseumTags />} />
+                <Route path="/museumTags" element={<MuseumTags />} />
 
 
                 <Route

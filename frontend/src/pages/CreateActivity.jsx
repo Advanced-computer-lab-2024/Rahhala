@@ -11,13 +11,11 @@ const CreateActivity = () => {
         name: '',
         date: '',
         time: '',
-        location: [0, 0],
+        location: [],
         price: '',
         category: '',
         tags: '',
-        specialDiscounts: '',
-        bookingOpen: false,
-        rating: 0
+        specialDiscounts: ''
     });
 
     const handleChange = (e) => {
@@ -54,8 +52,6 @@ const CreateActivity = () => {
                 <br/><input type="text" name="category" placeholder="Category" value={formData.category} onChange={handleChange} required />
                 <br/><input type="text" name="tags" placeholder="Tags" value={formData.tags} onChange={handleChange} />
                 <br/><input type="text" name="specialDiscounts" placeholder="Special Discounts" value={formData.specialDiscounts} onChange={handleChange} />
-                <br/><input type="checkbox" name="bookingOpen" checked={formData.bookingOpen} onChange={(e) => setFormData({ ...formData, bookingOpen: e.target.checked })} />
-                <br/><input type="number" name="rating" placeholder="Rating" value={formData.rating} onChange={handleChange} min="0" max="5" />
                 <br/><button type="submit">Create Activity</button>
             </form>
             <NavigateButton path={"/advertiser-dashboard"} text={"Home"} />

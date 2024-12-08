@@ -23,7 +23,6 @@ const CreateProduct = () => {
         name: '',
         description: '',
         sellerName: '',
-        averageRating: 0,
         quantity: 1,
     });
 
@@ -33,10 +32,6 @@ const CreateProduct = () => {
         const { name, value } = e.target;
         if ((name === 'price' || name === 'quantity') && value < 1) {
             setMessage('Price and Quantity must be at least 1.');
-            return;
-        }
-        if (name === 'averageRating' && value < 0) {
-            setMessage('Negative values are not allowed.');
             return;
         }
         setProduct({
@@ -92,10 +87,6 @@ const CreateProduct = () => {
                 <div>
                     <label>Description:</label>
                     <textarea name="description" value={product.description} onChange={handleChange} />
-                </div>
-                <div>
-                    <label>Average Rating:</label>
-                    <input type="number" name="averageRating" value={product.averageRating} onChange={handleChange} />
                 </div>
                 <div>
                     <label>Quantity:</label>

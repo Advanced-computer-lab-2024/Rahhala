@@ -94,7 +94,101 @@ const touristSchema = new mongoose.Schema({
             required: true,
             default: 1
         }
-    }]
+    }],
+    wishlist: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product',
+        },
+    ],
+    cart: [
+        {
+            product: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Product',
+            },
+            quantity: {
+                type: Number,
+                default: 1,
+            },
+        },
+    ],
+    deliveryAddresses: [
+        {
+            address: {
+                type: String,
+                required: true,
+            },
+        },
+    ],
+    paymentMethod: {
+        type: String,
+        enum: ['wallet', 'creditCard', 'cashOnDelivery'],
+    },
+    stripePaymentToken: {
+        type: String,
+        required: false,
+    },
+    orders: [
+        {
+            orderId: { 
+                type: String, 
+                required: true, 
+                unique: true 
+            },
+            status: { 
+                type: String, 
+                default: 'pending' 
+            },
+            paymentStatus: { 
+                type: String, 
+                enum: ['pending', 'completed', 'failed'], 
+                default: 'pending' 
+            },
+            totalAmount: { 
+                type: Number, 
+                required: true 
+            },
+            paymentMethod: { 
+                type: String, 
+                enum: ['wallet', 'creditCard', 'cashOnDelivery'], 
+                required: true 
+            },
+            orderDate: { 
+                type: Date, 
+                default: Date.now 
+            },
+            items: [
+                {
+                    productId: { 
+                        type: mongoose.Schema.Types.ObjectId, 
+                        ref: 'Product', 
+                        required: true 
+                    },
+                    quantity: { 
+                        type: Number, 
+                        required: true 
+                    },
+                    price: { 
+                        type: Number, 
+                        required: true 
+                    },
+                },
+            ],
+            deliveryAddress: { 
+                type: String, 
+                required: false 
+            },
+        },
+    ],
+
+    resetPasswordOTP: {
+        type: String,
+      },
+        resetPasswordExpires: {
+        type: Date,
+      },
+    
 }, { timestamps: true }); // Adds createdAt and updatedAt timestamps
 
 // Create the Tourist model

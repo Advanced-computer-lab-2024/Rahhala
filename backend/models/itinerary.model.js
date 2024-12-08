@@ -16,20 +16,16 @@ const itinerarySchema = new mongoose.Schema(
     activityDetails: [
   {
     name: {
-      type: String,
-      required: true,
+      type: String
     },
     location: {
-      type: [Number],
-      required: true,
+      type: [Number]
     },
     duration: {
-      type: String,
-      required: true,
+      type: String
     },
     time: {
-      type: String,
-      required: true,
+      type: String
     },
   },
 ],
@@ -72,6 +68,12 @@ const itinerarySchema = new mongoose.Schema(
     flagged: {
       type: Boolean,
       default: false,
+  },
+  flaggedReason: {
+      type: String,
+  },
+  flaggedDate: {
+      type: Date,
   },
   },
   {
