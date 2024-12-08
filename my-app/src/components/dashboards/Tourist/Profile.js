@@ -31,11 +31,16 @@ const ARAB_NATIONALITIES = [
 ].sort();
 
 const TouristProfile = () => {
+
   const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [updatedUser, setUpdatedUser] = useState(null);
+  const [updatedUser, setUpdatedUser] = useState({
+    ...user,
+    preferences: [],
+    deliveryAddresses: []
+  });
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [preferenceTags, setPreferenceTags] = useState([]);
   const [error, setError] = useState(null);
@@ -140,8 +145,8 @@ const TouristProfile = () => {
   const Toast = ({ message, type }) => (
     <div className="fixed top-4 right-4 z-50 animate-fade-in-down">
       <div className={`rounded-lg px-4 py-3 shadow-lg ${type === 'success' ? 'bg-green-100 text-green-700 border border-green-200' :
-          type === 'error' ? 'bg-red-100 text-red-700 border border-red-200' :
-            'bg-blue-100 text-blue-700 border border-blue-200'
+        type === 'error' ? 'bg-red-100 text-red-700 border border-red-200' :
+          'bg-blue-100 text-blue-700 border border-blue-200'
         }`}>
         <div className="flex items-center space-x-3">
           {type === 'success' ? (
@@ -299,7 +304,7 @@ const TouristProfile = () => {
     if (newAddress.trim()) {
       setUpdatedUser((prev) => ({
         ...prev,
-        deliveryAddresses: [...prev.deliveryAddresses, newAddress.trim()],
+        deliveryAddresses: [...(prev.deliveryAddresses || []), newAddress.trim()]
       }));
       setNewAddress('');
     }
@@ -308,7 +313,7 @@ const TouristProfile = () => {
   const handleRemoveAddress = (index) => {
     setUpdatedUser((prev) => ({
       ...prev,
-      deliveryAddresses: prev.deliveryAddresses.filter((_, i) => i !== index),
+      deliveryAddresses: (prev.deliveryAddresses || []).filter((_, i) => i !== index)
     }));
   };
 
@@ -534,9 +539,27 @@ const TouristProfile = () => {
                   <div className="md:col-span-2">
                     <InfoItem
                       label="Preferences"
-                      value={user.preferences.map(pref => pref.name).join(', ')}
+                      value={user?.preferences?.map(pref => pref.name)?.join(', ') || 'No preferences'}
                       icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                      </svg>}
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <InfoItem
+                      label="Delivery Addresses"
+                      value={(user?.deliveryAddresses || []).length > 0 ?
+                        <div className="space-y-2">
+                          {user.deliveryAddresses.map((address, index) => (
+                            <div key={index} className="flex items-center p-2 bg-gray-50 rounded-md">
+                              <span className="text-gray-600">{address}</span>
+                            </div>
+                          ))}
+                        </div> : 'No delivery addresses added'
+                      }
+                      icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>}
                     />
                   </div>
@@ -640,7 +663,7 @@ const TouristProfile = () => {
 
                       {/* Selected Tags */}
                       <div className="flex flex-wrap gap-2 min-h-[50px] p-2 border border-gray-200 rounded-md">
-                        {updatedUser.preferences.map((pref) => (
+                        {updatedUser?.preferences?.map((pref) => (
                           <span
                             key={pref._id}
                             className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800"
@@ -651,7 +674,7 @@ const TouristProfile = () => {
                               onClick={() => {
                                 setUpdatedUser(prev => ({
                                   ...prev,
-                                  preferences: prev.preferences.filter(p => p._id !== pref._id)
+                                  preferences: prev.preferences?.filter(p => p._id !== pref._id) || []
                                 }));
                               }}
                               className="ml-2 hover:text-blue-600"
@@ -686,74 +709,77 @@ const TouristProfile = () => {
                           ))}
                       </div>
                     </div>
-                    <div className="flex justify-between">
-                        <label className="font-bold" htmlFor="profilePicture">Profile Picture:</label>
-                        <input
-                            type="file"
-                            id="profilePicture"
-                            name="profilePicture"
-                            accept="image/*"
-                            onChange={handleProfilePictureChange}
-                            className="p-2 border rounded"
-                        />
-                    </div>
-                    <div className="flex justify-between">
-                        <label className="font-bold" htmlFor="deliveryAddresses">Delivery Addresses:</label>
-                        <div>
-                            {updatedUser.deliveryAddresses.map((address, index) => (
-                                <div key={index} className="flex items-center">
-                                    <input
-                                        type="text"
-                                        value={address}
-                                        onChange={(e) => {
-                                            const newAddresses = [...updatedUser.deliveryAddresses];
-                                            newAddresses[index] = e.target.value;
-                                            setUpdatedUser((prev) => ({ ...prev, deliveryAddresses: newAddresses }));
-                                        }}
-                                        className="p-2 border rounded mr-2"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => handleRemoveAddress(index)}
-                                        className="py-1 px-2 bg-red-500 text-white rounded-md"
-                                    >
-                                        Remove
-                                    </button>
-                                </div>
-                            ))}
-                            <div className="flex items-center mt-2">
-                                <input
-                                    type="text"
-                                    value={newAddress}
-                                    onChange={(e) => setNewAddress(e.target.value)}
-                                    className="p-2 border rounded mr-2"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={handleAddAddress}
-                                    className="py-1 px-2 bg-green-500 text-white rounded-md"
-                                >
-                                    Add Address
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex justify-center mt-6 space-x-4">
-                        <button
-                            type="submit"
-                            className="py-2 px-4 bg-green-500 text-white rounded-md"
-                        >
-                            Save Changes
-                        </button>
-                        <button
-                            onClick={() => setIsEditing(false)}
-                            type="button"
-                            className="py-2 px-4 bg-gray-500 text-white rounded-md"
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                    <p className="mt-1 text-sm text-gray-500">Click to add or remove preferences</p>
+
+                    <div className="md:col-span-2 space-y-4 border-t pt-4 mt-4">
+    <label className="block text-lg font-medium text-gray-700">
+      Delivery Addresses
+    </label>
+    <div className="space-y-3">
+      {(updatedUser?.deliveryAddresses || []).map((address, index) => (
+        <div key={index} className="flex items-center gap-2">
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => {
+                const newAddresses = [...(updatedUser.deliveryAddresses || [])];
+                newAddresses[index] = e.target.value;
+                setUpdatedUser((prev) => ({ ...prev, deliveryAddresses: newAddresses }));
+              }}
+              className="w-full p-3 pr-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter address"
+            />
+            <button
+              type="button"
+              onClick={() => handleRemoveAddress(index)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      ))}
+      
+      <div className="flex items-center gap-2">
+        <input
+          type="text"
+          value={newAddress}
+          onChange={(e) => setNewAddress(e.target.value)}
+          className="flex-1 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Add new address"
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              handleAddAddress();
+            }
+          }}
+        />
+        <button
+          type="button"
+          onClick={handleAddAddress}
+          disabled={!newAddress.trim()}
+          className={`p-3 rounded-md ${
+            newAddress.trim() 
+              ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+          }`}
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+        </button>
+      </div>
+      
+      {(updatedUser?.deliveryAddresses?.length || 0) > 0 && (
+        <p className="text-sm text-gray-500 mt-2">
+          {updatedUser.deliveryAddresses.length} address{updatedUser.deliveryAddresses.length === 1 ? '' : 'es'} saved
+        </p>
+      )}
+    </div>
+  </div>
+
                   </div>
 
                   <div className="md:col-span-2 flex justify-end space-x-4 mt-6">
