@@ -110,6 +110,13 @@ const UpdateAdvertiserAccount = () => {
     return (
         <div className="min-h-screen bg-gray-100">
             <Header toggleDropdown={toggleDropdown} dropdownOpen={dropdownOpen} />
+            <button
+                onClick={() => navigate(-1)}
+                className="text-blue-500 mt-4 ml-4 flex items-center"
+            >
+                ← Back
+            </button>
+
             <div className="flex justify-center mt-20">
                 <div className="space-y-4 max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg text-sm">
                     <h2 className="text-2xl font-bold mb-4 text-center">Update Advertiser Account</h2>

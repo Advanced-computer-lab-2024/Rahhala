@@ -3,7 +3,6 @@ import { AuthContext } from '../context/AuthContext';
 import axiosInstance from '../utils/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
-import NavigateButton from '../components/NavigateButton';
 
 const AdvertiserDashboard = () => {
     const navigate = useNavigate();
@@ -16,9 +15,6 @@ const AdvertiserDashboard = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     useEffect(() => {
-        if (!auth.isAuthenticated) {
-            navigate('/login');
-        }
 
         
 
@@ -90,45 +86,61 @@ const AdvertiserDashboard = () => {
     return (
         <div className="min-h-screen bg-gray-100">
             <Header toggleDropdown={toggleDropdown} dropdownOpen={dropdownOpen} />
-            <div className="max-w-4xl mx-auto p-6">
-                <h2 className="text-2xl font-bold mb-4">Advertiser Dashboard</h2>
-                {error && <p className="text-red-500">{error}</p>}
-                {message && <p className="text-green-500">{message}</p>}
-                {profile && (
-                    <div className="space-y-4">
-                        <div>
-                            <strong>Logo:</strong>
-                            {profile.logo && (
-                                <img
-                                    src={profile.logo}
-                                    alt="Logo"
-                                    style={{ maxWidth: '200px', display: 'block', margin: '10px 0' }}
-                                />
-                            )}
+            <div className="max-w-xl mx-auto p-6">
+                <div className="bg-white shadow-md rounded-lg p-6">
+                    <h2 className="text-2xl font-bold mb-4 text-center">Advertiser Dashboard</h2>
+                    {error && <p className="text-red-500">{error}</p>}
+                    {message && <p className="text-green-500">{message}</p>}
+                    {profile && (
+                        <div className="space-y-4 flex justify-center">
+                            <div>
+                                {profile.logo && (
+                                    <img
+                                        src={profile.logo}
+                                        alt="Logo"
+                                        style={{ maxWidth: '200px', display: 'block', margin: '10px 0' }}
+                                    />
+                                )}
+                            </div>
                         </div>
-                    </div>
-                )}
-                <div className="flex flex-wrap justify-between space-y-4">
-                    <NavigateButton path="/advertiserAccount" text="View Account" />
-                    <NavigateButton path="/updateAdvertiserAccount" text="Update Account" />
-                    <NavigateButton path="/getActivities" text="Manage Activities" />
-                    <NavigateButton path="/createActivity" text="Create Activity" />
-                    <NavigateButton path="/getMyActivities" text="View My Activities" />
-                    {deletionRequested ? (
-                        <button
-                            onClick={handleCancelDeletionRequest}
-                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-                        >
-                            Cancel Account Deletion Request
-                        </button>
-                    ) : (
-                        <button
-                            onClick={handleAccountDeletionRequest}
-                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-                        >
-                            Request My Account to be Deleted
-                        </button>
                     )}
+                    <div className="flex flex-wrap gap-4">
+                        <button
+                            onClick={() => navigate('/advertiserAccount')}
+                            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 h-12"
+                        >
+                            View Account
+                        </button>
+                        <button
+                            onClick={() => navigate('/updateAdvertiserAccount')}
+                            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 h-12"
+                        >
+                            Update Account
+                        </button>
+                        <button
+                            onClick={() => navigate('/manage-activities')}
+                            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 h-12"
+                        >
+                            Manage Activities
+                        </button>
+                    </div>
+                    <div className="mt-4">
+                        {deletionRequested ? (
+                            <button
+                                onClick={handleCancelDeletionRequest}
+                                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded h-12"
+                            >
+                                Cancel Account Deletion Request
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleAccountDeletionRequest}
+                                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded h-12"
+                            >
+                                Request My Account to be Deleted
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

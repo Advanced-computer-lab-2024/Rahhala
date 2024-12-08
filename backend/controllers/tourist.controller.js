@@ -135,6 +135,25 @@ export const getTouristByID = async (req, res) => {
   }
 };
 
+// Get Tourist profile by ID 
+export const getTouristByIdParam = async (req, res) => {
+    console.log("entered getTouristByIdParam");
+    const id = req.param; // Get the user ID from the verified JWT payload
+  
+    try {
+      const tourist = await touristModel.findById(id);
+      if (!tourist) {
+        return res.status(404).json({ error: "Tourist profile not found" });
+      }
+  
+      res.status(200).json({ profile: tourist });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Error fetching tourist profile." });
+    }
+  };
+  
+
 // Edit Tourist Information
 export const editTourist = async (req, res) => {
   console.log("entered editTourist");

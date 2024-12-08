@@ -461,7 +461,6 @@ export const flagItinerary = async (req, res) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-      console.log(user);
       const email = user.email;
       console.log(email); 
 

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import axiosInstance from '../utils/axiosConfig';
 import { useNavigate } from 'react-router-dom';
-import NavigateButton from './NavigateButton';
+import NavigateButton from '../components/UpdateProfileButton';
 import Logout from '../components/Auth/Logout';
 
 const AdvertiserDashboard = () => {

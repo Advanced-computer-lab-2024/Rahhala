@@ -1,4 +1,5 @@
 import activityModel from "../models/activity.model.js";
+import Tourist from "../models/tourist.model.js";
 
 //Add Activity to the Database
 export const addActivity = async (req, res) => {
@@ -123,15 +124,24 @@ export const deleteActivity = async (req, res) => {
   if (!id) return res.status(400).json({ message: "Missing ID" });
 
   try {
-    const activity = await activityModel.findByIdAndDelete(id);
-
+    const activity = await activityModel.findById(id);
     if (!activity) {
       return res.status(404).json({ message: "Activity not found" });
     }
 
-    return res
-      .status(200)
-      .json({ message: "Activity deleted successfully", activity });
+    const currentTime = new Date();
+    if (new Date(activity.date) < currentTime) {
+      await activityModel.findByIdAndDelete(id);
+      return res.status(200).json({ message: "Activity deleted successfully", activity });
+    }
+
+    const tourists = await Tourist.find({ bookedActivities: id });
+    if (tourists.length > 0) {
+      return res.status(400).json({ message: "Cannot delete activity as it has been booked by tourists" });
+    }
+
+    await activityModel.findByIdAndDelete(id);
+    return res.status(200).json({ message: "Activity deleted successfully", activity });
   } catch (error) {
     console.error("Error deleting activity:", error);
     return res.status(500).json({ message: "Internal server error" });

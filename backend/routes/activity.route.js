@@ -16,7 +16,7 @@ router.post("/", verifyToken, addActivity);
 router.post("/createActivity", addActivity);
 router.get("/", getActivities);
 router.put("/:id", verifyToken, editActivity);
-router.delete("/:id", deleteActivity);
+router.delete("/:id", verifyToken, deleteActivity);
 router.get("/:id", verifyToken, getActivitiesByUserID);
 router.get("/getActivity/:id", getActivityById);
 router.put('/updateBookingOpen/:userId', async (req, res) => {

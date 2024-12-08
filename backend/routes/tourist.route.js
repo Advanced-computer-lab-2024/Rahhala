@@ -19,12 +19,13 @@ import {
   loginTourist,
   requestPasswordReset, 
   resetPassword,
-
+  getTouristByIdParam
 } from "../controllers/tourist.controller.js";
 
 const router = express.Router();
 router.post("/login", loginTourist);
 router.get("/", verifyToken, getTouristByID);
+router.get("/get/:id", verifyToken, getTouristByIdParam);
 router.put("/edit/:id", verifyToken, editTourist);
 router.get("/", getTourists);
 router.get("/", getTouristByEmail);

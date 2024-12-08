@@ -139,7 +139,14 @@ const AdminDashboard = () => {
             >
                 Add User
             </button>
+            <button
+                className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
+                onClick={() => handleButtonClick('/admin/flag-itinerary')}
+            >
+                Flag Itinerary
+            </button>
   
+
           <button
             className="w-full px-4 py-2 bg-green-600 text-white rounded"
             onClick={() => handleButtonClick('/admin/sales')}
