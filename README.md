@@ -8,6 +8,9 @@ This project is a MERN stack virtual trip planner web app where users can book t
 This project is part of the coursework of the Advanced Computer Lab university course, aiming at engaging the students in building a full stack project on their own through multiple sprints, encouraging self-study and trial and error. 
 
 ## Build Status
+
+There are misnavigations for some user dashboards, inconsistencies in design and wording problems around the system. Otherwise, the flow of the system is smooth.
+
 ## Code Style
 
 The backend is divided into 3 main parts:
@@ -37,6 +40,45 @@ Authentication:
 - JSON Web Tokens
 
 ## Features
+
+The application has seven user types. They are:
+1. Tourists:
+  - They can book itineraries and activities.
+  - They can view museums.
+  - They have wallets on the system that they can add money to.
+  - They can buy products.
+  - They can redeem points.
+  - They can file complaints about the system.
+    
+2. Guests:
+  - They have limited access to system.
+  - They can view itineraries and activities, but cannot book them.
+    
+3. Admins:
+  - They can add new admins and tourism governors.
+  - They can view sales reports of products, itineraries and activities.
+  - They can accept and delete accounts from the system.
+  - They can view and respond to complaints.
+  - They can add new products, preference tags and activity categories.
+  - They can flag inappropriate itineraries.
+
+4. Sellers:
+  - They can add, edit, and archive products.
+    
+5.  Tour Guides:
+  - They can add new itineraries.
+  - They can view sales reports of they itineraries.
+  - They can file account deletion requests.
+    
+6.  Advertisers:
+  - They can add, edit and delete activities.
+  - They can file account deletion requests.
+    
+7. Tourism Governors:
+  - They can add and view museums.
+  - They can add, view and delete museum tags.
+
+All users can edit details of their profiles, and some can have OTPs sent to their emails to change their passwords.
 
 ## Installations
 
