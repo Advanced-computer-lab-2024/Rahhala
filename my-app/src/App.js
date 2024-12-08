@@ -27,6 +27,9 @@ import AdminComplaints from './components/dashboards/Admin/Complaints';
 import AdminDashboard from './components/dashboards/Admin/AdminDashboard';
 import DeleteAccount from './components/dashboards/Admin/DeleteAccount';
 import AdminSalesReport from './components/dashboards/Admin/AdminSalesReport';
+import AdvertiserDashboard from './components/AdvertiserDashboard';
+import AdvertiserAccount from './components/dashboards/Advertiser/AdvertiserAccount';
+import UpdateAdvertiserAccount from './components/dashboards/Advertiser/UpdateAdvertiserAccount';
 function App() {
   return (
     <AuthProvider>
@@ -59,7 +62,9 @@ function App() {
           <Route path="/TourGuideSales" element={<SalesReport />} />
           <Route path="/Notifications" element={<Notifications />} />
           <Route path="/admin/sales" element={<AdminSalesReport />} />
-
+          <Route path="/advertiser" element={<AdvertiserDashboard />} />
+          <Route path="/advertiserAccount" element={<AdvertiserAccount />} />
+          <Route path="/UpdateAdvertiserAccount" element={<UpdateAdvertiserAccount />} />
 
         </Routes>
       </Router>

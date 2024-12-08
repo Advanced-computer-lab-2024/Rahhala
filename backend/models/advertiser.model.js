@@ -30,7 +30,11 @@ const advertiserSchema = new mongoose.Schema({
     hotline: {
         type: String,
         required: true
+    },
+    logo: {
+        type: String // This field will store the base64 string
     }
+    
 }, { timestamps: true });
 
 const Advertiser = mongoose.model('Advertiser', advertiserSchema);
