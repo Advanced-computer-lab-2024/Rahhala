@@ -14,6 +14,10 @@ const advertiserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    companyProfile: {
+        type: String,
+        required: true
+    },
     email: {
         type: String,
         required: true,
@@ -34,6 +38,7 @@ const advertiserSchema = new mongoose.Schema({
     logo: {
         type: String // This field will store the base64 string
     }
+
     
 }, { timestamps: true });
 

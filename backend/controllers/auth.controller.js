@@ -106,7 +106,7 @@ export const register = async (req, res) => {
   console.log("entered register");
   const { userType, username, email, ...userData } = req.body;
   console.log("userType is ", userType);
-  console.log("userData is ", userData);
+  console.log("company Profile is ", userData.companyProfile);
 
   if (!userType) {
     return res.status(400).json({ error: "userType is required." });
