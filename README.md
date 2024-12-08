@@ -9,6 +9,15 @@ This project is part of the coursework of the Advanced Computer Lab university c
 
 ## Build Status
 ## Code Style
+
+The backend is divided into 3 main parts:
+- Models: database models
+- Controllers: CRUD and functions needed for application
+- Routes: assigning controllers names, methods and tokens if necessary.
+There is also middlware file for user verifications.
+
+The frontend consists of dashboards for every type of users.
+
 ## Screenshots
 ## Technologies Used
 
@@ -28,9 +37,6 @@ Authentication:
 - JSON Web Tokens
 
 ## Features
-
-
-## Code Examples
 
 ## Installations
 
