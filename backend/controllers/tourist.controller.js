@@ -123,7 +123,7 @@ export const getTouristByID = async (req, res) => {
   const id = req.user.id; // Get the user ID from the verified JWT payload
 
   try {
-    const tourist = await touristModel.findById(id);
+    const tourist = await touristModel.findById(id).populate('preferences');
     if (!tourist) {
       return res.status(404).json({ error: "Tourist profile not found" });
     }
