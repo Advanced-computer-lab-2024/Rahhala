@@ -16,6 +16,14 @@ import {
   addMoneyToWallet,
   redeemLoyaltyPoints,
   purchaseProduct,
+  saveProductToWishlist,
+  removeProductFromWishlist,
+  addItemToCart,
+  removeItemFromCart,
+  changeItemQuantityInCart,
+  checkoutOrder,
+  addDeliveryAddress,
+  cancelOrder,
   loginTourist,
   requestPasswordReset, 
   resetPassword,
@@ -40,7 +48,14 @@ router.post('/reviews', verifyToken, addReview);
 router.put('/addMoneyToWallet', verifyToken, addMoneyToWallet);
 router.post('/redeemLoyaltyPoints', verifyToken, redeemLoyaltyPoints);
 router.post('/purchaseProduct', verifyToken, purchaseProduct);
-
+router.post('/wishlist', verifyToken, saveProductToWishlist);
+router.delete('/wishlist', verifyToken, removeProductFromWishlist);
+router.post("/cart", verifyToken, addItemToCart);
+router.delete("/cart", verifyToken, removeItemFromCart);
+router.put("/cart", verifyToken, changeItemQuantityInCart);
+router.post("/checkout",verifyToken, checkoutOrder);
+router.post("/address", verifyToken, addDeliveryAddress);
+router.put('/cancel', verifyToken, cancelOrder); 
 router.post('/requestPasswordReset', requestPasswordReset);
 router.post('/resetPassword', resetPassword);
 export default router;
