@@ -757,6 +757,351 @@ export const redeemLoyaltyPoints = async (req, res) => {
     }
 };
 
+export const saveProductToWishlist = async (req, res) => {
+  console.log("Saving product to wishlist");
+  const touristId = req.user.id; 
+  const { productId } = req.params; 
+
+  try {
+      const tourist = await touristModel.findById(touristId);
+      const product = await productModel.findById(productId);
+
+      if (!tourist) {
+          return res.status(404).json({ error: "Tourist not found" });
+      }
+
+      if (!product) {
+          return res.status(404).json({ error: "Product not found" });
+      }
+
+      if (tourist.wishlist.includes(productId)) {
+          return res.status(400).json({ error: "Product already in wishlist" });
+      }
+
+      // Add the product to the tourist's wishlist
+      tourist.wishlist.push(productId);
+      console.log("here");
+
+      await tourist.save();
+
+      res.status(200).json({ message: "Product saved to wishlist successfully", product });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error saving product to wishlist." });
+  }
+};
+
+export const removeProductFromWishlist = async (req, res) => {
+  const touristId = req.user.id; 
+  const { productId } = req.body;
+
+  try {
+      // Find the tourist by their ID
+      const tourist = await touristModel.findById(touristId);
+
+      if (!tourist) {
+          return res.status(404).json({ error: "Tourist not found" });
+      }
+
+      // Find the index of the product in the wishlist
+      const productIndex = tourist.wishlist.findIndex(item => item.toString() === productId);
+
+      if (productIndex === -1) {
+          return res.status(404).json({ error: "Product not found in wishlist" });
+      }
+
+      // Remove the item from the wishlist
+      tourist.wishlist.splice(productIndex, 1);
+
+      // Save the updated tourist document
+      await tourist.save();
+
+      res.status(200).json({ message: "Product removed from wishlist", updatedWishlist: tourist.wishlist });
+  } catch (error) {
+      console.error("[removeProductFromWishlist] Error:", error);
+      res.status(500).json({ error: "Error removing product from wishlist" });
+  }
+};
+
+export const addItemToCart = async (req, res) => {
+  const touristId = req.user.id; 
+  const { productId, quantity } = req.params;
+
+  // Validate ObjectId format for tourist and product
+  if (!mongoose.Types.ObjectId.isValid(touristId)) {
+      return res.status(400).json({ error: "Invalid tourist ID" });
+  }
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ error: "Invalid product ID" });
+  }
+
+  // Validate quantity
+  if (quantity <= 0) {
+      return res.status(400).json({ error: "Quantity must be greater than zero" });
+  }
+
+  try {
+      // Find the tourist by their ID
+      const tourist = await touristModel.findById(touristId);
+
+      if (!tourist) {
+          return res.status(404).json({ error: "Tourist not found" });
+      }
+
+      // Initialize cart if not present
+      if (!tourist.cart) {
+          tourist.cart = [];
+      }
+
+      // Check if the product is already in the cart
+      const productIndex = tourist.cart.findIndex(item => item.product.toString() === productId);
+
+      if (productIndex !== -1) {
+          // If the product is already in the cart, update the quantity
+          tourist.cart[productIndex].quantity += quantity;
+      } else {
+          // If the product is not in the cart, add it to the cart
+          tourist.cart.push({ product: productId, quantity });
+      }
+
+      // Save the updated tourist document
+      await tourist.save();
+
+      // Return the updated cart
+      res.status(200).json({ message: "Item added to cart", updatedCart: tourist.cart });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error adding item to cart" });
+  }
+};
+
+
+export const removeItemFromCart = async (req, res) => {
+  const touristId = req.user.id; 
+  const { productId } = req.params;
+
+  try {
+      // Find the tourist by their ID
+      const tourist = await touristModel.findById(touristId);
+
+      if (!tourist) {
+          return res.status(404).json({ error: "Tourist not found" });
+      }
+
+      // Find the index of the product in the cart
+      const productIndex = tourist.cart.findIndex(item => item.product.toString() === productId);
+
+      if (productIndex === -1) {
+          return res.status(404).json({ error: "Product not found in cart" });
+      }
+
+      // If quantity is more than 1, reduce it
+      if (tourist.cart[productIndex].quantity > 1) {
+          tourist.cart[productIndex].quantity -= 1;
+      } else {
+          // If quantity is 1, remove the item from the cart
+          tourist.cart.splice(productIndex, 1);
+      }
+
+      // Save the updated tourist document
+      await tourist.save();
+
+      res.status(200).json({ message: "Item removed from cart", updatedCart: tourist.cart });
+  } catch (error) {
+      res.status(500).json({ error: "Error removing item from cart" });
+  }
+};
+
+// Change the amount of an item in the cart
+export const changeItemQuantityInCart = async (req, res) => {
+  const touristId = req.user.id; // Get the tourist ID from the verified JWT payload
+  const { productId, quantity } = req.params; 
+  try {
+      // Find the tourist and update the product quantity in the cart
+      const tourist = await touristModel.findById(touristId);
+
+      if (!tourist) {
+          return res.status(404).json({ error: "Tourist not found" });
+      }
+
+      // Find the product in the cart and update its quantity
+      const productIndex = tourist.cart.findIndex(item => item.product.toString() === productId);
+
+      if (productIndex === -1) {
+          return res.status(404).json({ error: "Product not found in cart" });
+      }
+
+      // Update the quantity of the product in the cart
+      tourist.cart[productIndex].quantity = quantity;
+
+      // Save the updated tourist document
+      await tourist.save();
+
+      res.status(200).json({ message: "Item quantity updated", updatedCart: tourist.cart });
+  } catch (error) {
+      res.status(500).json({ error: "Error updating item quantity in cart" });
+  }
+};
+export const checkoutOrder = async (req, res) => {
+  const touristId = req.user.id; 
+  const { deliveryAddress } = req.params;
+
+  try {
+      // Find the tourist
+      const tourist = await touristModel.findById(touristId).populate('cart.product');
+
+      if (!tourist) {
+          return res.status(404).json({ error: "Tourist not found" });
+      }
+
+      // Check if the cart is empty
+      if (tourist.cart.length === 0) {
+          return res.status(400).json({ error: "Your cart is empty" });
+      }
+
+      let totalAmount = 0;
+      const updatedCart = [];
+
+      // Loop through the cart to check product availability and calculate the total
+      for (const item of tourist.cart) {
+          const product = await productModel.findById(item.product._id); // Ensure the product is directly fetched from DB
+          const requiredQuantity = item.quantity;
+
+          if (product.quantity < requiredQuantity) {
+              return res.status(400).json({ error: `Insufficient stock for ${product.name}` });
+          }
+
+          // Deduct the required quantity from the product stock
+          product.quantity -= requiredQuantity;
+          await product.save(); // Ensure the save operation is performed here
+
+          // Add the item cost to the total
+          totalAmount += product.price * requiredQuantity;
+
+          updatedCart.push({
+              product: product._id,
+              quantity: requiredQuantity,
+              totalPrice: product.price * requiredQuantity
+          });
+      }
+
+      // Check if the wallet has enough balance
+      if (tourist.wallet < totalAmount) {
+          return res.status(400).json({ error: "Insufficient balance in wallet" });
+      }
+
+      // Deduct totalAmount from wallet
+      tourist.wallet -= totalAmount;
+
+      // Add the order to the orders array
+      const newOrder = {
+          orderId: new mongoose.Types.ObjectId().toString(),
+          status: 'pending',
+          paymentStatus: 'completed',
+          totalAmount,
+          paymentMethod: 'wallet', // Assuming wallet payment here
+          items: updatedCart.map(item => ({
+              productId: item.product,
+              quantity: item.quantity,
+              price: item.totalPrice
+          })),
+          deliveryAddress: deliveryAddress || '', // Use the provided address or empty string
+      };
+      tourist.orders.push(newOrder);
+
+      // Clear the cart after successful checkout
+      tourist.cart = [];
+      await tourist.save();
+
+      res.status(200).json({
+          message: "Order placed successfully",
+          orderSummary: {
+              products: updatedCart,
+              totalAmount,
+              newOrder
+          }
+      });
+  } catch (error) {
+      console.error(error); // Log the error for debugging
+      res.status(500).json({ error: "Error processing the checkout" });
+  }
+};
+
+export const addDeliveryAddress = async (req, res) => {
+  try {
+      const touristId = req.user.id; 
+      const { address } = req.params;
+
+      // Find the tourist by ID
+      const tourist = await touristModel.findById(touristId);
+
+      if (!tourist) {
+          return res.status(404).json({ error: "Tourist not found" });
+      }
+
+      // Add the new address to the tourist's addresses array
+      tourist.deliveryAddresses.push({ address });
+
+      // Save the updated tourist document
+      await tourist.save();
+
+      res.status(200).json({ message: "Address added successfully", tourist });
+  } catch (error) {
+      res.status(500).json({ error: "Error adding address" });
+  }
+};
+
+
+export const cancelOrder = async (req, res) => {
+  const touristId = req.user.id; // Get the user ID from the verified JWT payload
+  const { orderId } = req.param;
+
+  try {
+      // Find the tourist by ID
+      const tourist = await touristModel.findById(touristId).populate('orders.items.productId');
+
+      if (!tourist) {
+          return res.status(404).json({ error: "Tourist not found" });
+      }
+
+      // Find the order in the tourist's orders array
+      const orderIndex = tourist.orders.findIndex(order => order.orderId === orderId);
+
+      if (orderIndex === -1) {
+          return res.status(404).json({ error: "Order not found" });
+      }
+
+      // Extract the order to be canceled
+      const [removedOrder] = tourist.orders.splice(orderIndex, 1);
+
+      // Refund the wallet if payment was made using wallet
+      if (removedOrder.paymentMethod === 'wallet' && removedOrder.paymentStatus === 'completed') {
+          tourist.wallet += removedOrder.totalAmount;
+      }
+
+      // Reset product quantities
+      for (const item of removedOrder.items) {
+          const product = await productModel.findById(item.productId);
+          if (product) {
+              product.quantity += item.quantity; // Restore the product quantity
+              await product.save(); // Save the updated product
+          }
+      }
+
+      // Save the updated tourist document
+      await tourist.save();
+
+      res.status(200).json({
+          message: "Order cancelled successfully",
+          refundedAmount: removedOrder.paymentMethod === 'wallet' ? removedOrder.totalAmount : 0
+      });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error cancelling the order" });
+  }
+};
+
+
 // Login Tourist
 export const loginTourist = async (req, res) => {
   const { username, password } = req.body;
