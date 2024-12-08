@@ -35,6 +35,7 @@ import FlagItinerary from './components/dashboards/Admin/FlagItinerary';
 import ManageActivities from './components/dashboards/Advertiser/ManageActivities';
 import SellerDashBoard from './components/dashboards/Seller/SellerDashBoard';
 import SellerProducts from './components/dashboards/Seller/SellerProducts';
+import Flights from './components/dashboards/Tourist/Flights';
 function App() {
     return (
         <AuthProvider>
@@ -75,6 +76,7 @@ function App() {
                 <Route path="/Notifications" element={<Notifications />} />
                 <Route path="/seller" element={<SellerDashBoard />} />
                 <Route path="/seller-products" element={<SellerProducts />} />
+                <Route path="/flights" element={<Flights />} />
             </Routes>
         </Router>
     </AuthProvider>
