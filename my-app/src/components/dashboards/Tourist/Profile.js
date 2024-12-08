@@ -133,6 +133,37 @@ const TouristProfile = () => {
     setShowImageModal(true);
   };
 
+  // Add this new function to convert file to base64
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
+
+  // Update the profile picture input handler
+  const handleProfilePictureChange = async (e) => {
+    try {
+      const file = e.target.files[0];
+      if (file) {
+        const base64 = await convertToBase64(file);
+        setUpdatedUser((prev) => ({
+          ...prev,
+          profilePicture: base64,
+        }));
+      }
+    } catch (error) {
+      console.error("Error converting image:", error);
+      setError('Failed to process image');
+    }
+  };
+
   if (auth.loading || !user) {
     return <div>Loading user data...</div>;
   }
@@ -191,10 +222,10 @@ return (
                     <div className="flex justify-between">
                         <p className="font-bold">Profile Picture:</p>
                         <img
-                            src={user.profilePicture ? user.profilePicture : '/path/to/default/image.jpg'}
+                            src={user.profilePicture || '/path/to/default/image.jpg'}
                             alt="Profile"
                             className="w-16 h-16 rounded-full cursor-pointer"
-                            onClick={() => handleImageClick(user.profilePicture ? user.profilePicture : '/path/to/default/image.jpg')}
+                            onClick={() => handleImageClick(user.profilePicture || '/path/to/default/image.jpg')}
                         />
                     </div>
                     <p className="text-center text-gray-700">You are a level {level} wanderer!</p>
@@ -293,15 +324,8 @@ return (
                             type="file"
                             id="profilePicture"
                             name="profilePicture"
-                            onChange={(e) => {
-                                const file = e.target.files[0];
-                                if (file) {
-                                    setUpdatedUser((prev) => ({
-                                        ...prev,
-                                        profilePicture: URL.createObjectURL(file),
-                                    }));
-                                }
-                            }}
+                            accept="image/*"
+                            onChange={handleProfilePictureChange}
                             className="p-2 border rounded"
                         />
                     </div>
