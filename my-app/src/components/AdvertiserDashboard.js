@@ -97,18 +97,6 @@ const AdvertiserDashboard = () => {
                 {profile && (
                     <div className="space-y-4">
                         <div>
-                            <strong>Username:</strong> {profile.username}
-                        </div>
-                        <div>
-                            <strong>Email:</strong> {profile.email}
-                        </div>
-                        <div>
-                            <strong>Website Link:</strong> {profile.websiteLink}
-                        </div>
-                        <div>
-                            <strong>Hotline:</strong> {profile.hotline}
-                        </div>
-                        <div>
                             <strong>Logo:</strong>
                             {profile.logo && (
                                 <img
@@ -118,7 +106,6 @@ const AdvertiserDashboard = () => {
                                 />
                             )}
                         </div>
-                        <NavigateButton path="/updateAdvertiserAccount" text="Update Account" />
                     </div>
                 )}
                 <div className="flex flex-wrap justify-between space-y-4">

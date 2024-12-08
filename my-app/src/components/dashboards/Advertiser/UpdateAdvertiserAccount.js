@@ -178,6 +178,7 @@ const UpdateAdvertiserAccount = () => {
                         </div>
                         <div>
                             <label className="block text-gray-700">Logo:</label>
+                            
                             <input
                                 type="file"
                                 name="logo"

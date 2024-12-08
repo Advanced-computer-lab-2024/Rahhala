@@ -24,12 +24,6 @@ const AdvertiserAccount = () => {
                 try {
                     const response = await axiosInstance.get(`/api/advertiser/${auth.user.id}`);
                     const { profile } = response.data;
-                    delete profile._id;
-                    delete profile.password;
-                    delete profile.createdAt;
-                    delete profile.__v;
-                    delete profile.updatedAt;
-                    delete profile.acceptedTermsAndConditions;
                     setProfile(profile);
                 } catch (err) {
                     setError('Failed to load Advertiser profile.');
@@ -38,10 +32,6 @@ const AdvertiserAccount = () => {
             fetchAdvertiser();
         }
     }, [auth, navigate]);
-
-    const isImageLink = (value) => {
-        return value.startsWith('http') || value.startsWith('https') || value.startsWith('www');
-    };
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
@@ -57,27 +47,25 @@ const AdvertiserAccount = () => {
                     {message && <p className="text-green-500">{message}</p>}
                     {profile ? (
                         <div className="profile-details">
-                            {Object.entries(profile).map(([key, value]) => (
-                                key === 'companyProfile' || key === 'taxationRegistryImage' || key === 'idCardImage' || key === 'logo' ? (
-                                    <div key={key}>
-                                        <strong>{key}:</strong>
-                                        {isImageLink(value) ? (
-                                            <img src={value} alt={`${key}`} style={{ maxWidth: '200px', display: 'block', margin: '10px 0' }} />
-                                        ) : (
-                                            <img src={`data:image/jpeg;base64,${value}`} alt={`${key}`} style={{ maxWidth: '200px', display: 'block', margin: '10px 0' }} />
-                                        )}
-                                    </div>
-                                ) : (
-                                    <p key={key}><strong>{key}:</strong> {value}</p>
-                                )
-                            ))}
+                            <p><strong>Username:</strong> {profile.username}</p>
+                            <p><strong>Email:</strong> {profile.email}</p>
+                            <p><strong>Website Link:</strong> {profile.websiteLink}</p>
+                            <p><strong>Hotline:</strong> {profile.hotline}</p>
+                            <p><strong>ID Card Image:</strong> {profile.idCardImage}</p>
+                            <p><strong>Taxation Registry Image:</strong> {profile.taxationRegistryImage}</p>
+                            <p><strong>Logo:</strong></p>
+                            {profile.logo && (
+                                <img
+                                    src={profile.logo}
+                                    alt="Logo"
+                                    style={{ maxWidth: '200px', display: 'block', margin: '10px 0' }}
+                                />
+                            )}
+                            <NavigateButton path="/updateAdvertiserAccount" text="Update Account" />
                         </div>
                     ) : (
                         <p>Loading profile...</p>
                     )}
-                    <div className="navigation-buttons">
-                        <NavigateButton path="/updateAdvertiserAccount" text="Update Profile" />
-                    </div>
                 </div>
             </div>
         </div>
