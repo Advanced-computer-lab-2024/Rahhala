@@ -152,11 +152,11 @@ const bookFlight = async (flightOffer, travelerDetails) => {
 
 //function to search hotels
 const searchHotels = async (
-  cityCode,
-  checkInDate,
-  checkOutDate,
-  adults,
-  rooms
+  cityCode = "NYC",
+  checkInDate = "2024-12-11",
+  checkOutDate = "2022-12-12",
+  adults = 1,
+  rooms = 1
 ) => {
   if (!accessToken) {
     await getAccessToken();
