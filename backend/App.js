@@ -19,6 +19,7 @@ import preferenceTagRoutes from "./routes/preferenceTag.route.js";
 import complaintRoute from "./routes/complaint.route.js";
 import reviewRoute from "./routes/review.route.js";
 import saleRoute from "./routes/sale.route.js";
+import flightRoutes from "./routes/flight.route.js";
 
 import cors from "cors";
 import museumTagRoutes from './routes/museumTag.routes.js';
@@ -50,9 +51,12 @@ app.use("/api/sale", saleRoute);
 
 app.use('/api/museumTags', museumTagRoutes);
 
+app.use('/api/flights', flightRoutes);
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
 
 app.listen(process.env.PORT || 4000, () => {
   connectDB(); // Connect to database
