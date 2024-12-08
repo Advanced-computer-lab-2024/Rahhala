@@ -2,6 +2,7 @@ import models from "../models/index.model.js";
 import { generateToken, comparePasswords } from "../utils/jwt.js";
 
 const handleLogin = async (model, credentials, userType) => {
+  console.log("entered handleLogin"); 
   const { username, email, password } = credentials;
   
   // Check if either username or email is provided
@@ -10,12 +11,17 @@ const handleLogin = async (model, credentials, userType) => {
   }
 
   let user;
+  console.log("credentials is ", credentials);
   // Search by username if provided, otherwise search by email
   if (username) {
     user = await model.findOne({ username });
   } else {
     user = await model.findOne({ email });
   }
+  if (!user) {
+    throw new Error("Invalid credentials.");
+  }
+  console.log("user is ", user);  
   user = user.toObject();
   delete user.profilePhoto
   delete user.certificationImages
@@ -24,9 +30,7 @@ const handleLogin = async (model, credentials, userType) => {
   delete user.taxationRegistryImage
   delete user.companyProfile
   // Additional check for specific user types if no user is found
-  if (!user) {
-    throw new Error("Invalid credentials.");
-  }
+  
   console.log("backend userType is ", userType);
   // Check if the user is an advertiser, seller, or tour guide and if their status is accepted or rejected
   if (["advertiser", "seller", "tourguide"].includes(userType.toLowerCase())) {
@@ -93,6 +97,7 @@ export const login = async (req, res) => {
     console.log("token is ", token);
     res.status(200).json({ token });
   } catch (err) {
+    console.error("Error logging in:", err);
     res.status(400).json({ message: err.message });
   }
 };

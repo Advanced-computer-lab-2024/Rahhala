@@ -58,7 +58,7 @@ function Login() {
         tourguide: '/tour-guide',
         admin: '/admin',
         seller: '/seller-dashboard',
-        advertiser: '/advertiser-dashboard',
+        advertiser: '/advertiser',
         tourism_governor: '/governor',
       };
       const targetRoute = routes[userType.toLowerCase()];

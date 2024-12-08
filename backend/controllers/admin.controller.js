@@ -1,5 +1,5 @@
 import adminModel from "../models/admin.model.js";
-import advertiserModel from "../models/advertiser.model.js";
+import advertiserModel from "../models/advertiser.model.js";  
 import sellerModel from "../models/seller.model.js";
 import tourGuideModel from "../models/tourGuide.model.js";
 import governorModel from "../models/governor.model.js";
@@ -319,3 +319,42 @@ export const getUsers = async (req, res) => {
       res.status(500).json({ message: "Error getting users" });
     }
   };
+
+
+// View the number of users in total and the number of new users per month
+export const viewUserStatistics = async (req, res) => {
+  try {
+    console.log("entered viewUserStatistics");
+    const collections = [touristModel, tourGuideModel, advertiserModel, sellerModel];
+    const totalUsers = {};
+    const newUsersPerMonth = {};
+
+    for (const collection of collections) {
+      const collectionName = collection.collection.collectionName;
+
+      // Get total number of users
+      const total = await collection.countDocuments();
+      totalUsers[collectionName] = total;
+
+      // Get number of new users per month
+      const newUsers = await collection.aggregate([
+        {
+          $group: {
+            _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
+            count: { $sum: 1 }
+          }
+        },
+        {
+          $sort: { _id: 1 }
+        }
+      ]);
+
+      newUsersPerMonth[collectionName] = newUsers;
+    }
+
+    res.status(200).json({ totalUsers, newUsersPerMonth });
+  } catch (error) {
+    console.error('Error viewing user statistics:', error);
+    res.status(500).json({ error: 'Error viewing user statistics' });
+  }
+};

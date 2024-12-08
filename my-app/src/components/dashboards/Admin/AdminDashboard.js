@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../utils/axiosConfig';
 import { AuthContext } from '../../../context/AuthContext';
 import AdminHeader from './AdminHeader';
-import { set } from 'mongoose';
 
 const AdminDashboard = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -140,7 +139,14 @@ const AdminDashboard = () => {
             >
                 Add User
             </button>
-            <button
+  
+          <button
+            className="w-full px-4 py-2 bg-green-600 text-white rounded"
+            onClick={() => handleButtonClick('/admin/sales')}
+          >
+            Sales Reports
+          </button>
+          <button
                 className="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
                 onClick={() => handleButtonClick('/admin/delete-account')}
             >

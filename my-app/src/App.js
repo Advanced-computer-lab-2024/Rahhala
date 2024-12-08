@@ -26,6 +26,10 @@ import ActivityCategories from './components/dashboards/Admin/ActivityCategories
 import AdminComplaints from './components/dashboards/Admin/Complaints';
 import AdminDashboard from './components/dashboards/Admin/AdminDashboard';
 import DeleteAccount from './components/dashboards/Admin/DeleteAccount';
+import AdminSalesReport from './components/dashboards/Admin/AdminSalesReport';
+import AdvertiserDashboard from './components/AdvertiserDashboard';
+import AdvertiserAccount from './components/dashboards/Advertiser/AdvertiserAccount';
+import UpdateAdvertiserAccount from './components/dashboards/Advertiser/UpdateAdvertiserAccount';
 import AdminProducts from './components/dashboards/Admin/AdminProducts';
 import FlagItinerary from './components/dashboards/Admin/FlagItinerary';
 function App() {
@@ -58,6 +62,10 @@ function App() {
                 <Route path="/admin/delete-account" element={<DeleteAccount />} />
                 <Route path="/admin/products" element={<AdminProducts />} />
                 <Route path="/admin/flag-itinerary" element={<FlagItinerary />} />
+                <Route path="/admin/sales" element={<AdminSalesReport />} />
+                <Route path="/advertiser" element={<AdvertiserDashboard />} />
+                <Route path="/advertiserAccount" element={<AdvertiserAccount />} />
+                <Route path="/UpdateAdvertiserAccount" element={<UpdateAdvertiserAccount />} />
                 <Route path="/ResetPassword" element={<ResetPassword />} />
                 <Route path="/TourGuideSales" element={<SalesReport />} />
                 <Route path="/Notifications" element={<Notifications />} />

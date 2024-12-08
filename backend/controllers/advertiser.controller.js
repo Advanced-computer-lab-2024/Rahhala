@@ -10,7 +10,7 @@ dotenv.config({ path: "../../.env" }); // Adjust path if needed
 export const editAdvertiser = async (req, res) => {
   console.log("entered editAdvertiser");
 
-  const { email, companyName, websiteLink, hotline, companyProfile, status, oldPassword, newPassword, logo } = req.body;
+  const { username, email, companyName, websiteLink, hotline, companyProfile, status, oldPassword, newPassword, logo, taxationRegistryImage, idCardImage } = req.body;
   const userId = req.user.id;
   try {
     const advertiser = await advertiserModel.findById(userId);
@@ -19,7 +19,12 @@ export const editAdvertiser = async (req, res) => {
       return res.status(404).json({ error: "Advertiser not found" });
     }
 
+    console.log("logo is ", logo);  
+
     // Update advertiser's profile details
+    advertiser.idCardImage = idCardImage || advertiser.idCardImage;
+    advertiser.taxationRegistryImage = taxationRegistryImage || advertiser.taxationRegistryImage;
+    advertiser.username = username || advertiser.username;
     advertiser.email = email || advertiser.email;
     advertiser.companyName = companyName || advertiser.companyName;
     advertiser.websiteLink = websiteLink || advertiser.websiteLink;
@@ -41,9 +46,9 @@ export const editAdvertiser = async (req, res) => {
     }
 
     // Handle logo upload
-    if (req.file) {
-      const logoBase64 = req.file.buffer.toString('base64');
-      advertiser.logo = logoBase64;
+    if (logo) {
+      console.log("Received logo:", logo);
+      advertiser.logo = logo;
     }
 
     await advertiser.save();
