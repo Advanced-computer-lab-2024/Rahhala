@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../utils/axiosConfig';
 import { AuthContext } from '../../../context/AuthContext';
 import SellerHeader from './SellerHeader';
+import { SpinnerCircular } from 'spinners-react';
+
 const SellerProducts = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const { auth } = useContext(AuthContext);
@@ -17,6 +19,10 @@ const SellerProducts = () => {
     const [editProduct, setEditProduct] = useState({});
     const [newProductModalOpen, setNewProductModalOpen] = useState(false);
     const [newProduct, setNewProduct] = useState({});
+    const [loading, setLoading] = useState(false);
+    const [toast, setToast] = useState({ show: false, message: '', type: '' });
+    const [archiveModalOpen, setArchiveModalOpen] = useState(false);
+    const [productToArchive, setProductToArchive] = useState(null);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -127,19 +133,27 @@ const SellerProducts = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         console.log("edit prod id",editProduct._id);
         try{
             const response = await axiosInstance.put(`/api/product/edit/${editProduct._id}`, editProduct);
-            alert('Product updated successfully');
+            showToast('Product updated successfully', 'success');
+            setEditModalOpen(false);
             window.location.reload();
         } catch(err){
             console.log("Error is", err);
-            alert(err.response?.data?.message || err.response?.data?.error || 'Error updating product.');
+            showToast(err.response?.data?.message || 'Error updating product', 'error');
             setError('Failed to update product');
+        } finally {
+            setLoading(false);
         }
         console.log(editProduct);
     }
 
+    const showToast = (message, type = 'info') => {
+        setToast({ show: true, message, type });
+        setTimeout(() => setToast({ show: false, message: '', type: '' }), 3000);
+    };
 
     const renderEditModal = () => {
         return(
@@ -168,10 +182,11 @@ const SellerProducts = () => {
                         <label className="text-sm text-gray-600">Product Price</label>
                         <input
                             type="number"
+                            min="0"
                             placeholder="Product Price"
                             className="w-full p-2 border border-gray-300 rounded mb-4"
                             value={editProduct.price}
-                            onChange={(e) => setEditProduct({ ...editProduct, price: e.target.value })}
+                            onChange={(e) => handlePriceChange(e, setEditProduct)}
                             required
                         />
                         <label className="text-sm text-gray-600">Product Image</label>
@@ -204,20 +219,20 @@ const SellerProducts = () => {
         if(isArchived){
             try {
                 const response = await axiosInstance.put(`/api/product/unarchive/${productId}`);
-                alert('Product unarchived successfully');
+                showToast('Product unarchived successfully', 'success');
                 window.location.reload();
             } catch (err) {
                 console.log("Error is", err); // Log error if fetching fails
-                alert(err.response?.data?.message || err.response?.data?.error || 'Error updating product.');
+                showToast(err.response?.data?.message || 'Error updating product', 'error');
             }
         } else {
                 try {
                     const response = await axiosInstance.put(`/api/product/archive/${productId}`);
-                    alert('Product archived successfully');
+                    showToast('Product archived successfully', 'success');
                     window.location.reload();
                 } catch (err) {
                     console.log("Error is", err); // Log error if fetching fails
-                    alert(err.response?.data?.message || err.response?.data?.error || 'Error updating product.');
+                    showToast(err.response?.data?.message || 'Error updating product', 'error');
                 }
             }
 
@@ -237,13 +252,28 @@ const SellerProducts = () => {
         e.preventDefault();
         try {
             const response = await axiosInstance.post('/api/product/create', newProduct);
-            alert('Product added successfully');
+            showToast('Product added successfully', 'success');
             window.location.reload();
         } catch (err) {
             console.log("Error is", err); // Log error if fetching fails
-            alert(err.response?.data?.message || err.response?.data?.error || 'Error adding product.');
+            showToast(err.response?.data?.message || 'Error adding product', 'error');
             setError('Failed to add product');
         }
+    };
+
+    const handlePriceChange = (e, setter) => {
+        const value = Math.max(0, Number(e.target.value));
+        setter(prev => ({ ...prev, price: value }));
+    };
+
+    const handleQuantityChange = (e, setter) => {
+        const value = Math.max(0, Number(e.target.value));
+        setter(prev => ({ ...prev, quantity: value }));
+    };
+
+    const confirmArchive = (product) => {
+        setProductToArchive(product);
+        setArchiveModalOpen(true);
     };
 
     const renderNewProductModal = () => {
@@ -272,19 +302,21 @@ const SellerProducts = () => {
                         <label className="text-sm text-gray-600">Product Price</label>
                         <input
                             type="number"
+                            min="0"
                             placeholder="Product Price"
                             className="w-full p-2 border border-gray-300 rounded mb-4"
                             value={newProduct.price}
-                            onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+                            onChange={(e) => handlePriceChange(e, setNewProduct)}
                             required
                         />
                         <label className="text-sm text-gray-600">Product Quantity</label>
                         <input
                             type="number"
+                            min="0"
                             placeholder="Product Quantity"
                             className="w-full p-2 border border-gray-300 rounded mb-4"
                             value={newProduct.quantity}
-                            onChange={(e) => setNewProduct({ ...newProduct, quantity: e.target.value })}
+                            onChange={(e) => handleQuantityChange(e, setNewProduct)}
                             required
                         />
                         <label className="text-sm text-gray-600">Product Image</label>
@@ -314,52 +346,84 @@ const SellerProducts = () => {
         );
     };
 
+    const Toast = ({ message, type }) => (
+        <div className="fixed top-4 right-4 z-50 animate-fade-in-down">
+            <div className={`rounded-lg px-4 py-3 shadow-lg ${
+                type === 'success' ? 'bg-green-100 text-green-700 border border-green-200' :
+                type === 'error' ? 'bg-red-100 text-red-700 border border-red-200' :
+                'bg-blue-100 text-blue-700 border border-blue-200'
+            }`}>
+                <div className="flex items-center space-x-3">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <p className="font-medium">{message}</p>
+                </div>
+            </div>
+        </div>
+    );
+
     return (
         <div className="min-h-screen bg-gray-100">
             <SellerHeader toggleDropdown={toggleDropdown} dropdownOpen={dropdownOpen} />
-            <button
-                onClick={() => navigate(-1)}
-                className="text-blue-500 mt-4 ml-4 flex items-center"
-            >
-                ← Back
-            </button>
+            <div className="container mx-auto px-4 py-8">
+                <div className="flex justify-between items-center mb-8">
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="text-blue-500 flex items-center hover:text-blue-600"
+                    >
+                        <span className="mr-2">←</span> Back
+                    </button>
+                    <h2 className="text-3xl font-bold text-center text-gray-800">My Products</h2>
+                    <div className="w-[72px]"></div>
+                </div>
+                
+                <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+                    <button
+                        className="w-full px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold"
+                        onClick={() => setNewProductModalOpen(true)}
+                    >
+                        Add New Product
+                    </button>
+                </div>
 
-            <div className="flex justify-center mt-20">
-                <div className="space-y-4 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg text-sm">
-                    <h2 className="text-4xl font-bold mb-4 text-center">Products</h2>
-                        <button
-                            className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                            onClick={() => setNewProductModalOpen(true)}
-                        >
-                            Add New Product
-                        </button>
-                        {newProductModalOpen && renderNewProductModal()}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {editModalOpen && renderEditModal()}
-                        {products.map((product) => (
-                            <div key={product._id} className="bg-white shadow-md rounded-lg p-4 text-center w-full lg:w-72 flex flex-col justify-between">
-                                <div>
-                                    <img
-                                        src={product.picture ? `data:image/jpeg;base64,${product.picture}` : '/path/to/default/image.jpg'}
-                                        alt={product.name}
-                                        className="w-full h-48 object-cover rounded-lg mb-4"
-                                    />
-                                    <h3 className="text-xl font-semibold">{product.name}</h3>
-                                    <p className="text-gray-600">{product.description}</p>
-                                    <p className="text-lg font-semibold text-blue-500">${product.price}</p>
-                                    
-                                    {/* Add average rating display */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {products.map((product) => (
+                        <div key={product._id} className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                            <div className="relative">
+                                <img
+                                    src={product.picture ? `data:image/jpeg;base64,${product.picture}` : '/path/to/default/image.jpg'}
+                                    alt={product.name}
+                                    className="w-full h-48 object-cover"
+                                    onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = '/path/to/default/image.jpg';
+                                    }}
+                                />
+                                {product.isArchived && (
+                                    <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs">
+                                        Archived
+                                    </div>
+                                )}
+                            </div>
+                            <div className="p-4">
+                                <h3 className="text-xl font-semibold truncate">{product.name}</h3>
+                                <p className="text-gray-600 h-12 overflow-hidden">{product.description}</p>
+                                <p className="text-lg font-semibold text-blue-500 mt-2">${product.price.toFixed(2)}</p>
+                                <div className="mt-2">
                                     {renderReviews(product._id)}
                                 </div>
-                                <div className="flex justify-center mt-4 space-x-4">
+                            </div>
+                            <div className="p-4 bg-gray-50 border-t">
+                                <div className="flex justify-between space-x-2">
                                     <button
                                         onClick={() => handleMoreInfo(product)}
-                                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                                        className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                                     >
                                         More Info
                                     </button>
                                     <button
-                                        className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                                        className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
                                         onClick={() => {
                                             setEditProduct(product);
                                             setEditModalOpen(true);
@@ -367,36 +431,36 @@ const SellerProducts = () => {
                                     >
                                         Edit
                                     </button>
-                                    {product.isArchived ? (
-                                        <button
-                                            onClick={() => handleArchive(product._id, product.isArchived)}
-                                            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-                                        >
-                                            Unarchive
-                                        </button>
-                                    ) : (
-                                        <button
-                                            onClick={() => handleArchive(product._id, product.isArchived)}
-                                            className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800"
-                                        >
-                                            Archive
-                                        </button>
-                                    )}
+                                    <button
+                                        onClick={() => confirmArchive(product)}
+                                        className={`flex-1 px-4 py-2 ${
+                                            product.isArchived 
+                                            ? 'bg-green-500 hover:bg-green-600' 
+                                            : 'bg-red-700 hover:bg-red-800'
+                                        } text-white rounded-lg transition-colors`}
+                                    >
+                                        {product.isArchived ? 'Unarchive' : 'Archive'}
+                                    </button>
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                        </div>
+                    ))}
                 </div>
             </div>
-
+            
+            {/* Modals remain unchanged */}
             {modalOpen && selectedProduct && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                     <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
                         <h2 className="text-xl font-semibold mb-4">{selectedProduct.name}</h2>
                         <img
-                            src={selectedProduct.image}
+                            src={selectedProduct.picture ? `data:image/jpeg;base64,${selectedProduct.picture}` : '/path/to/default/image.jpg'}
                             alt={selectedProduct.name}
-                            className="w-full h-48 object-cover rounded-lg mb-4"
+                            className="w-full h-64 object-cover rounded-lg mb-4"
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = '/path/to/default/image.jpg';
+                            }}
                         />
                         <div className="space-y-4">
                             <p className="text-gray-700"><strong>Description:</strong> {selectedProduct.description}</p>
@@ -416,6 +480,44 @@ const SellerProducts = () => {
                     </div>
                 </div>
             )}
+
+            {loading && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <SpinnerCircular />
+                </div>
+            )}
+
+            {archiveModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
+                        <h2 className="text-xl font-semibold mb-4">
+                            Confirm {productToArchive?.isArchived ? 'Unarchive' : 'Archive'}
+                        </h2>
+                        <p className="text-gray-600 mb-6">
+                            Are you sure you want to {productToArchive?.isArchived ? 'unarchive' : 'archive'} this product?
+                        </p>
+                        <div className="flex justify-end space-x-4">
+                            <button
+                                onClick={() => setArchiveModalOpen(false)}
+                                className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={() => {
+                                    handleArchive(productToArchive._id, productToArchive.isArchived);
+                                    setArchiveModalOpen(false);
+                                }}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                            >
+                                Confirm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {toast.show && <Toast message={toast.message} type={toast.type} />}
         </div>
     );
 };
