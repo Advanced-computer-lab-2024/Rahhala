@@ -3,6 +3,61 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../../Header.js';
 import { AuthContext } from '../../../context/AuthContext';
 import axiosInstance from '../../../utils/axiosConfig';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+
+const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
+
+const PaymentForm = ({ amount, onSuccess, onError }) => {
+    const stripe = useStripe();
+    const elements = useElements();
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        if (!stripe || !elements) {
+            return;
+        }
+
+        const { error, paymentMethod } = await stripe.createPaymentMethod({
+            type: 'card',
+            card: elements.getElement(CardElement),
+        });
+
+        if (error) {
+            onError(error.message);
+            return;
+        }
+
+        try {
+            const response = await axiosInstance.post('/api/tourist/createPaymentIntent', {
+                amount: amount,
+                payment_method: paymentMethod.id,
+            });
+
+            const { client_secret } = response.data;
+
+            const { error: confirmError } = await stripe.confirmCardPayment(client_secret);
+
+            if (confirmError) {
+                onError(confirmError.message);
+            } else {
+                onSuccess();
+            }
+        } catch (err) {
+            onError(err.response?.data?.message || 'Payment failed');
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <CardElement />
+            <button type="submit" disabled={!stripe}>
+                Pay
+            </button>
+        </form>
+    );
+};
 
 const Wallet = () => {
     const { auth } = useContext(AuthContext);
@@ -13,6 +68,7 @@ const Wallet = () => {
     const [success, setSuccess] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [transactions, setTransactions] = useState([]);
+    const [showPaymentForm, setShowPaymentForm] = useState(false);
 
     const navigate = useNavigate();
 
@@ -36,7 +92,6 @@ const Wallet = () => {
     }, [auth]);
 
     const handleAddMoney = async () => {
-        // Input validation
         const amount = parseFloat(amountToAdd);
         if (!amount || amount <= 0) {
             setError('Please enter a valid amount');
@@ -45,19 +100,22 @@ const Wallet = () => {
 
         setIsLoading(true);
         setError(null);
-        try {
-            const response = await axiosInstance.put('/api/tourist/addMoneyToWallet', { 
-                amount: amount 
-            });
-            setWalletBalance(response.data.wallet);
-            setSuccess('Money added successfully!');
-            setAmountToAdd('');
-            fetchWalletData(); // Refresh transactions
-        } catch (err) {
-            setError(err.response?.data?.message || 'Failed to add money');
-        } finally {
-            setIsLoading(false);
-        }
+
+        // Show payment form
+        setShowPaymentForm(true);
+    };
+
+    const handlePaymentSuccess = () => {
+        setSuccess('Money added successfully!');
+        setAmountToAdd('');
+        fetchWalletData(); // Refresh transactions
+        setIsLoading(false);
+        setShowPaymentForm(false);
+    };
+
+    const handlePaymentError = (message) => {
+        setError(message);
+        setIsLoading(false);
     };
 
     const toggleDropdown = () => {
@@ -153,6 +211,16 @@ const Wallet = () => {
                         </div>
                     )}
                 </div>
+
+                {showPaymentForm && (
+                    <Elements stripe={stripePromise}>
+                        <PaymentForm
+                            amount={amountToAdd}
+                            onSuccess={handlePaymentSuccess}
+                            onError={handlePaymentError}
+                        />
+                    </Elements>
+                )}
             </div>
         </div>
     );
