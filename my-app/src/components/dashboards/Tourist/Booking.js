@@ -13,6 +13,9 @@ const BookingPage = () => {
   const [rating, setRating] = useState(0);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [reviewType, setReviewType] = useState('');
+  const [reviewId, setReviewId] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,26 +41,40 @@ const BookingPage = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-  const handleRatingChange = (type, id, rating) => {
-    setRating(rating);
+  const openReviewModal = (type, id) => {
+    setReviewType(type);
+    setReviewId(id);
+    setIsReviewModalOpen(true);
   };
 
-  const handleTitleChange = (type, id, value) => {
-    setTitle(value);
+  const closeReviewModal = () => {
+    setIsReviewModalOpen(false);
+    setRating(0);
+    setTitle('');
+    setBody('');
   };
 
-  const handleBodyChange = (type, id, value) => {
-    setBody(value);
+  const handleRatingChange = (e) => {
+    setRating(parseInt(e.target.value));
   };
 
-  const handleSubmit = async (type, id) => {
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
+  };
+
+  const handleBodyChange = (e) => {
+    setBody(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       await axiosInstance.post('/api/review', {
         rating,
         title,
         body,
-        reviewedEntity: id,
-        reviewedEntityType: type
+        reviewedEntity: reviewId,
+        reviewedEntityType: reviewType
       });
       alert('Review submitted successfully');
       window.location.reload();
@@ -66,209 +83,125 @@ const BookingPage = () => {
     }
   };
 
-  const toggleReviewForm = (type, id) => {
-    if (type === 'activity') {
-      setActivities((prev) =>
-        prev.map((activity) =>
-          activity._id === id
-            ? { ...activity, showReviewForm: !activity.showReviewForm }
-            : { ...activity, showReviewForm: false }
-        )
-      );
-    } else if (type === 'itinerary') {
-      setItineraries((prev) =>
-        prev.map((itinerary) =>
-          itinerary._id === id
-            ? { ...itinerary, showReviewForm: !itinerary.showReviewForm }
-            : { ...itinerary, showReviewForm: false }
-        )
-      );
-    }
-  };
-
-  const cancelReviewForm = (type, id) => {
-    if (type === 'activity') {
-      setActivities((prev) =>
-        prev.map((activity) =>
-          activity._id === id ? { ...activity, showReviewForm: false } : activity
-        )
-      );
-    } else if (type === 'itinerary') {
-      setItineraries((prev) =>
-        prev.map((itinerary) =>
-          itinerary._id === id ? { ...itinerary, showReviewForm: false } : itinerary
-        )
-      );
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-100">
       <Header toggleDropdown={toggleDropdown} dropdownOpen={dropdownOpen} />
-      <button
-        onClick={() => navigate(-1)}
-        className="text-blue-500 mt-4 ml-4 flex items-center"
-      >
-        ← Back
-      </button>
-      <div className="flex items-center mt-4 px-4"></div>
-      <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg mt-8">
-        <h1 className="text-2xl font-semibold mb-6">Bookings</h1>
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Booked Activities</h2>
-          {activities.map((activity) => (
-            <div key={activity._id} className="flex justify-between mb-4 items-start">
-              <div className="flex-1">
-                <h3 className="font-bold">{activity.name}</h3>
-                <p>{activity.date}</p>
-              </div>
-              <div className="flex items-center">
-                {!activity.showReviewForm && (
+      <div className="container mx-auto px-4 mt-4">
+        <button
+          onClick={() => navigate(-1)}
+          className="text-blue-500 mb-4 flex items-center"
+        >
+          ← Back
+        </button>
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h1 className="text-2xl font-semibold mb-6">Bookings</h1>
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-4">Booked Activities</h2>
+            {activities.map((activity) => (
+              <div key={activity._id} className="flex justify-between mb-4 items-start">
+                <div className="flex-1">
+                  <h3 className="font-bold">{activity.name}</h3>
+                  <p>{activity.date}</p>
+                </div>
+                <div className="flex items-center">
                   <button
-                    onClick={() => toggleReviewForm('activity', activity._id)}
+                    onClick={() => openReviewModal('activity', activity._id)}
                     className="py-2 px-4 bg-blue-500 text-white rounded-md"
                   >
                     Review
                   </button>
-                )}
-              </div>
-              {activity.showReviewForm && (
-                <div className="w-2/3 mt-4">
-                  <div className="flex items-center mb-2">
-                    <span className="mr-2">Rating:</span>
-                    <select
-                      value={activity.rating}
-                      onChange={(e) =>
-                        handleRatingChange('activity', activity._id, parseInt(e.target.value))
-                      }
-                      className="p-2 border rounded"
-                    >
-                      <option value={0}>0</option>
-                      <option value={1}>1</option>
-                      <option value={2}>2</option>
-                      <option value={3}>3</option>
-                      <option value={4}>4</option>
-                      <option value={5}>5</option>
-                    </select>
-                  </div>
-                  <div className="mb-2">
-                    <input
-                      type="text"
-                      placeholder="Review Title"
-                      value={activity.title}
-                      onChange={(e) =>
-                        handleTitleChange('activity', activity._id, e.target.value)
-                      }
-                      className="p-2 w-full border rounded mb-2"
-                    />
-                    <textarea
-                      placeholder="Write your review..."
-                      value={activity.body}
-                      onChange={(e) =>
-                        handleBodyChange('activity', activity._id, e.target.value)
-                      }
-                      className="p-2 w-full border rounded mb-2"
-                    />
-                  </div>
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleSubmit('activity', activity._id)}
-                      className="py-2 px-4 bg-blue-500 text-white rounded-md"
-                    >
-                      Submit Review
-                    </button>
-                    <button
-                      onClick={() => cancelReviewForm('activity', activity._id)}
-                      className="py-2 px-4 bg-gray-500 text-white rounded-md"
-                    >
-                      Cancel
-                    </button>
-                  </div>
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Booked Itineraries</h2>
-          {itineraries.map((itinerary) => (
-            <div key={itinerary._id} className="flex justify-between mb-4 items-start">
-              <div className="flex-1">
-                <h3 className="font-bold">{itinerary.name}</h3>
-                <p>
-                  {itinerary.availableDates
-                    ? itinerary.availableDates.map((date) => new Date(date).toLocaleDateString()).join(', ')
-                    : 'No available dates'}
-                </p>
               </div>
-              <div className="flex items-center">
-                {!itinerary.showReviewForm && (
+            ))}
+          </div>
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-4">Booked Itineraries</h2>
+            {itineraries.map((itinerary) => (
+              <div key={itinerary._id} className="flex justify-between mb-4 items-start">
+                <div className="flex-1">
+                  <h3 className="font-bold">{itinerary.name}</h3>
+                  <p>
+                    {itinerary.availableDates
+                      ? itinerary.availableDates.map((date) => new Date(date).toLocaleDateString()).join(', ')
+                      : 'No available dates'}
+                  </p>
+                </div>
+                <div className="flex items-center">
                   <button
-                    onClick={() => toggleReviewForm('itinerary', itinerary._id)}
+                    onClick={() => openReviewModal('itinerary', itinerary._id)}
                     className="py-2 px-4 bg-blue-500 text-white rounded-md"
                   >
                     Review
                   </button>
-                )}
-              </div>
-              {itinerary.showReviewForm && (
-                <div className="w-2/3 mt-4">
-                  <div className="flex items-center mb-2">
-                    <span className="mr-2">Rating:</span>
-                    <select
-                      value={itinerary.rating}
-                      onChange={(e) =>
-                        handleRatingChange('itinerary', itinerary._id, parseInt(e.target.value))
-                      }
-                      className="p-2 border rounded"
-                    >
-                      <option value={0}>0</option>
-                      <option value={1}>1</option>
-                      <option value={2}>2</option>
-                      <option value={3}>3</option>
-                      <option value={4}>4</option>
-                      <option value={5}>5</option>
-                    </select>
-                  </div>
-                  <div className="mb-2">
-                    <input
-                      type="text"
-                      placeholder="Review Title"
-                      value={itinerary.title}
-                      onChange={(e) =>
-                        handleTitleChange('itinerary', itinerary._id, e.target.value)
-                      }
-                      className="p-2 w-full border rounded mb-2"
-                    />
-                    <textarea
-                      placeholder="Write your review..."
-                      value={itinerary.body}
-                      onChange={(e) =>
-                        handleBodyChange('itinerary', itinerary._id, e.target.value)
-                      }
-                      className="p-2 w-full border rounded mb-2"
-                    />
-                  </div>
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleSubmit('itinerary', itinerary._id)}
-                      className="py-2 px-4 bg-blue-500 text-white rounded-md"
-                    >
-                      Submit Review
-                    </button>
-                    <button
-                      onClick={() => cancelReviewForm('itinerary', itinerary._id)}
-                      className="py-2 px-4 bg-gray-500 text-white rounded-md"
-                    >
-                      Cancel
-                    </button>
-                  </div>
                 </div>
-              )}
-            </div>
-          ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
+
+      {isReviewModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
+            <h2 className="text-xl font-semibold mb-4">Submit Review</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="flex flex-col">
+                <label className="font-bold" htmlFor="rating">Rating:</label>
+                <select
+                  id="rating"
+                  value={rating}
+                  onChange={handleRatingChange}
+                  className="p-2 border rounded"
+                  required
+                >
+                  <option value={0}>0</option>
+                  <option value={1}>1</option>
+                  <option value={2}>2</option>
+                  <option value={3}>3</option>
+                  <option value={4}>4</option>
+                  <option value={5}>5</option>
+                </select>
+              </div>
+              <div className="flex flex-col">
+                <label className="font-bold" htmlFor="title">Review Title:</label>
+                <input
+                  type="text"
+                  id="title"
+                  value={title}
+                  onChange={handleTitleChange}
+                  className="p-2 border rounded"
+                  required
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="font-bold" htmlFor="body">Review Body:</label>
+                <textarea
+                  id="body"
+                  value={body}
+                  onChange={handleBodyChange}
+                  className="p-2 border rounded"
+                  required
+                />
+              </div>
+              <div className="flex justify-center mt-6 space-x-4">
+                <button
+                  type="submit"
+                  className="py-2 px-4 bg-blue-500 text-white rounded-md"
+                >
+                  Submit Review
+                </button>
+                <button
+                  onClick={closeReviewModal}
+                  type="button"
+                  className="py-2 px-4 bg-gray-500 text-white rounded-md"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

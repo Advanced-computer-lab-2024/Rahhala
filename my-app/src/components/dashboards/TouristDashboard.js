@@ -19,6 +19,7 @@ function TouristDashboard() {
   const [error, setError] = useState(null);
   const [reviews, setReviews] = useState([]);
   const { auth } = useContext(AuthContext);
+  const [toast, setToast] = useState({ visible: false, message: '' });
 
   const navigate = useNavigate();
 
@@ -130,7 +131,8 @@ function TouristDashboard() {
         )}
       </div>
     );
-};
+  };
+
   const renderItineraries = () => (
     <div className="space-y-4 max-w-md mx-auto">
       <h2 className="text-2xl font-bold">Itineraries</h2>
@@ -142,7 +144,12 @@ function TouristDashboard() {
           <p>Tags: {itinerary.tags.join(', ')}</p>
           <p>Language: {itinerary.language}</p>
           <div className="flex space-x-2 mt-2">
-            <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">Book</button>
+            <button 
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+              onClick={() => handleBook(itinerary, 'itinerary')}
+            >
+              Book
+            </button>
             <button
               className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
               onClick={() => handleMoreInfoItinerary(itinerary._id)}
@@ -175,7 +182,12 @@ function TouristDashboard() {
           <p>Category: {activity.category}</p>
           <p>Tags: {activity.tags.join(', ')}</p>
           <div className="flex space-x-2 mt-2">
-            <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">Book</button>
+            <button 
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+              onClick={() => handleBook(activity, 'activity')}
+            >
+              Book
+            </button>
             <button
               className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
               onClick={() => handleMoreInfoActivity(activity._id)}
@@ -209,12 +221,20 @@ function TouristDashboard() {
           <p>Native Price: ${museum.nativePrice}</p>
           <p>Student Price: ${museum.studentPrice}</p>
           <p>Tags: {museum.tags.join(', ')}</p>
-          <button
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mt-2"
-            onClick={() => handleMoreInfoMuseum(museum._id)}
-          >
-            More Info
-          </button>
+          <div className="flex space-x-2 mt-2">
+            <button 
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+              onClick={() => handleBook(museum, 'museum')}
+            >
+              Book
+            </button>
+            <button
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+              onClick={() => handleMoreInfoMuseum(museum._id)}
+            >
+              More Info
+            </button>
+          </div>
           {expandedMuseum === museum._id && (
             <div className="mt-4 text-gray-700">
               <h4 className="font-semibold">Images</h4>
@@ -224,12 +244,75 @@ function TouristDashboard() {
                 ))}
               </div>
               <p className="mt-4"><strong>Additional Info:</strong> {museum.additionalInfo}</p>
+              {renderReviews(museum._id, 'Museum')}
             </div>
           )}
         </div>
       ))}
     </div>
   );
+
+  const showToast = (message, type = 'info') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: '', type: '' }), 3000);
+  };
+
+  const handleBook = async (item, type) => {
+    if (!auth?.isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+  
+    try {
+      let response;
+      if (type === 'activity' || type === 'museum') {
+        response = await axiosInstance.post('/api/tourist/bookActivity', {
+          activityId: item._id
+        });
+      } else if (type === 'itinerary') {
+        response = await axiosInstance.post('/api/tourist/bookItinerary', {
+          itineraryId: item._id
+        });
+      }
+  
+      if (response.status === 200) {
+        setToast({
+          visible: true,
+          message: `${type.charAt(0).toUpperCase() + type.slice(1)} booked successfully!`
+        });
+  
+        // Refresh data after booking
+        const updatedResponse = await axiosInstance.get(`/api/${type === 'museum' ? 'activity' : type}`);
+        if (type === 'activity' || type === 'museum') {
+          setActivities(updatedResponse.data.filter(activity => activity.bookingOpen));
+        } else if (type === 'itinerary') {
+          setItineraries(updatedResponse.data.filter(itinerary => !itinerary.flagged && itinerary.isActive));
+        }
+      }
+  
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || `Failed to book ${type}`;
+      setToast({
+        visible: true, 
+        message: errorMessage
+      });
+    }
+  
+    // Hide toast after 3 seconds
+    setTimeout(() => {
+      setToast({visible: false, message: ''});
+    }, 3000);
+  };
+
+  const Toast = () => {
+    if (!toast.visible) return null;
+    
+    return (
+      <div className="fixed bottom-4 right-4 bg-black bg-opacity-80 text-white px-6 py-3 rounded-lg">
+        {toast.message}
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -296,6 +379,7 @@ function TouristDashboard() {
       </div>
 
       {error && <div className="text-center text-red-500 mt-4">{error}</div>}
+      <Toast />
     </div>
   );
 }
