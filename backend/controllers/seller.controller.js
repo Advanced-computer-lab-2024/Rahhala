@@ -3,6 +3,8 @@ import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
 
+import accountDeletionRequestModel from "../models/accountDeletionRequest.model.js";
+
 dotenv.config({ path: "../../.env" }); // Adjust path if needed
 
 // get Seller from the Database
@@ -298,4 +300,36 @@ export const getAllSellers = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: "Error fetching sellers" });
     }
+};
+export const requestAccountDeletion = async (req, res) => {
+  console.log("Requesting Seller Account to be deleted");
+  const sellerId = req.user.id;
+
+  try {
+    const seller = await sellerModel.findById(sellerId);
+
+    if (!seller) {
+      return res.status(404).json({ error: "Seller not found" });
+    }
+
+    // Create deletion request with userType
+    const deletionRequest = new accountDeletionRequestModel({
+      userId: req.user.id,
+      userType: 'seller', // Add the required userType field
+      requestDate: new Date()
+    });
+
+    await deletionRequest.save();
+
+    console.log(`Account deletion requested for seller: ${seller.email}`);
+    res.status(200).json({ 
+      message: "Account deletion request sent to admin." 
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ 
+      error: "Error processing account deletion request." 
+    });
+  }
 };
