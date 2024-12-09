@@ -215,6 +215,8 @@ To help you understand the technologies used in this project, here are some reco
 - Moazz Ahmed Abdellatif
 
 - Marawan Tawhed Fathy Abdelhady
+  
+- Youssef Allam
 
 ## License
 
