@@ -359,7 +359,7 @@ function GovernorDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Header />
+      <Header isGovernor={true} />
 
       <div className="p-6">
         {successMessage && <div className="text-green-500 mb-4">{successMessage}</div>}
