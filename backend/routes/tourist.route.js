@@ -27,7 +27,8 @@ import {
   loginTourist,
   requestPasswordReset, 
   resetPassword,
-  getTouristByIdParam
+  getTouristByIdParam,
+  getTouristBookings
 } from "../controllers/tourist.controller.js";
 
 const router = express.Router();
@@ -57,4 +58,5 @@ router.post("/address", verifyToken, addDeliveryAddress);
 router.put('/cancel', verifyToken, cancelOrder); 
 router.post('/requestPasswordReset', requestPasswordReset);
 router.post('/resetPassword', resetPassword);
+router.get("/bookings", verifyToken, getTouristBookings);
 export default router;

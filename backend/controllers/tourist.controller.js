@@ -1214,3 +1214,21 @@ export const loginTourist = async (req, res) => {
     res.status(500).json({ error: "Error logging in tourist" });
   }
 };
+export const getTouristBookings = async (req, res) => {
+  try {
+    const tourist = await Tourist.findById(req.user.id)
+      .populate('bookedActivities')
+      .populate('bookedItineraries');
+
+    if (!tourist) {
+      return res.status(404).json({ message: 'Tourist not found' });
+    }
+
+    res.status(200).json({
+      bookedActivities: tourist.bookedActivities,
+      bookedItineraries: tourist.bookedItineraries
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
