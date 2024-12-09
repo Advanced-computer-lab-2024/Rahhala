@@ -5,67 +5,82 @@ import { AuthContext } from '../../../context/AuthContext';
 import Header from '../../Header';
 
 function Flights() {
-  const [selectedTab, setSelectedTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [orderBy, setOrderBy] = useState('price-ascending');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [flights, setFlights] = useState([]);
+  const [airports, setAirports] = useState([]);
+  const [origin, setOrigin] = useState('');
+  const [destination, setDestination] = useState('');
+  const [departureDate, setDepartureDate] = useState('');
   const [error, setError] = useState(null);
-  const { auth } = useContext(AuthContext);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [meta, setMeta] = useState(null);
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchFlights = async () => {
-      try {
-        const response = await axiosInstance.get('/api/flights');
-        setFlights(response.data);
-      } catch (err) {
-        setError('Failed to load flights.');
-      }
-    };
-
-    fetchFlights();
-  }, []);
-
-  const handleSearch = (event) => {
-    setSearchQuery(event.target.value.toLowerCase());
+  const handleSearchAirports = async () => {
+    try {
+      const response = await axiosInstance.post('/api/flights/search-airports', { city: searchQuery });
+      setAirports(response.data);
+      setIsModalOpen(true);
+    } catch (err) {
+      setError('Failed to load airports.');
+    }
   };
 
-  const handleOrderByChange = (event) => {
-    setOrderBy(event.target.value);
+  const handleSearchFlights = async () => {
+    try {
+      const formattedDate = new Date(departureDate).toISOString().split('T')[0];
+      console.log('formattedDate', formattedDate);  
+      const response = await axiosInstance.post('/api/flights/search-flights', {
+        origin,
+        destination,
+        departureDate: formattedDate,
+      });
+      setFlights(response.data.data);
+      console.log('response.data', response.data);  
+      setMeta(response.data.meta);
+    } catch (err) {
+      setError('Failed to load flights.');
+    }
   };
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-  const filteredAndSortedData = (dataArray) => {
-    const filteredData = dataArray.filter((item) =>
-      item.name.toLowerCase().includes(searchQuery)
-    );
-    return filteredData.sort((a, b) => {
-      if (orderBy === 'price-ascending') return a.price - b.price;
-      if (orderBy === 'price-descending') return b.price - a.price;
-      if (orderBy === 'date-latest') return new Date(b.date) - new Date(a.date);
-      if (orderBy === 'date-oldest') return new Date(a.date) - new Date(b.date);
-      return 0;
-    });
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
-  const renderFlights = () => (
-    <div className="space-y-4 max-w-md mx-auto">
-      <h2 className="text-2xl font-bold">Flights</h2>
-      {filteredAndSortedData(flights).map((flight) => (
-        <div key={flight._id} className="p-6 bg-white shadow-lg rounded-lg text-sm">
-          <h3 className="text-xl font-semibold">{flight.name}</h3>
-          <p className="text-blue-500">${flight.price}</p>
-          <p>Date: {new Date(flight.date).toLocaleDateString()}</p>
-          <p>Tags: {flight.tags.join(', ')}</p>
-          <div className="flex space-x-2 mt-2">
-            <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">Book</button>
-            <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">More Info</button>
+  
+  const renderAirports = () => (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={closeModal}>
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full max-h-96 overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <h2 className="text-2xl font-bold mb-4">Airports</h2>
+        {airports.map((airport) => (
+          <div key={airport.iataCode} className="p-4 border-b border-gray-200">
+            <h3 className="text-xl font-semibold">{airport.name}</h3>
+            <p className="text-blue-500">IATA Code: {airport.iataCode}</p>
           </div>
+        ))}
+        <button className="mt-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded" onClick={closeModal}>
+          Close
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderFlights = () => (
+    <div className="mt-6">
+      <h2 className="text-2xl font-bold mb-4">Flights</h2>
+      {flights.map((flight) => (
+        <div key={flight.id} className="p-4 border-b border-gray-200">
+          <h3 className="text-xl font-semibold">{flight.airline}</h3>
+          <p>Flight Number: {flight.flightNumber}</p>
+          <p>Departure: {flight.departure}</p>
+          <p>Arrival: {flight.arrival}</p>
+          <p>Price: {flight.price}</p>
         </div>
       ))}
     </div>
@@ -75,46 +90,56 @@ function Flights() {
     <div className="min-h-screen bg-cover bg-center" style={{ backgroundImage: 'url(/path/to/your/background-image.jpg)' }}>
       <Header toggleDropdown={toggleDropdown} dropdownOpen={dropdownOpen} />
 
-      <div className="flex justify-center space-x-4 mt-4">
+      <div className="flex justify-center mt-4 space-x-4">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search for airports by city..."
+          className="p-2 border border-gray-300 rounded"
+        />
         <button
-          className={`px-4 py-2 rounded ${selectedTab === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-          onClick={() => setSelectedTab('all')}
+          onClick={handleSearchAirports}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
         >
-          Show All
-        </button>
-        <button
-          className={`px-4 py-2 rounded ${selectedTab === 'flights' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-          onClick={() => setSelectedTab('flights')}
-        >
-          Flights
+          Search Airports
         </button>
       </div>
 
       <div className="flex justify-center mt-4 space-x-4">
         <input
           type="text"
-          value={searchQuery}
-          onChange={handleSearch}
-          placeholder="Search..."
+          value={origin}
+          onChange={(e) => setOrigin(e.target.value)}
+          placeholder="Origin"
           className="p-2 border border-gray-300 rounded"
         />
-        <select
-          value={orderBy}
-          onChange={handleOrderByChange}
+        <input
+          type="text"
+          value={destination}
+          onChange={(e) => setDestination(e.target.value)}
+          placeholder="Destination"
           className="p-2 border border-gray-300 rounded"
+        />
+        <input
+          type="date"
+          value={departureDate}
+          onChange={(e) => setDepartureDate(e.target.value)}
+          className="p-2 border border-gray-300 rounded"
+        />
+        <button
+          onClick={handleSearchFlights}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
         >
-          <option value="price-ascending">Price (Low to High)</option>
-          <option value="price-descending">Price (High to Low)</option>
-          <option value="date-latest">Date (Latest)</option>
-          <option value="date-oldest">Date (Oldest)</option>
-        </select>
+          Search Flights
+        </button>
       </div>
 
       <div className="mt-6">
-        {selectedTab === 'all' && renderFlights()}
-        {selectedTab === 'flights' && renderFlights()}
+        {isModalOpen && renderAirports()}
       </div>
 
+      {flights.length > 0 && renderFlights()}
       {error && <div className="text-center text-red-500 mt-4">{error}</div>}
     </div>
   );

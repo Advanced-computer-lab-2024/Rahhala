@@ -58,6 +58,7 @@ const searchAirports = async (keyword) => {
 // Function to search for flights
 const searchFlights = async (origin, destination, departureDate) => {
   await ensureAccessToken();
+  console.log('Searching for flights:', origin, destination, departureDate);
 
   try {
     const response = await axios.get(

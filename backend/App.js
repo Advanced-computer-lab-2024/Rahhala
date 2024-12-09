@@ -55,6 +55,23 @@ app.use('/api/museumTags', museumTagRoutes);
 app.use('/api/flights', flightRoutes);
 app.use('/api/hotels', hotelRoutes);
 
+app.post('/api/tourist/createPaymentIntent', async (req, res) => {
+  const { amount, payment_method } = req.body;
+
+  try {
+      const paymentIntent = await stripe.paymentIntents.create({
+          amount: amount * 100, // Convert to cents
+          currency: 'usd',
+          payment_method: payment_method,
+          confirmation_method: 'manual',
+          confirm: true,
+      });
+
+      res.json({ client_secret: paymentIntent.client_secret });
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+});
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
