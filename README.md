@@ -1,4 +1,4 @@
-![Rahhala](https://github.com/user-attachments/assets/91a13fe9-25b9-41a6-aeab-289ec93f26ca)
+![Rahhala](https://github.com/user-attachments/assets/cdb7bcf7-9938-4f8b-a4ab-5674a03a54b6)
 # Rahhala 🌍✈️
 
 A comprehensive MERN stack virtual trip planner web application that enables users to book trips, purchase souvenirs, and explore historic sites.
