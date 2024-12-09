@@ -1,44 +1,56 @@
+![Rahhala](https://github.com/user-attachments/assets/91a13fe9-25b9-41a6-aeab-289ec93f26ca)
+# Rahhala 🌍✈️
 
-# Rahhala
+A comprehensive MERN stack virtual trip planner web application that enables users to book trips, purchase souvenirs, and explore historic sites.
 
-This project is a MERN stack virtual trip planner web app where users can book trips and itineraries, buy goods and souvenirs, and look up information about historic sites.
+## 🎯 Motivation
 
-## Motivation
+Part of the Advanced Computer Lab university course curriculum, this project challenges students to develop a full-stack application independently across multiple sprints, fostering self-learning and problem-solving skills.
 
-This project is part of the coursework of the Advanced Computer Lab university course, aiming at engaging the students in building a full stack project on their own through multiple sprints, encouraging self-study and trial and error. 
+## 🚀 Build Status
 
-## Build Status
+Current Status: Beta
+- Minor navigation issues in user dashboards
+- Design inconsistencies being addressed 
+- Core functionality stable and operational
 
-There are misnavigations for some user dashboards, inconsistencies in design and wording problems around the system. Otherwise, the flow of the system is smooth.
+## 💻 Code Architecture
 
-## Code Style
+### Backend Structure
+- 📁 Models: MongoDB schema definitions
+- 🎮 Controllers: Business logic and CRUD operations  
+- 🛣️ Routes: API endpoint definitions with JWT authentication
+- 🔒 Middleware: User verification and request processing
 
-The backend is divided into 3 main parts:
-- Models: database models
-- Controllers: CRUD and functions needed for application
-- Routes: assigning controllers names, methods and tokens if necessary.
-There is also middlware file for user verifications.
+### Frontend Structure
+- 🎨 Component-based architecture
+- 📱 Responsive dashboard designs for all user types
+- 🔐 Role-based access control
 
-The frontend consists of dashboards for every type of users.
+## 📸 Screenshots
+1. Landing Page![landing](https://github.com/user-attachments/assets/49006f17-3900-4a17-b808-5209614089c3)
+2. Signup Page![signup](https://github.com/user-attachments/assets/64962de3-95b5-48a4-a8b3-9ec3d5ed1bb2)
+3. Login Page![login](https://github.com/user-attachments/assets/debdad32-bb36-424f-80d6-a5b0d43547f3)
+4. Tourist Dashboard![tourist](https://github.com/user-attachments/assets/a838e36c-c275-4827-95b0-baa386262f3a)
+5. Reset Password![resetpassword](https://github.com/user-attachments/assets/a616187f-9aa6-47d1-b4fc-74ffa8071d45)
 
-## Screenshots
 
-## Technologies Used
+## 🛠️ Technologies
 
-Frontend:
-- React.js
-- Axios
-- Tailwind.js
+### Frontend
+- ⚛️ React.js
+- 🔄 Axios
+- 💅 Tailwind CSS
 
-Backend:
-- node.js
-- express.js
+### Backend
+- 🟩 Node.js
+- 🚂 Express.js
 
-Database:
-- MongoDB Atlas
+### Database
+- 🍃 MongoDB Atlas
 
-Authentication:
-- JSON Web Tokens
+### Security
+- 🔑 JWT Authentication
 
 ## Features
 
@@ -119,27 +131,91 @@ npm run dev
  ```shell-script
 npm start
 ```  
+
 ## API Reference
 Amadeus Self-Service API has been used to implement the flight and hotel search and booking services for tourists using the system.
+
+## 🤝 Contributing
+
+We welcome contributions! If you'd like to contribute, please:
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📚 Learning Resources
+
+To help you understand the technologies used in this project, here are some recommended learning resources:
+
+### Node.js
+- [Node.js Official Documentation](https://nodejs.org/docs/latest)
+- [Node.js Crash Course by Traversy Media](https://www.youtube.com/watch?v=fBNz5xF-Kx4)
+- [Learn Node.js on freeCodeCamp](https://www.freecodecamp.org/learn/apis-and-microservices/)
+
+### React.js
+- [React Official Documentation](https://reactjs.org/docs/getting-started.html)
+- [React Course by Codecademy](https://www.codecademy.com/learn/react-101)
+- [Full React Tutorial by Net Ninja](https://www.youtube.com/playlist?list=PL4cUxeGkcC9gZD-Tvwfod2gaISzfRiP9d)
+
+### MongoDB
+- [MongoDB University Free Courses](https://university.mongodb.com/)
+- [MongoDB Crash Course](https://www.youtube.com/watch?v=pWbMrx5rVBE)
+- [MongoDB with Node.js Tutorial](https://www.mongodb.com/docs/drivers/node/current/)
+
+### JWT Authentication
+- [JWT.io Introduction](https://jwt.io/introduction)
+- [JWT Authentication Tutorial](https://www.youtube.com/watch?v=7Q17ubqLfaM)
+- [Implement JWT with Node.js](https://www.digitalocean.com/community/tutorials/nodejs-jwt-authentication-tutorial)
+
+### Express.js
+- [Express.js Official Guide](https://expressjs.com/en/guide/routing.html)
+- [Express.js Crash Course](https://www.youtube.com/watch?v=L72fhGm1tfE)
+- [Learn Express.js on MDN](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs)
+
+## 🛠️ Technology Stack Details
+
+### Frontend
+- React.js v18.3.1 - A JavaScript library for building user interfaces
+- Axios v1.7.7 - Promise based HTTP client
+- Tailwind CSS v3.4.14 - A utility-first CSS framework
+- React Router DOM v6.28.0 - Declarative routing for React
+- JWT Decode v4.0.0 - JWT token decoder
+
+### Backend
+- Node.js v18+ - JavaScript runtime
+- Express.js v4.21.1 - Web application framework
+- MongoDB v6.9.0 - NoSQL database
+- Mongoose v8.7.0 - MongoDB object modeling
+- JWT v9.0.2 - JSON Web Token implementation
+- Nodemailer v6.9.16 - Email sending functionality
+- Cors v2.8.5 - Cross-Origin Resource Sharing middleware
+
+### Development Tools
+- Nodemon v3.1.7 - Auto-reloading development server
+- ESLint v9.11.1 - JavaScript linting utility
+- Vite - Next generation frontend tooling
+
 ## Credits
-Yahya Al-Azhary
+- Yahya Al-Azhary
 
-Youssef Hazem
+- Youssef Hazem
 
-Mahmoud Ayman 
+- Mahmoud Ayman 
 
-Abdelrahman Gaballa
+- Abdelrahman Gaballa
 
-Youssef Hendawy
+- Youssef Hendawy
 
-Mohamed Hefny
+- Mohamed Hefny
 
-Omar Elsherif
+- Omar Elsherif
 
-Moazz Ahmed Abdellatif
+- Moazz Ahmed Abdellatif
 
-Marawan Tawhed Fathy Abdelhady
+- Marawan Tawhed Fathy Abdelhady
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
-
