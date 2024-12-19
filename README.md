@@ -3,9 +3,11 @@
 
 A comprehensive MERN stack virtual trip planner web application that enables users to book trips, purchase souvenirs, and explore historic sites.
 
+
 ## 🎯 Motivation
 
 Part of the Advanced Computer Lab university course curriculum, this project challenges students to develop a full-stack application independently across multiple sprints, fostering self-learning and problem-solving skills.
+
 
 ## 🚀 Build Status
 
@@ -13,6 +15,7 @@ Current Status: Beta
 - Minor navigation issues in user dashboards
 - Design inconsistencies being addressed 
 - Core functionality stable and operational
+
 
 ## 💻 Code Architecture
 
@@ -33,6 +36,7 @@ Current Status: Beta
 3. Login Page![login](https://github.com/user-attachments/assets/debdad32-bb36-424f-80d6-a5b0d43547f3)
 4. Tourist Dashboard![tourist](https://github.com/user-attachments/assets/a838e36c-c275-4827-95b0-baa386262f3a)
 5. Reset Password![resetpassword](https://github.com/user-attachments/assets/a616187f-9aa6-47d1-b4fc-74ffa8071d45)
+
 
 ## 🛠️ Technologies and Frameworks Used
 
@@ -56,6 +60,7 @@ Current Status: Beta
 - Nodemon v3.1.7 - Auto-reloading development server
 - ESLint v9.11.1 - JavaScript linting utility
 - Vite - Next generation frontend tooling
+
 
 ## Features
 
@@ -98,6 +103,7 @@ The application has seven user types. They are:
 
 All users can edit details of their profiles, and some can have OTPs sent to their emails to change their passwords.
 
+
 ## Installations
 
 ### Prerequisites
@@ -137,9 +143,11 @@ npm run dev
 npm start
 ```  
 
+
 ## API Reference
 This is a link to the API reference document for all the APIs used in this project.
 [Rahhala.postman_collection.json](https://github.com/user-attachments/files/18201513/Rahhala.postman_collection.json)
+
 
 ## 🤝 Contributing
 
@@ -150,6 +158,7 @@ We welcome contributions! If you'd like to contribute, please:
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
 
 ## Credits
 
@@ -203,6 +212,7 @@ The project was created with the efforts of the developers:
 - Marawan Tawhed Fathy Abdelhady
   
 - Youssef Allam
+
 
 ## License
 
