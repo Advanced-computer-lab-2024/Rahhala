@@ -13,8 +13,10 @@ Part of the Advanced Computer Lab university course curriculum, this project cha
 
 Current Status: Beta
 - Minor navigation issues in user dashboards
-- Design inconsistencies being addressed 
-- Core functionality stable and operational
+- Design inconsistencies being addressed
+- Payment not secure and does not support bank cards
+- no hotel or flight reservation functionality yet
+- UI and UX to be improved
 
 
 ## 💻 Code Architecture
@@ -87,6 +89,7 @@ The application has seven user types. They are:
 
 4. Sellers:
   - They can add, edit, and archive products.
+  - They can view sales reports of their products.
     
 5.  Tour Guides:
   - They can add new itineraries.
@@ -145,6 +148,7 @@ npm start
 
 
 ## API Reference
+
 This is a link to the API reference document for all the APIs used in this project.
 [Rahhala.postman_collection.json](https://github.com/user-attachments/files/18201513/Rahhala.postman_collection.json)
 
