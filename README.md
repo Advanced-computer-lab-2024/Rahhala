@@ -133,7 +133,7 @@ npm start
 ```  
 
 ## API Reference
-Amadeus Self-Service API has been used to implement the flight and hotel search and booking services for tourists using the system.
+
 
 ## 🤝 Contributing
 
@@ -145,34 +145,7 @@ We welcome contributions! If you'd like to contribute, please:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📚 Learning Resources
 
-To help you understand the technologies used in this project, here are some recommended learning resources:
-
-### Node.js
-- [Node.js Official Documentation](https://nodejs.org/docs/latest)
-- [Node.js Crash Course by Traversy Media](https://www.youtube.com/watch?v=fBNz5xF-Kx4)
-- [Learn Node.js on freeCodeCamp](https://www.freecodecamp.org/learn/apis-and-microservices/)
-
-### React.js
-- [React Official Documentation](https://reactjs.org/docs/getting-started.html)
-- [React Course by Codecademy](https://www.codecademy.com/learn/react-101)
-- [Full React Tutorial by Net Ninja](https://www.youtube.com/playlist?list=PL4cUxeGkcC9gZD-Tvwfod2gaISzfRiP9d)
-
-### MongoDB
-- [MongoDB University Free Courses](https://university.mongodb.com/)
-- [MongoDB Crash Course](https://www.youtube.com/watch?v=pWbMrx5rVBE)
-- [MongoDB with Node.js Tutorial](https://www.mongodb.com/docs/drivers/node/current/)
-
-### JWT Authentication
-- [JWT.io Introduction](https://jwt.io/introduction)
-- [JWT Authentication Tutorial](https://www.youtube.com/watch?v=7Q17ubqLfaM)
-- [Implement JWT with Node.js](https://www.digitalocean.com/community/tutorials/nodejs-jwt-authentication-tutorial)
-
-### Express.js
-- [Express.js Official Guide](https://expressjs.com/en/guide/routing.html)
-- [Express.js Crash Course](https://www.youtube.com/watch?v=L72fhGm1tfE)
-- [Learn Express.js on MDN](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs)
 
 ## 🛠️ Technology Stack Details
 
@@ -198,6 +171,39 @@ To help you understand the technologies used in this project, here are some reco
 - Vite - Next generation frontend tooling
 
 ## Credits
+
+### 📚 Learning Resources
+
+To help you understand the technologies used in this project, here are some recommended learning resources:
+
+#### Node.js
+- [Node.js Official Documentation](https://nodejs.org/docs/latest)
+- [Node.js Crash Course by Traversy Media](https://www.youtube.com/watch?v=fBNz5xF-Kx4)
+- [Learn Node.js on freeCodeCamp](https://www.freecodecamp.org/learn/apis-and-microservices/)
+
+#### React.js
+- [React Official Documentation](https://reactjs.org/docs/getting-started.html)
+- [React Course by Codecademy](https://www.codecademy.com/learn/react-101)
+- [Full React Tutorial by Net Ninja](https://www.youtube.com/playlist?list=PL4cUxeGkcC9gZD-Tvwfod2gaISzfRiP9d)
+
+#### MongoDB
+- [MongoDB University Free Courses](https://university.mongodb.com/)
+- [MongoDB Crash Course](https://www.youtube.com/watch?v=pWbMrx5rVBE)
+- [MongoDB with Node.js Tutorial](https://www.mongodb.com/docs/drivers/node/current/)
+
+#### JWT Authentication
+- [JWT.io Introduction](https://jwt.io/introduction)
+- [JWT Authentication Tutorial](https://www.youtube.com/watch?v=7Q17ubqLfaM)
+- [Implement JWT with Node.js](https://www.digitalocean.com/community/tutorials/nodejs-jwt-authentication-tutorial)
+
+#### Express.js
+- [Express.js Official Guide](https://expressjs.com/en/guide/routing.html)
+- [Express.js Crash Course](https://www.youtube.com/watch?v=L72fhGm1tfE)
+- [Learn Express.js on MDN](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs)
+
+
+The project was created with the efforts of the developers:
+
 - Yahya Al-Azhary
 
 - Youssef Hazem
