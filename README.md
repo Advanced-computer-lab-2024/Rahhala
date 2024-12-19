@@ -33,11 +33,161 @@ Current Status: Beta
 - 🔐 Role-based access control
 
 ## 📸 Screenshots
-1. Landing Page![landing](https://github.com/user-attachments/assets/49006f17-3900-4a17-b808-5209614089c3)
-2. Signup Page![signup](https://github.com/user-attachments/assets/64962de3-95b5-48a4-a8b3-9ec3d5ed1bb2)
-3. Login Page![login](https://github.com/user-attachments/assets/debdad32-bb36-424f-80d6-a5b0d43547f3)
-4. Tourist Dashboard![tourist](https://github.com/user-attachments/assets/a838e36c-c275-4827-95b0-baa386262f3a)
-5. Reset Password![resetpassword](https://github.com/user-attachments/assets/a616187f-9aa6-47d1-b4fc-74ffa8071d45)
+
+<details>
+<summary>1. Landing Page</summary>
+
+![Landing Page](https://github.com/user-attachments/assets/49006f17-3900-4a17-b808-5209614089c3)
+
+</details>
+
+<details>
+<summary>2. Signup Page</summary>
+
+![Signup Page](https://github.com/user-attachments/assets/64962de3-95b5-48a4-a8b3-9ec3d5ed1bb2)
+
+</details>
+
+<details>
+<summary>3. Login Page</summary>
+
+![Login Page](https://github.com/user-attachments/assets/debdad32-bb36-424f-80d6-a5b0d43547f3)
+
+</details>
+
+<details>
+<summary>4. Reset Password</summary>
+
+![Reset Password](https://github.com/user-attachments/assets/a616187f-9aa6-47d1-b4fc-74ffa8071d45)
+
+</details>
+
+<details>
+<summary>5. Guest Page</summary>
+
+![Guest Page](https://github.com/user-attachments/assets/4454f787-dc65-4784-8422-216f5f6211b0)
+
+</details>
+
+<details>
+<summary>6. Terms & Conditions</summary>
+
+![Terms & Conditions](https://github.com/user-attachments/assets/8595b76f-20b6-4e29-989d-7f09d6ad04e3)
+
+</details>
+
+<details>
+<summary>7. Tourist Profile</summary>
+
+![Tourist Profile](https://github.com/user-attachments/assets/a838e36c-c275-4827-95b0-baa386262f3a)
+
+</details>
+
+<details>
+<summary>8. Tourist Dashboard</summary>
+
+![Tourist Dashboard](https://github.com/user-attachments/assets/1f08f652-2bc4-4310-8ba1-6215f5294601)
+
+</details>
+
+<details>
+<summary>9. Tourists Purchase a Product</summary>
+
+![Tourists Purchase a Product](https://github.com/user-attachments/assets/f35ab929-bda8-4dfd-8acb-fe2e9bcb605c)
+
+</details>
+
+<details>
+<summary>10. Tourist Reviewing a Product</summary>
+
+![Tourist Reviewing a Product](https://github.com/user-attachments/assets/2a4bdfcf-ac28-4596-ad5b-150c6b62b16c)
+
+</details>
+
+<details>
+<summary>11. Seller Profile</summary>
+
+![Seller Profile](https://github.com/user-attachments/assets/05e8b4b4-8061-4e38-bb8d-f366a87a66f4)
+
+</details>
+
+<details>
+<summary>12. Governor Dashboard</summary>
+
+![Governor Dashboard](https://github.com/user-attachments/assets/61dbc46f-f4b5-476f-a1bf-eaaa133e5214)
+
+</details>
+
+<details>
+<summary>13. Sales Report</summary>
+
+![Sales Report](https://github.com/user-attachments/assets/258a6f62-8484-4508-830e-a2db5d3f7282)
+
+</details>
+
+<details>
+<summary>14. Admin Dashboard</summary>
+
+![Admin Dashboard](https://github.com/user-attachments/assets/88393676-3a40-463a-abd9-9e07e7cb17bc)
+
+</details>
+
+<details>
+<summary>15. Admin Management</summary>
+
+![Admin Management](https://github.com/user-attachments/assets/0760da8a-6479-4ed3-bcf7-e6037922ef71)
+
+</details>
+
+<details>
+<summary>16. Account Deletion Requests</summary>
+
+![Account Deletion Requests](https://github.com/user-attachments/assets/08adea58-3877-4620-9d84-d7c361c4a3f7)
+
+</details>
+
+<details>
+<summary>17. New Account Requests</summary>
+
+![New Account Requests](https://github.com/user-attachments/assets/f68c4902-8e12-4b5d-9abe-b4ef075e4810)
+
+</details>
+
+<details>
+<summary>18. Preference Tags</summary>
+
+![Preference Tags](https://github.com/user-attachments/assets/5d06b2f0-40de-4a56-930a-44754d899472)
+
+</details>
+
+<details>
+<summary>19. Products Page</summary>
+
+![Products Page](https://github.com/user-attachments/assets/e8839d38-b451-4383-b654-c3394cb97013)
+
+</details>
+
+<details>
+<summary>20. Complaints Page</summary>
+
+![Complaints Page](https://github.com/user-attachments/assets/181a8777-36ec-456a-b6b8-361d20dd1920)
+
+</details>
+
+<details>
+<summary>21. Add New Admin</summary>
+
+![Add New Admin](https://github.com/user-attachments/assets/e25a1da1-3f7e-4ab6-b747-7d406a403700)
+
+</details>
+
+<details>
+<summary>22. Notifications Page</summary>
+
+![Notifications Page](https://github.com/user-attachments/assets/1fc275a7-cd03-400f-8e2b-ffb90851d6aa)
+
+</details>
+
 
 
 ## 🛠️ Technologies and Frameworks Used
