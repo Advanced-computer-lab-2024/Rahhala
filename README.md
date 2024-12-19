@@ -302,6 +302,8 @@ npm start
 This is a link to the API reference document for all the APIs used in this project.
 [Rahhala.postman_collection.json](https://github.com/user-attachments/files/18201513/Rahhala.postman_collection.json)
 
+## Tests
+For testing the backend, we used Postman to verify API endpoints and ensure proper functionality.
 
 ## 🤝 Contributing
 
