@@ -291,7 +291,7 @@ npm install
  ```shell-script
 npm run dev
 ```  
-6. In the first terminal window, start the application using this command:
+6. In the second terminal window, start the application using this command:
  ```shell-script
 npm start
 ```  
