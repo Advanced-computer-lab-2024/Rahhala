@@ -216,4 +216,4 @@ The project was created with the efforts of the developers:
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+[LICENSE.txt](https://github.com/user-attachments/files/18201642/LICENSE.txt)
