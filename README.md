@@ -34,23 +34,28 @@ Current Status: Beta
 4. Tourist Dashboard![tourist](https://github.com/user-attachments/assets/a838e36c-c275-4827-95b0-baa386262f3a)
 5. Reset Password![resetpassword](https://github.com/user-attachments/assets/a616187f-9aa6-47d1-b4fc-74ffa8071d45)
 
-
-## 🛠️ Technologies
+## 🛠️ Technologies and Frameworks Used
 
 ### Frontend
-- ⚛️ React.js
-- 🔄 Axios
-- 💅 Tailwind CSS
+- React.js v18.3.1 - A JavaScript library for building user interfaces
+- Axios v1.7.7 - Promise based HTTP client
+- Tailwind CSS v3.4.14 - A utility-first CSS framework
+- React Router DOM v6.28.0 - Declarative routing for React
+- JWT Decode v4.0.0 - JWT token decoder
 
 ### Backend
-- 🟩 Node.js
-- 🚂 Express.js
+- Node.js v18+ - JavaScript runtime
+- Express.js v4.21.1 - Web application framework
+- MongoDB v6.9.0 - NoSQL database
+- Mongoose v8.7.0 - MongoDB object modeling
+- JWT v9.0.2 - JSON Web Token implementation
+- Nodemailer v6.9.16 - Email sending functionality
+- Cors v2.8.5 - Cross-Origin Resource Sharing middleware
 
-### Database
-- 🍃 MongoDB Atlas
-
-### Security
-- 🔑 JWT Authentication
+### Development Tools
+- Nodemon v3.1.7 - Auto-reloading development server
+- ESLint v9.11.1 - JavaScript linting utility
+- Vite - Next generation frontend tooling
 
 ## Features
 
@@ -133,7 +138,8 @@ npm start
 ```  
 
 ## API Reference
-
+This is a link to the API reference document for all the APIs used in this project.
+[Rahhala.postman_collection.json](https://github.com/user-attachments/files/18201513/Rahhala.postman_collection.json)
 
 ## 🤝 Contributing
 
@@ -144,31 +150,6 @@ We welcome contributions! If you'd like to contribute, please:
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
-
-
-
-## 🛠️ Technology Stack Details
-
-### Frontend
-- React.js v18.3.1 - A JavaScript library for building user interfaces
-- Axios v1.7.7 - Promise based HTTP client
-- Tailwind CSS v3.4.14 - A utility-first CSS framework
-- React Router DOM v6.28.0 - Declarative routing for React
-- JWT Decode v4.0.0 - JWT token decoder
-
-### Backend
-- Node.js v18+ - JavaScript runtime
-- Express.js v4.21.1 - Web application framework
-- MongoDB v6.9.0 - NoSQL database
-- Mongoose v8.7.0 - MongoDB object modeling
-- JWT v9.0.2 - JSON Web Token implementation
-- Nodemailer v6.9.16 - Email sending functionality
-- Cors v2.8.5 - Cross-Origin Resource Sharing middleware
-
-### Development Tools
-- Nodemon v3.1.7 - Auto-reloading development server
-- ESLint v9.11.1 - JavaScript linting utility
-- Vite - Next generation frontend tooling
 
 ## Credits
 
@@ -200,7 +181,6 @@ To help you understand the technologies used in this project, here are some reco
 - [Express.js Official Guide](https://expressjs.com/en/guide/routing.html)
 - [Express.js Crash Course](https://www.youtube.com/watch?v=L72fhGm1tfE)
 - [Learn Express.js on MDN](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs)
-
 
 The project was created with the efforts of the developers:
 
